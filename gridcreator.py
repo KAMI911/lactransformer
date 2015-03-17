@@ -13,12 +13,12 @@ def frange(start, stop, step):
 with open('wgs84longlat-hun.txt', 'w') as wgslltxtfile:
   with open('wgs84geo-hun.txt', 'w') as wgsgctxtfile:
     with open('eovhun.txt', 'w') as eovtxtfile:
-      for x in frange (45.7800, 48.6000, 0.1):
-        for y in frange (16.1200,  22.9100, 0.1):
-          for z in range (100, 200, 10):
-            print ('O: %s %s %s' % (x, y, z))
-            wgslltxtfile.write('%s %s %s\r\n' % (x, y ,z))
-            XProjected, YProjected, ZProjected = transform(WGS84, WGS84Geo, x, y, z)
+      for fi in frange (45.7800, 48.6000, 0.1):
+        for la in frange (16.1200,  22.9100, 0.1):
+          for he in range (100, 200, 10):
+            print ('O: %s %s %s' % (fi, la, he))
+            wgslltxtfile.write('%s %s %s\r\n' % (fi, la, he))
+            XProjected, YProjected,ZProjected = transform(WGS84, WGS84Geo, la, fi, he)
             print ('P: %s, %s, %s' % (XProjected, YProjected, ZProjected))
             wgsgctxtfile.write('PONT  %s  %s  %s\r\n' % (XProjected, YProjected, ZProjected))
             XEOVProjected, YEOVProjected, ZEOVProjected = transform(WGS84Geo, EOV, XProjected, YProjected, ZProjected)
