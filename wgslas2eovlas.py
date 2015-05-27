@@ -1,96 +1,132 @@
-import laspy
-import laspy.file
+import argparse
+import textwrap
 import numpy as np
-import math
-from pyproj import Proj, transform
-from lib import Timing
+import glob
+import shutil
+import os
+from lib import Timing, LasPyConverter
 
-class LasPyConverter:
-    def __init__(self, filename, backup=True):
-        self.__FileName = filename
-        self.__Backup = True
+header = textwrap.dedent('''
+WGS84 LAS 2 EOV LAS Converter''')
 
-    def OpenRO(self):
-        self.__OpenedFile = laspy.file.File(self.__FileName, mode='r')
+class LasPyParameters:
+    def __init__(self):
+        # predefinied paths
+        self.parser = argparse.ArgumentParser(prog="wgslas2eovlas",
+                                              formatter_class=argparse.RawDescriptionHelpFormatter,
+                                              description='',
+                                              epilog=textwrap.dedent('''
+        example:
+            '''))
+        # reguired parameters
+        self.parser.add_argument('-i', type=str, dest='input', required=True,
+                                 help='required:  input file or folder')
+        self.parser.add_argument('-o', type=str, dest='output', required=True,
+                                 help='required:  output file or folder (d:\lasfiles\\tests\\results)')
 
-    def Open(self):
-        self.__OpenedFile = laspy.file.File(self.__FileName, mode='rw')
+        #optional parameters
+        self.parser.add_argument('-input_format', type=str, dest='input_format', required=False, choices=['las', 'laz'],
+                                 help='optional:  input format (default= laz)')
+        self.parser.add_argument('-input_projection', type=str, dest='input_projection', required=False, choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp'],
+                                 help='optional:  input format (default=wgs84geo, eovc and eovp arent inmpelemted)')
+        self.parser.add_argument('-output_projection', type=str, dest='output_projection', required=False, choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp'],
+                                 help='optional:  input format (default=eov, eovc and eovp arent inmpelemted)')
+        self.parser.add_argument('-v', dest='verbose', required=False,
+                                 help='optional:  verbose toogle (-v=on, nothing=off)', action='store_true')
+        self.parser.add_argument('-version', action='version', version=self.parser.prog)
 
-    def DumpHeaderFormat(self):
-        for spec in self.__OpenedFile.header.header_format:
-            in_spec = self.__OpenedFile.header.get_schema()
-            print('Setting: %s: %s'  % (spec.name, in_spec))
+    def parse(self):
+        self.args = self.parser.parse_args()
 
-    def DumpPointFormat(self):
-        for spec in self.__OpenedFile.point_format:
-            in_spec = self.__OpenedFile.reader.get_dimension(spec.name)
-            print('Setting: %s: %s' % (spec.name, in_spec))
+        ##defaults
+        if self.args.verbose:
+            self.args.verbose = ' -v'
+        else:
+            self.args.verbose = ''
+        if self.args.input_format == None:
+            self.args.input_format = 'las'
+        if self.args.input_projection == None:
+            self.args.input_projection = 'WGS84geo'
+        if self.args.output_projection == None:
+            self.args.output_projection = 'EOV'
 
-    def GetPointFormat(self):
-        for spec in inFile.reader.point_format:
-            in_spec = inFile.reader.get_dimension(spec.name)
-        return (spec.name, in_spec)
+    # ---------PUBLIC METHODS--------------------
+    def get_output(self):
+        return self.args.output
 
-    def ScaleDimension(self):
-        # Init does not work on Linux
-        # WGS84 = Proj(init='EPSG:4326')
-        # WGS84Geo = Proj(init='EPSG:4328')
+    def get_input(self):
+        return self.args.input
 
-        WGS84 = Proj('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
-        WGS84Geo = Proj('+proj=geocent +ellps=WGS84 +datum=WGS84 +no_defs')
-        EOV = Proj('+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs')
-        #EOV = Proj(
-        #    '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=etrs2eov_notowgs.gsb +units=m +no_defs')
+    def get_input_format(self):
+        return self.args.input_format
 
-        XScale = self.__OpenedFile.header.scale[0]
-        XOffset = self.__OpenedFile.header.offset[0]
-        YScale = self.__OpenedFile.header.scale[1]
-        YOffset = self.__OpenedFile.header.offset[1]
-        ZScale = self.__OpenedFile.header.scale[2]
-        ZOffset = self.__OpenedFile.header.offset[2]
+    def get_input_projection(self):
+        return self.args.input_projection
 
+    def get_output_projection(self):
+        return self.args.output_projection
 
-        XDimension = self.__OpenedFile.X
-        YDimension = self.__OpenedFile.Y
-        ZDimension = self.__OpenedFile.Z
+    def get_verbose(self):
+        return self.args.verbose
 
-        XOriginal = XDimension * XScale + XOffset
-        YOriginal = YDimension * YScale + YOffset
-        ZOriginal = ZDimension * ZScale + ZOffset
+    def get_cores(self):
+        return self.args.cores
 
-        print ('Central: %s %s %s' % (XOriginal, YOriginal, ZOriginal))
-        XTransformed, YTransformed, ZTransformed = transform(WGS84Geo, EOV, XOriginal, YOriginal, ZOriginal)
-        print ('Offset:  %s %s %s' % (XOffset, YOffset, ZOffset))
-        XTransformedOffset, YTransformedOffset, ZTransformedOffset = transform( WGS84Geo, EOV, XOffset, YOffset, ZOffset)
-
-        XTransformedOffset = math.floor(XTransformedOffset)
-        YTransformedOffset = math.floor(YTransformedOffset)
-        ZTransformedOffset = math.floor(ZTransformedOffset)
-
-        XProjected = (XTransformed - XTransformedOffset) / XScale
-        YProjected = (YTransformed - YTransformedOffset) / YScale
-        ZProjected = (ZTransformed - ZTransformedOffset) / YScale
-
-        print('%s -- %s -- %s' % (XTransformedOffset, YTransformedOffset, ZTransformedOffset))
-        print ('%s, %s, %s\n%s, %s, %s' % (XOriginal, YOriginal, ZOriginal, XProjected, YProjected, ZProjected))
-
-        self.__OpenedFile.X = XProjected
-        self.__OpenedFile.Y = YProjected
-        self.__OpenedFile.Z = ZProjected
-        self.__OpenedFile.header.set_offset((XTransformedOffset, YTransformedOffset, ZTransformedOffset))
-        self.__OpenedFile.header.update_min_max()
-
-    def Close(self):
-        self.__OpenedFile.close()
+def ConvertLas(workfile, sourceprojection, destinationprojection):
+    las = LasPyConverter.LasPyConverter(workfile)
+    las.Open()
+    # las.DumpHeaderFormat()
+    las.SetSourceProjection(sourceprojection)
+    las.SetDestinationProjection(destinationprojection)
+    las.DumpPointFormat()
+    las.ScaleDimension()
+    print (timer.end())
+    las.Close()
+    print (timer.end())
 
 
-las = LasPyConverter('test.las')
-las.Open()
-# las.DumpHeaderFormat()
-las.DumpPointFormat()
+print(header)
 timer = Timing.Timing()
-las.ScaleDimension()
-print (timer.end())
-las.Close()
-print (timer.end())
+lasconverterworkflow = LasPyParameters()
+lasconverterworkflow.parse()
 
+inputprojection = lasconverterworkflow.get_input_projection()
+outputprojection = lasconverterworkflow.get_output_projection()
+# File/Directory handler
+inputfiles = lasconverterworkflow.get_input()
+outputfiles = lasconverterworkflow.get_output()
+inputisdir = False
+outputisdir = False
+
+if os.path.isdir(inputfiles):
+    inputisdir = True
+    inputfiles = glob.glob(inputfiles)
+elif os.path.isfile(inputfiles):
+    inputisdir = False
+    inputfiles = glob.glob(inputfiles)
+
+def AssignProjection(projection):
+    # Init does not work on Linux
+    # WGS84 = Proj(init='EPSG:4326')
+    # WGS84Geo = Proj(init='EPSG:4328')
+
+    if projection == 'WGS84':
+        projectionstring = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
+    elif projection == 'WGS84geo':
+        projectionstring = '+proj=geocent +ellps=WGS84 +datum=WGS84 +no_defs'
+    elif projection == 'EOV':
+        projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
+    elif projection == 'EOVc': # do not use
+        projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=grid\etrs2eov_notowgs.gsb +geoidgrids=grid\geoid_eht.gtx +units=m +no_defs'
+    elif projection == 'EOVp': # do not use
+        projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=grid\etrs2eov_notowgs.gsb +units=m +no_defs'
+    return projectionstring
+
+inputprojectionstring = AssignProjection(inputprojection)
+outputprojectionstring = AssignProjection(outputprojection)
+
+for workfile in inputfiles:
+    shutil.copyfile(workfile, outputfiles)
+    print ('Converting: %s (%s) to: %s (%s)' % (workfile, inputprojection, outputfiles, outputprojection))
+    ConvertLas(outputfiles, inputprojectionstring, outputprojectionstring)
+print (timer.end())
