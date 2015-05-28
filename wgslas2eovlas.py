@@ -4,6 +4,8 @@ import numpy as np
 import glob
 import shutil
 import os
+import logging
+import datetime
 from lib import Timing, LasPyConverter
 
 header = textwrap.dedent('''
@@ -73,37 +75,21 @@ class LasPyParameters:
         return self.args.cores
 
 def ConvertLas(workfile, sourceprojection, destinationprojection):
+    logging.info('Opening %s file for converting...' % (workfile))
     las = LasPyConverter.LasPyConverter(workfile)
     las.Open()
     # las.DumpHeaderFormat()
+    logging.info('Source projection is %s.' % (sourceprojection))
     las.SetSourceProjection(sourceprojection)
+    logging.info('Destionation projection is %s.' % (destinationprojection))
     las.SetDestinationProjection(destinationprojection)
+    logging.info('Dumping LAS pointcloud information.')
     las.DumpPointFormat()
+    logging.info('Scaling LAS pointcloud.')
     las.ScaleDimension()
-    print (timer.end())
+    logging.info('Closing transformed %s LAS pointcloud.' % (workfile))
     las.Close()
-    print (timer.end())
-
-
-print(header)
-timer = Timing.Timing()
-lasconverterworkflow = LasPyParameters()
-lasconverterworkflow.parse()
-
-inputprojection = lasconverterworkflow.get_input_projection()
-outputprojection = lasconverterworkflow.get_output_projection()
-# File/Directory handler
-inputfiles = lasconverterworkflow.get_input()
-outputfiles = lasconverterworkflow.get_output()
-inputisdir = False
-outputisdir = False
-
-if os.path.isdir(inputfiles):
-    inputisdir = True
-    inputfiles = glob.glob(inputfiles)
-elif os.path.isfile(inputfiles):
-    inputisdir = False
-    inputfiles = glob.glob(inputfiles)
+    logging.info('Transformed %s LAS pointcloud has created.' % (workfile))
 
 def AssignProjection(projection):
     # Init does not work on Linux
@@ -122,11 +108,48 @@ def AssignProjection(projection):
         projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=grid\etrs2eov_notowgs.gsb +units=m +no_defs'
     return projectionstring
 
+print(header)
+timer = Timing.Timing()
+lasconverterworkflow = LasPyParameters()
+lasconverterworkflow.parse()
+
+inputprojection = lasconverterworkflow.get_input_projection()
+outputprojection = lasconverterworkflow.get_output_projection()
+# File/Directory handler
+inputfiles = lasconverterworkflow.get_input()
+outputfiles = lasconverterworkflow.get_output()
+inputisdir = False
+outputisdir = False
+
+logging.basicConfig(
+    filename=outputfiles + '_' + datetime.datetime.today().strftime('%Y%m%d') + '_lastransform.log',
+    filemode='w',
+    format='%(asctime)s %(name)s %(levelname)s %(message)s', datefmt='%d-%m-%Y %H:%M:%S',
+    level=logging.DEBUG)
+# define a Handler which writes INFO messages or higher to the sys.stderr
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+# set a format which is simpler for console use
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
+# tell the handler to use this format
+console.setFormatter(formatter)
+# add the handler to the root logger
+logging.getLogger('').addHandler(console)
+
+if os.path.isdir(inputfiles):
+    inputisdir = True
+    inputfiles = glob.glob(inputfiles)
+elif os.path.isfile(inputfiles):
+    inputisdir = False
+    inputfiles = glob.glob(inputfiles)
+
 inputprojectionstring = AssignProjection(inputprojection)
 outputprojectionstring = AssignProjection(outputprojection)
 
 for workfile in inputfiles:
+    logging.info('Copy %s to %s' % (workfile, outputfiles))
     shutil.copyfile(workfile, outputfiles)
+    logging.info('Converting: %s (%s) to: %s (%s)' % (workfile, inputprojection, outputfiles, outputprojection))
     print ('Converting: %s (%s) to: %s (%s)' % (workfile, inputprojection, outputfiles, outputprojection))
     ConvertLas(outputfiles, inputprojectionstring, outputprojectionstring)
-print (timer.end())
+

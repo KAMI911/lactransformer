@@ -68,7 +68,7 @@ class LasPyConverter:
 
         XProjected = (XTransformed - XTransformedOffset) / XScale
         YProjected = (YTransformed - YTransformedOffset) / YScale
-        ZProjected = (ZTransformed - ZTransformedOffset) / YScale
+        ZProjected = (ZTransformed - ZTransformedOffset) / ZScale
 
         print('%s -- %s -- %s' % (XTransformedOffset, YTransformedOffset, ZTransformedOffset))
         print ('%s, %s, %s\n%s, %s, %s' % (XOriginal, YOriginal, ZOriginal, XProjected, YProjected, ZProjected))
