@@ -1,5 +1,7 @@
+import logging
 import laspy
 import laspy.file
+import numpy as np
 from pyproj import Proj, transform
 import math
 
@@ -42,41 +44,44 @@ class LasPyConverter:
         self.__DestinationProj = Proj(destinationprojection)
 
     def ScaleDimension(self):
-        XScale = self.__OpenedFile.header.scale[0]
-        XOffset = self.__OpenedFile.header.offset[0]
-        YScale = self.__OpenedFile.header.scale[1]
-        YOffset = self.__OpenedFile.header.offset[1]
-        ZScale = self.__OpenedFile.header.scale[2]
-        ZOffset = self.__OpenedFile.header.offset[2]
+        # Use scale as is as
+        self.__Scale = [ self.__OpenedFile.header.scale[0], self.__OpenedFile.header.scale[1], self.__OpenedFile.header.scale[2] ]
+        # Transform offset
+        self.__Offset = [ self.__OpenedFile.header.offset[0],self.__OpenedFile.header.offset[1], self.__OpenedFile.header.offset[2] ]
+        logging.info('LAS PointCloud file offset: %s %s %s' % (self.__Offset[0], self.__Offset[1], self.__Offset[2]))
+        self.__TransformedOffset = np.array([0,0,0])
+        self.__TransformedOffset[0], self.__TransformedOffset[1], self.__TransformedOffset[2] = transform(self.__SourceProj, self.__DestinationProj, self.__Offset[0], self.__Offset[1], self.__Offset[2])
+        self.__TransformedOffset = [ math.floor(self.__TransformedOffset[0]), math.floor(self.__TransformedOffset[1]), math.floor(self.__TransformedOffset[2]) ]
+        logging.info('LAS PointCloud file transformed offset: %s %s %s' % (self.__TransformedOffset[0], self.__TransformedOffset[1], self.__TransformedOffset[2]))
+        logging.info('Updating LAS file header offsets.')
+        self.__OpenedFile.header.set_offset((self.__TransformedOffset[0], self.__TransformedOffset[1], self.__TransformedOffset[2]))
 
-        XDimension = self.__OpenedFile.X
-        YDimension = self.__OpenedFile.Y
-        ZDimension = self.__OpenedFile.Z
+    def ReadPointCloud(self):
+        # Reading PointCloud
+        self.__PointCloudData = np.array ([ self.__OpenedFile.X* self.__Scale[0] + self.__Offset[0],
+                                            self.__OpenedFile.Y* self.__Scale[1] + self.__Offset[1],
+                                            self.__OpenedFile.Z* self.__Scale[2] + self.__Offset[2],
+                                            self.__OpenedFile.intensity, self.__OpenedFile.flag_byte, self.__OpenedFile.raw_classification, self.__OpenedFile.scan_angle_rank, self.__OpenedFile.user_data, self.__OpenedFile.pt_src_id, self.__OpenedFile.gps_time ])
 
-        XOriginal = XDimension * XScale + XOffset
-        YOriginal = YDimension * YScale + YOffset
-        ZOriginal = ZDimension * ZScale + ZOffset
+    def TransformPointCloud(self):
+        Transformed = np.empty_like(self.__PointCloudData)
+        # Transforming PointCloud
+        Transformed[0], Transformed[1], Transformed[2] = transform(self.__SourceProj, self.__DestinationProj, self.__PointCloudData[0], self.__PointCloudData[1], self.__PointCloudData[2])
+        self.__OpenedFile.X = (Transformed[0] - self.__TransformedOffset[0]) / self.__Scale[0]
+        self.__OpenedFile.Y = (Transformed[1] - self.__TransformedOffset[1]) / self.__Scale[1]
+        self.__OpenedFile.Z = (Transformed[2] - self.__TransformedOffset[2]) / self.__Scale[2]
+        '''
+        Since we didn't touch these we don't have to update them.
 
-        print ('Central: %s %s %s' % (XOriginal, YOriginal, ZOriginal))
-        XTransformed, YTransformed, ZTransformed = transform(self.__SourceProj, self.__DestinationProj, XOriginal, YOriginal, ZOriginal)
-        print ('Offset:  %s %s %s' % (XOffset, YOffset, ZOffset))
-        XTransformedOffset, YTransformedOffset, ZTransformedOffset = transform(self.__SourceProj, self.__DestinationProj, XOffset, YOffset, ZOffset)
+        self.__OpenedFile.intensity = PointCloudData[3]
+        self.__OpenedFile.flag_byte = PointCloudData[4]
+        self.__OpenedFile.raw_classification = PointCloudData[5]
+        self.__OpenedFile.scan_angle_rank = PointCloudData[6]
+        self.__OpenedFile.user_data = PointCloudData[7]
+        self.__OpenedFile.pt_src_id = PointCloudData[8]
+        self.__OpenedFile.gps_time = PointCloudData[9]'''
 
-        XTransformedOffset = math.floor(XTransformedOffset)
-        YTransformedOffset = math.floor(YTransformedOffset)
-        ZTransformedOffset = math.floor(ZTransformedOffset)
-
-        XProjected = (XTransformed - XTransformedOffset) / XScale
-        YProjected = (YTransformed - YTransformedOffset) / YScale
-        ZProjected = (ZTransformed - ZTransformedOffset) / ZScale
-
-        print('%s -- %s -- %s' % (XTransformedOffset, YTransformedOffset, ZTransformedOffset))
-        print ('%s, %s, %s\n%s, %s, %s' % (XOriginal, YOriginal, ZOriginal, XProjected, YProjected, ZProjected))
-
-        self.__OpenedFile.X = XProjected
-        self.__OpenedFile.Y = YProjected
-        self.__OpenedFile.Z = ZProjected
-        self.__OpenedFile.header.set_offset((XTransformedOffset, YTransformedOffset, ZTransformedOffset))
+        logging.info('Updating LAS file min and max values.')
         self.__OpenedFile.header.update_min_max()
 
     def Close(self):

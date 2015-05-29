@@ -75,7 +75,7 @@ class LasPyParameters:
         return self.args.cores
 
 def ConvertLas(workfile, sourceprojection, destinationprojection):
-    logging.info('Opening %s file for converting...' % (workfile))
+    logging.info('Opening %s LAS PointCloud file for converting...' % (workfile))
     las = LasPyConverter.LasPyConverter(workfile)
     las.Open()
     # las.DumpHeaderFormat()
@@ -83,13 +83,17 @@ def ConvertLas(workfile, sourceprojection, destinationprojection):
     las.SetSourceProjection(sourceprojection)
     logging.info('Destionation projection is %s.' % (destinationprojection))
     las.SetDestinationProjection(destinationprojection)
-    logging.info('Dumping LAS pointcloud information.')
+    logging.info('Dumping LAS PointCloud information.')
     las.DumpPointFormat()
-    logging.info('Scaling LAS pointcloud.')
+    logging.info('Scaling LAS PointCloud.')
     las.ScaleDimension()
-    logging.info('Closing transformed %s LAS pointcloud.' % (workfile))
+    logging.info('Reading LAS PointCloud.')
+    las.ReadPointCloud()
+    logging.info('Transforming LAS PointCloud.')
+    las.TransformPointCloud()
+    logging.info('Closing transformed %s LAS PointCloud.' % (workfile))
     las.Close()
-    logging.info('Transformed %s LAS pointcloud has created.' % (workfile))
+    logging.info('Transformed %s LAS PointCloud has created.' % (workfile))
 
 def AssignProjection(projection):
     # Init does not work on Linux
@@ -150,6 +154,5 @@ for workfile in inputfiles:
     logging.info('Copy %s to %s' % (workfile, outputfiles))
     shutil.copyfile(workfile, outputfiles)
     logging.info('Converting: %s (%s) to: %s (%s)' % (workfile, inputprojection, outputfiles, outputprojection))
-    print ('Converting: %s (%s) to: %s (%s)' % (workfile, inputprojection, outputfiles, outputprojection))
     ConvertLas(outputfiles, inputprojectionstring, outputprojectionstring)
 
