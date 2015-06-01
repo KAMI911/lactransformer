@@ -56,6 +56,13 @@ class LasPyConverter:
         logging.info('Updating LAS file header offsets.')
         self.__OpenedFile.header.set_offset((self.__TransformedOffset[0], self.__TransformedOffset[1], self.__TransformedOffset[2]))
 
+    def ReadPointCloudCoordsOnly(self):
+        # Reading PointCloud
+        self.__PointCloudData = np.array ([ self.__OpenedFile.X* self.__Scale[0] + self.__Offset[0],
+                                            self.__OpenedFile.Y* self.__Scale[1] + self.__Offset[1],
+                                            self.__OpenedFile.Z* self.__Scale[2] + self.__Offset[2] ])
+
+
     def ReadPointCloud(self):
         # Reading PointCloud
         self.__PointCloudData = np.array ([ self.__OpenedFile.X* self.__Scale[0] + self.__Offset[0],
