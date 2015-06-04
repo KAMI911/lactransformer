@@ -95,34 +95,32 @@ class ConvertEngine(Process):
     def ConvertLas(self):
         proc_name = self.name
         print('Starting: %s process.' % (proc_name))
-        while True:
-            if self.filequeue.empty() is False:
-                sourcefile, destinationfile = self.filequeue.get()
-                print('%s Copy %s to %s' % (proc_name, sourcefile, destinationfile))
-                logging.info('%s Copy %s to %s' % (proc_name, sourcefile, destinationfile))
-                shutil.copyfile(sourcefile, destinationfile)
-                logging.info('Opening %s LAS PointCloud file for converting...' % (destinationfile))
-                las = LasPyConverter.LasPyConverter(destinationfile)
-                las.Open()
-                # las.DumpHeaderFormat()
-                logging.info('Source projection is %s.' % (self.sourceprojection))
-                las.SetSourceProjection(self.sourceprojection)
-                logging.info('Destionation projection is %s.' % (self.destinationprojection))
-                las.SetDestinationProjection(self.destinationprojection)
-                logging.info('Dumping LAS PointCloud information.')
-                las.DumpPointFormat()
-                logging.info('Scaling LAS PointCloud.')
-                las.ScaleDimension()
-                logging.info('Reading LAS PointCloud.')
-                las.ReadPointCloudCoordsOnly()
-                logging.info('Transforming LAS PointCloud.')
-                las.TransformPointCloud()
-                print('%s Closing transformed %s LAS PointCloud.' % (proc_name, destinationfile))
-                logging.info('%s Closing transformed %s LAS PointCloud.' % (proc_name, destinationfile))
-                las.Close()
-                logging.info('Transformed %s LAS PointCloud has created.' % (destinationfile))
-            else:
-                break
+        while not self.filequeue.empty():
+            sourcefile, destinationfile = self.filequeue.get()
+            # print('%s Copy %s to %s' % (proc_name, sourcefile, destinationfile))
+            # logging.info('%s Copy %s to %s' % (proc_name, sourcefile, destinationfile))
+            # shutil.copyfile(sourcefile, destinationfile)
+            logging.info('Opening %s LAS PointCloud file for converting...' % (destinationfile))
+            lasIn = LasPyConverter.LasPyConverter(sourcefile)
+            lasIn.OpenRO()
+            lasOut = LasPyConverter.LasPyConverter(destinationfile)
+            lasOut.Open(lasIn.ReturnHeader())
+            logging.info('Source projection is %s.' % (self.sourceprojection))
+            lasOut.SetSourceProjection(self.sourceprojection)
+            logging.info('Destionation projection is %s.' % (self.destinationprojection))
+            lasOut.SetDestinationProjection(self.destinationprojection)
+            logging.info('Dumping LAS PointCloud information.')
+            # las.DumpHeaderFormat()
+            lasOut.DumpPointFormat()
+            logging.info('Scaling LAS PointCloud.')
+            lasOut.ScaleDimension()
+            logging.info('Reading LAS PointCloud.')
+            lasOut.TransformPointCloud(lasIn.ReturnPointCloud())
+            lasIn.Close()
+            print('%s Closing transformed %s LAS PointCloud.' % (proc_name, destinationfile))
+            logging.info('%s Closing transformed %s LAS PointCloud.' % (proc_name, destinationfile))
+            lasOut.Close()
+            logging.info('Transformed %s LAS PointCloud has created.' % (destinationfile))
         print('Exiting: %s process.' % (proc_name))
         return
 
@@ -179,6 +177,9 @@ def main():
         else:
             filequeue.put([workfile, outputpath + '\\' + os.path.basename(workfile)])
         filename = outputpath + '\\lastransform_' + datetime.datetime.today().strftime('%Y%m%d') + '.log',
+    else:
+        print('Cannot found input LAS PointCloud file: %s' % (inputfiles))
+        exit(1)
 
     if inputisdir is False:
         cores = 1
