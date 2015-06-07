@@ -94,34 +94,33 @@ class ConvertEngine(Process):
 
     def ConvertLas(self):
         proc_name = self.name
-        print('Starting: %s process.' % (proc_name))
+        logging.info('[%s] Starting ...' % (proc_name))
         while not self.filequeue.empty():
             sourcefile, destinationfile = self.filequeue.get()
             # print('%s Copy %s to %s' % (proc_name, sourcefile, destinationfile))
             # logging.info('%s Copy %s to %s' % (proc_name, sourcefile, destinationfile))
             # shutil.copyfile(sourcefile, destinationfile)
-            logging.info('Opening %s LAS PointCloud file for converting...' % (destinationfile))
+            logging.info('[%s] Opening %s LAS PointCloud file for converting...' % (proc_name, destinationfile))
             lasIn = LasPyConverter.LasPyConverter(sourcefile)
             lasIn.OpenRO()
             lasOut = LasPyConverter.LasPyConverter(destinationfile)
             lasOut.Open(lasIn.ReturnHeader())
-            logging.info('Source projection is %s.' % (self.sourceprojection))
+            logging.info('[%s] Source projection is %s.' % (proc_name, self.sourceprojection))
             lasOut.SetSourceProjection(self.sourceprojection)
-            logging.info('Destionation projection is %s.' % (self.destinationprojection))
+            logging.info('[%s] Destination projection is %s.' % (proc_name, self.destinationprojection))
             lasOut.SetDestinationProjection(self.destinationprojection)
-            logging.info('Dumping LAS PointCloud information.')
+            logging.info('[%s] Dumping LAS PointCloud information.' % (proc_name))
             # las.DumpHeaderFormat()
-            lasOut.DumpPointFormat()
-            logging.info('Scaling LAS PointCloud.')
+            # lasOut.DumpPointFormat()
+            logging.info('[%s] Scaling LAS PointCloud.' % (proc_name))
             lasOut.ScaleDimension()
-            logging.info('Reading LAS PointCloud.')
+            logging.info('[%s] Reading LAS PointCloud.' %  (proc_name))
             lasOut.TransformPointCloud(lasIn.ReturnPointCloud())
             lasIn.Close()
-            print('%s Closing transformed %s LAS PointCloud.' % (proc_name, destinationfile))
-            logging.info('%s Closing transformed %s LAS PointCloud.' % (proc_name, destinationfile))
+            logging.info('[%s] Closing transformed %s LAS PointCloud.' % (proc_name, destinationfile))
             lasOut.Close()
-            logging.info('Transformed %s LAS PointCloud has created.' % (destinationfile))
-        print('Exiting: %s process.' % (proc_name))
+            logging.info('[%s] Transformed %s LAS PointCloud has created.' % (proc_name, destinationfile))
+        logging.info('[%s] Exiting ...' % (proc_name))
         return
 
 
@@ -137,9 +136,9 @@ def AssignProjection(projection):
     elif projection == 'EOV':
         projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
     elif projection == 'EOVc':
-        projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=grid\etrs2eov_notowgs.gsb +geoidgrids=grid\geoid_eht.gtx +units=m +no_defs'
+        projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=grid/etrs2eov_notowgs.gsb +geoidgrids=grid/geoid_eht.gtx +units=m +no_defs'
     elif projection == 'EOVp':  # do not use
-        projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=grid\etrs2eov_notowgs.gsb +units=m +no_defs'
+        projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=grid/etrs2eov_notowgs.gsb +units=m +no_defs'
     return projectionstring
 
 
@@ -163,20 +162,20 @@ def main():
 
     if os.path.isdir(inputfiles):
         inputisdir = True
-        inputfiles = glob.glob(inputfiles + '\*' + inputformat)
+        inputfiles = glob.glob(inputfiles + '/*' + inputformat)
         if not os.path.exists(outputfiles):
             os.makedirs(outputfiles)
         for workfile in inputfiles:
-            filequeue.put([workfile, outputpath + '\\' + os.path.basename(workfile)])
-        filename = outputpath + '\\lastransform_' + datetime.datetime.today().strftime('%Y%m%d') + '_batch.log',
+            filequeue.put([workfile, outputpath + '/' + os.path.basename(workfile)])
+        logfilename = 'lastransform_' + datetime.datetime.today().strftime('%Y%m%d') + '_batch.log'
     elif os.path.isfile(inputfiles):
         inputisdir = False
         workfile = inputfiles
         if os.path.basename(outputfiles) is not "":
             filequeue.put([workfile, outputfiles])
         else:
-            filequeue.put([workfile, outputpath + '\\' + os.path.basename(workfile)])
-        filename = outputpath + '\\lastransform_' + datetime.datetime.today().strftime('%Y%m%d') + '.log',
+            filequeue.put([workfile, outputpath + '/' + os.path.basename(workfile)])
+        logfilename = 'lastransform_' + datetime.datetime.today().strftime('%Y%m%d') + '.log'
     else:
         print('Cannot found input LAS PointCloud file: %s' % (inputfiles))
         exit(1)
@@ -185,6 +184,7 @@ def main():
         cores = 1
 
     logging.basicConfig(
+        filename=logfilename,
         filemode='w',
         format='%(asctime)s %(name)s %(levelname)s %(message)s', datefmt='%d-%m-%Y %H:%M:%S',
         level=logging.DEBUG)
@@ -205,6 +205,7 @@ def main():
         proc = Process(target = ConvertEngine, args=(filequeue, inputprojectionstring, outputprojectionstring))
         proc.daemon = True
         proc.start()
+
     proc.join()
 
 if __name__ == '__main__':

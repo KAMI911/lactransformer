@@ -30,12 +30,12 @@ class LasPyConverter:
     def DumpHeaderFormat(self):
         for spec in self.__OpenedFile.header.header_format:
             in_spec = self.__OpenedFile.header.get_schema()
-            print('Setting: %s: %s'  % (spec.name, in_spec))
+            logging.info('Setting: %s: %s'  % (spec.name, in_spec))
 
     def DumpPointFormat(self):
         for spec in self.__OpenedFile.point_format:
             in_spec = self.__OpenedFile.reader.get_dimension(spec.name)
-            print('Setting: %s: %s' % (spec.name, in_spec))
+            logging.info('Setting: %s: %s' % (spec.name, in_spec))
 
     def ReturnPointFormat(self):
         for spec in inFile.reader.point_format:
@@ -55,6 +55,7 @@ class LasPyConverter:
         self.__Scale = [ self.__OpenedFile.header.scale[0], self.__OpenedFile.header.scale[1], self.__OpenedFile.header.scale[2] ]
         # Transform offset
         self.__Offset = [ self.__OpenedFile.header.offset[0],self.__OpenedFile.header.offset[1], self.__OpenedFile.header.offset[2] ]
+
     def ScaleDimension(self):
         self.__TransformedOffset = np.array([0,0,0])
         self.__TransformedOffset[0], self.__TransformedOffset[1], self.__TransformedOffset[2] = transform(self.__SourceProj, self.__DestinationProj, self.__Offset[0], self.__Offset[1], self.__Offset[2])
@@ -78,12 +79,15 @@ class LasPyConverter:
                                             self.__OpenedFile.intensity, self.__OpenedFile.flag_byte, self.__OpenedFile.raw_classification, self.__OpenedFile.scan_angle_rank, self.__OpenedFile.user_data, self.__OpenedFile.pt_src_id, self.__OpenedFile.gps_time ])
 
     def TransformPointCloud(self, pointcloud):
-        Transformed = np.empty_like(pointcloud)
+        # Transformed = np.empty_like(pointcloud)
         # Transforming PointCloud
-        Transformed[0], Transformed[1], Transformed[2] = transform(self.__SourceProj, self.__DestinationProj, pointcloud[0], pointcloud[1], pointcloud[2])
-        self.__OpenedFile.X = (Transformed[0] - self.__TransformedOffset[0]) / self.__Scale[0]
-        self.__OpenedFile.Y = (Transformed[1] - self.__TransformedOffset[1]) / self.__Scale[1]
-        self.__OpenedFile.Z = (Transformed[2] - self.__TransformedOffset[2]) / self.__Scale[2]
+        # Transformed[0], Transformed[1], Transformed[2] = transform(self.__SourceProj, self.__DestinationProj, pointcloud[0], pointcloud[1], pointcloud[2])
+        # self.__OpenedFile.X = (Transformed[0] - self.__TransformedOffset[0]) / self.__Scale[0]
+        # self.__OpenedFile.Y = (Transformed[1] - self.__TransformedOffset[1]) / self.__Scale[1]
+        # self.__OpenedFile.Z = (Transformed[2] - self.__TransformedOffset[2]) / self.__Scale[2]
+
+        self.__OpenedFile.x, self.__OpenedFile.y, self.__OpenedFile.z = transform(self.__SourceProj, self.__DestinationProj, pointcloud[0], pointcloud[1], pointcloud[2])
+
 
         self.__OpenedFile.intensity = pointcloud[3]
         self.__OpenedFile.flag_byte = pointcloud[4]
@@ -92,15 +96,19 @@ class LasPyConverter:
         self.__OpenedFile.user_data = pointcloud[7]
         self.__OpenedFile.pt_src_id = pointcloud[8]
         self.__OpenedFile.gps_time = pointcloud[9]
+
         self.UpdateMinMax()
 
-    def TransformPointCloudCoordsOnly(self):
-        Transformed = np.empty_like(self.__PointCloudData)
+    def TransformPointCloudCoordsOnly(self, pointcloud):
+        # Transformed = np.empty_like(pointcloud)
         # Transforming PointCloud
-        Transformed[0], Transformed[1], Transformed[2] = transform(self.__SourceProj, self.__DestinationProj, self.__PointCloudData[0], self.__PointCloudData[1], self.__PointCloudData[2])
-        self.__OpenedFile.X = (Transformed[0] - self.__TransformedOffset[0]) / self.__Scale[0]
-        self.__OpenedFile.Y = (Transformed[1] - self.__TransformedOffset[1]) / self.__Scale[1]
-        self.__OpenedFile.Z = (Transformed[2] - self.__TransformedOffset[2]) / self.__Scale[2]
+        # Transformed[0], Transformed[1], Transformed[2] = transform(self.__SourceProj, self.__DestinationProj, pointcloud[0], pointcloud[1], pointcloud[2])
+        # self.__OpenedFile.X = (Transformed[0] - self.__TransformedOffset[0]) / self.__Scale[0]
+        # self.__OpenedFile.Y = (Transformed[1] - self.__TransformedOffset[1]) / self.__Scale[1]
+        # self.__OpenedFile.Z = (Transformed[2] - self.__TransformedOffset[2]) / self.__Scale[2]
+
+        self.__OpenedFile.x, self.__OpenedFile.y, self.__OpenedFile.z = transform(self.__SourceProj, self.__DestinationProj, pointcloud[0], pointcloud[1], pointcloud[2])
+
         self.UpdateMinMax()
 
     def UpdateMinMax(self):
