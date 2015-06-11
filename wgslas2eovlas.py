@@ -1,7 +1,6 @@
 import argparse
 import textwrap
 import glob
-import shutil
 import os
 import logging
 import datetime
@@ -9,8 +8,10 @@ import multiprocessing
 
 from lib import Timing, LasPyConverter
 
+
 header = textwrap.dedent('''
 WGS84 LAS 2 EOV LAS Converter''')
+
 
 class LasPyParameters:
     def __init__(self):
@@ -81,6 +82,7 @@ class LasPyParameters:
     def get_cores(self):
         return self.args.cores
 
+
 def ConvertLas(parameters):
     # Parse incoming parameters
     sourcefile = parameters[0]
@@ -108,13 +110,14 @@ def ConvertLas(parameters):
     # lasOut.DumpPointFormat()
     logging.info('[%s] Scaling LAS PointCloud.' % (proc_name))
     lasOut.ScaleDimension()
-    logging.info('[%s] Reading LAS PointCloud.' %  (proc_name))
+    logging.info('[%s] Reading LAS PointCloud.' % (proc_name))
     lasOut.TransformPointCloud(lasIn.ReturnPointCloud())
     lasIn.Close()
     logging.info('[%s] Closing transformed %s LAS PointCloud.' % (proc_name, destinationfile))
     lasOut.Close()
     logging.info('[%s] Transformed %s LAS PointCloud has created.' % (proc_name, destinationfile))
     return 0
+
 
 def AssignProjection(projection):
     # Init does not work on Linux
@@ -133,6 +136,7 @@ def AssignProjection(projection):
         projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=grid/etrs2eov_notowgs.gsb +units=m +no_defs'
     return projectionstring
 
+
 def SetLogging(logfilename):
     logging.basicConfig(
         filename=logfilename,
@@ -148,6 +152,7 @@ def SetLogging(logfilename):
     console.setFormatter(formatter)
     # add the handler to the root logger
     logging.getLogger('').addHandler(console)
+
 
 def main():
     print(header)
@@ -182,14 +187,16 @@ def main():
             os.makedirs(outputfiles)
         for workfile in inputfiles:
             logging.info('Adding %s to the queue.' % (workfile))
-            doing.append([workfile, os.path.join(outputpath,os.path.basename(workfile)), inputprojectionstring, outputprojectionstring])
+            doing.append([workfile, os.path.join(outputpath, os.path.basename(workfile)), inputprojectionstring,
+                          outputprojectionstring])
     elif os.path.isfile(inputfiles):
         inputisdir = False
         workfile = inputfiles
         if os.path.basename(outputfiles) is not "":
             doing.append([workfile, outputfiles, inputprojectionstring, outputprojectionstring])
         else:
-            doing.append([workfile, os.path.join(outputpath,os.path.basename(workfile)), inputprojectionstring, outputprojectionstring])
+            doing.append([workfile, os.path.join(outputpath, os.path.basename(workfile)), inputprojectionstring,
+                          outputprojectionstring])
         logging.info('Adding %s to the queue.' % (workfile))
     else:
         # Not a file, not a dir
@@ -206,6 +213,7 @@ def main():
     pool.join()
 
     logging.info('Finished, exiting and go home ...')
+
 
 if __name__ == '__main__':
     main()
