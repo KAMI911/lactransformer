@@ -9,14 +9,18 @@ https://github.com/KAMI911/wgslas2eovlas
 ## EOV correction grid
 
 Original download: http://www.agt.bme.hu/on_line/etrs2eov/etrs2eov_doc.html
+
 Created by: Zoltán Siki <siki@agt.bme.hu>
             Bence Takács <bence@agt.bme.hu>
 
 ## Supported projections
 
-*WGS84*    (EPSG:2326) projection : http://spatialreference.org/ref/epsg/4326/
-*WGS84geo* (EPSG:4978) projection : http://spatialreference.org/ref/epsg/4978/
-*EOV*      (EPSG:23700) projection: http://spatialreference.org/ref/epsg/hd72-eov/
+**WGS84**    (EPSG:2326) projection : http://spatialreference.org/ref/epsg/4326/
+
+**WGS84geo** (EPSG:4978) projection : http://spatialreference.org/ref/epsg/4978/
+
+**EOV**      (EPSG:23700) projection: http://spatialreference.org/ref/epsg/hd72-eov/
+
 
 ## Installation
 
@@ -24,4 +28,5 @@ Created by: Zoltán Siki <siki@agt.bme.hu>
 
 Install Python 2.7, Numpy, pyproj
 
-sudo apt-get install python2.7 python-numpy python-pyproj
+*sudo apt-get install python2.7 python-numpy python-pyproj*
+
