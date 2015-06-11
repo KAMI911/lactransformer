@@ -39,7 +39,7 @@ class LasPyParameters:
         self.parser.add_argument('-cores', type=int, dest='cores', required=False, default=1,
                                  help='optional:  cores (default=1)')
         self.parser.add_argument('-v', dest='verbose', required=False,
-                                 help='optional:  verbose toogle (-v=on, nothing=off)', action='store_true')
+                                 help='optional:  verbose toggle (-v=on, nothing=off)', action='store_true')
         self.parser.add_argument('-version', action='version', version=self.parser.prog)
 
     def parse(self):
