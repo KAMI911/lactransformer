@@ -82,27 +82,28 @@ class LasPyParameters:
         return self.args.cores
 
 def ConvertLas(parameters):
+    # Parse incoming parameters
     sourcefile = parameters[0]
     destinationfile = parameters[1]
     sourceprojection = parameters[2]
     destinationprojection = parameters[3]
+    # Get name for this process
     current = multiprocessing.current_process()
     proc_name = current.name
 
     logging.info('[%s] Starting ...' % (proc_name))
-    # print('%s Copy %s to %s' % (proc_name, sourcefile, destinationfile))
-    # logging.info('%s Copy %s to %s' % (proc_name, sourcefile, destinationfile))
-    # shutil.copyfile(sourcefile, destinationfile)
     logging.info('[%s] Opening %s LAS PointCloud file for converting...' % (proc_name, destinationfile))
+    # Opening source LAS file for read
     lasIn = LasPyConverter.LasPyConverter(sourcefile)
     lasIn.OpenRO()
+    # Opening destination LAS file for write and adding header of source LAS file
     lasOut = LasPyConverter.LasPyConverter(destinationfile)
     lasOut.Open(lasIn.ReturnHeader())
     logging.info('[%s] Source projection is %s.' % (proc_name, sourceprojection))
     lasOut.SetSourceProjection(sourceprojection)
     logging.info('[%s] Destination projection is %s.' % (proc_name, destinationprojection))
     lasOut.SetDestinationProjection(destinationprojection)
-    logging.info('[%s] Dumping LAS PointCloud information.' % (proc_name))
+    # logging.info('[%s] Dumping LAS PointCloud information.' % (proc_name))
     # las.DumpHeaderFormat()
     # lasOut.DumpPointFormat()
     logging.info('[%s] Scaling LAS PointCloud.' % (proc_name))

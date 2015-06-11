@@ -88,7 +88,6 @@ class LasPyConverter:
 
         self.__OpenedFile.x, self.__OpenedFile.y, self.__OpenedFile.z = transform(self.__SourceProj, self.__DestinationProj, pointcloud[0], pointcloud[1], pointcloud[2])
 
-
         self.__OpenedFile.intensity = pointcloud[3]
         self.__OpenedFile.flag_byte = pointcloud[4]
         self.__OpenedFile.raw_classification = pointcloud[5]
