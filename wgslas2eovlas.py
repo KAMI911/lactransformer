@@ -30,13 +30,13 @@ class LasPyParameters:
 
         # optional parameters
         self.parser.add_argument('-input_format', type=str, dest='input_format', required=False, choices=['las', 'laz'],
-                                 help='optional:  input format (default= laz)')
+                                 help='optional:  input format (default=las, laz is not implemented (yet))')
         self.parser.add_argument('-input_projection', type=str, dest='input_projection', required=False,
                                  choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp'],
-                                 help='optional:  input format (default=WGS84geo, EOVp is not inmpelemted (yet))')
+                                 help='optional:  input format (default=WGS84geo, EOVp is not implemented (yet))')
         self.parser.add_argument('-output_projection', type=str, dest='output_projection', required=False,
                                  choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp'],
-                                 help='optional:  input format (default=EOVc, EOVp is not inmpelemted (yet))')
+                                 help='optional:  input format (default=EOVc, EOVp is not implemented (yet))')
         self.parser.add_argument('-cores', type=int, dest='cores', required=False, default=1,
                                  help='optional:  cores (default=1)')
         self.parser.add_argument('-v', dest='verbose', required=False,
