@@ -89,12 +89,6 @@ class LasPyConverter:
                          self.__OpenedFile.gps_time])
 
     def TransformPointCloud(self, pointcloud):
-        # Transformed = np.empty_like(pointcloud)
-        # Transforming PointCloud
-        # Transformed[0], Transformed[1], Transformed[2] = transform(self.__SourceProj, self.__DestinationProj, pointcloud[0], pointcloud[1], pointcloud[2])
-        # self.__OpenedFile.X = (Transformed[0] - self.__TransformedOffset[0]) / self.__Scale[0]
-        # self.__OpenedFile.Y = (Transformed[1] - self.__TransformedOffset[1]) / self.__Scale[1]
-        # self.__OpenedFile.Z = (Transformed[2] - self.__TransformedOffset[2]) / self.__Scale[2]
 
         self.__OpenedFile.x, self.__OpenedFile.y, self.__OpenedFile.z = transform(self.__SourceProj,
                                                                                   self.__DestinationProj, pointcloud[0],
@@ -111,12 +105,6 @@ class LasPyConverter:
         self.UpdateMinMax()
 
     def TransformPointCloudCoordsOnly(self, pointcloud):
-        # Transformed = np.empty_like(pointcloud)
-        # Transforming PointCloud
-        # Transformed[0], Transformed[1], Transformed[2] = transform(self.__SourceProj, self.__DestinationProj, pointcloud[0], pointcloud[1], pointcloud[2])
-        # self.__OpenedFile.X = (Transformed[0] - self.__TransformedOffset[0]) / self.__Scale[0]
-        # self.__OpenedFile.Y = (Transformed[1] - self.__TransformedOffset[1]) / self.__Scale[1]
-        # self.__OpenedFile.Z = (Transformed[2] - self.__TransformedOffset[2]) / self.__Scale[2]
 
         self.__OpenedFile.x, self.__OpenedFile.y, self.__OpenedFile.z = transform(self.__SourceProj,
                                                                                   self.__DestinationProj, pointcloud[0],
