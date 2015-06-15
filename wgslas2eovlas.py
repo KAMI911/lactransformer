@@ -9,8 +9,9 @@ import multiprocessing
 from lib import Timing, LasPyConverter
 
 
-header = textwrap.dedent('''
-WGS84 LAS 2 EOV LAS Converter''')
+script_path = __file__
+
+header = textwrap.dedent('''WGS84 LAS 2 EOV LAS Converter''')
 
 
 class LasPyParameters:
@@ -85,37 +86,33 @@ class LasPyParameters:
 
 def ConvertLas(parameters):
     # Parse incoming parameters
-    sourcefile = parameters[0]
-    destinationfile = parameters[1]
-    sourceprojection = parameters[2]
-    destinationprojection = parameters[3]
+    source_file = parameters[0]
+    destination_file = parameters[1]
+    source_projection = parameters[2]
+    destination_projection = parameters[3]
     # Get name for this process
     current = multiprocessing.current_process()
     proc_name = current.name
 
     logging.info('[%s] Starting ...' % (proc_name))
-    logging.info('[%s] Opening %s LAS PointCloud file for converting...' % (proc_name, destinationfile))
-    # Opening source LAS file for read
-    lasIn = LasPyConverter.LasPyConverter(sourcefile)
-    lasIn.OpenRO()
+    logging.info(
+        '[%s] Opening %s LAS PointCloud file for converting to %s LAS PointCloud file ... Source projections is: "%s", destination projection is: "%s".' % (
+        proc_name, source_file, destination_file, source_projection, destination_projection))
+    # Opening source LAS files for read and write
+    lasFiles = LasPyConverter.LasPyConverter(source_file, source_projection, destination_file, destination_projection)
+    lasFiles.Open()
     # Opening destination LAS file for write and adding header of source LAS file
-    lasOut = LasPyConverter.LasPyConverter(destinationfile)
-    lasOut.Open(lasIn.ReturnHeader())
-    logging.info('[%s] Source projection is %s.' % (proc_name, sourceprojection))
-    lasOut.SetSourceProjection(sourceprojection)
-    logging.info('[%s] Destination projection is %s.' % (proc_name, destinationprojection))
-    lasOut.SetDestinationProjection(destinationprojection)
     # logging.info('[%s] Dumping LAS PointCloud information.' % (proc_name))
     # las.DumpHeaderFormat()
     # lasOut.DumpPointFormat()
     logging.info('[%s] Scaling LAS PointCloud.' % (proc_name))
-    lasOut.ScaleDimension()
-    logging.info('[%s] Reading LAS PointCloud.' % (proc_name))
-    lasOut.TransformPointCloud(lasIn.ReturnPointCloud())
-    lasIn.Close()
-    logging.info('[%s] Closing transformed %s LAS PointCloud.' % (proc_name, destinationfile))
-    lasOut.Close()
-    logging.info('[%s] Transformed %s LAS PointCloud has created.' % (proc_name, destinationfile))
+    lasFiles.GetSourceScale()
+    lasFiles.SetDestinationScale()
+    logging.info('[%s] Transforming LAS PointCloud.' % (proc_name))
+    lasFiles.TransformPointCloud()
+    logging.info('[%s] Closing transformed %s LAS PointCloud.' % (proc_name, destination_file))
+    lasFiles.Close()
+    logging.info('[%s] Transformed %s LAS PointCloud has created.' % (proc_name, destination_file))
     return 0
 
 
@@ -131,9 +128,22 @@ def AssignProjection(projection):
     elif projection == 'EOV':
         projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
     elif projection == 'EOVc':
-        projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=grid/etrs2eov_notowgs.gsb +geoidgrids=grid/geoid_eht.gtx +units=m +no_defs'
+        nadgrids = os.path.join(os.path.dirname(script_path), 'grid', 'etrs2eov_notowgs.gsb')
+        geoidgrids = os.path.join(os.path.dirname(script_path), 'grid', 'geoid_eht.gtx')
+        if os.path.isfile(nadgrids) and os.path.isfile(geoidgrids):
+            logging.info('Found all required grids ...')
+            projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids + ' +geoidgrids=' + geoidgrids + ' +units=m +no_defs'
+        else:
+            logging.error('Cannot found %s and/or %s grids.' % (nadgrids, geoidgrids))
+            exit(2)
     elif projection == 'EOVp':  # do not use
-        projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=grid/etrs2eov_notowgs.gsb +units=m +no_defs'
+        nadgrids = os.path.join(os.path.dirname(script_path), 'grid', 'etrs2eov_notowgs.gsb')
+        if os.path.isfile(nadgrids):
+            logging.info('Found all required grids ...')
+            projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids + ' +units=m +no_defs'
+        else:
+            logging.error('Cannot found %s grid.' % (nadgrids))
+            exit(2)
     return projectionstring
 
 
@@ -155,16 +165,13 @@ def SetLogging(logfilename):
 
 
 def main():
-    print(header)
+    logfilename = 'lastransform_' + datetime.datetime.today().strftime('%Y%m%d_%H%M%S') + '.log'
+    SetLogging(logfilename)
+    logging.info(header)
+
     timer = Timing.Timing()
     lasconverterworkflow = LasPyParameters()
     lasconverterworkflow.parse()
-
-    inputprojection = lasconverterworkflow.get_input_projection()
-    outputprojection = lasconverterworkflow.get_output_projection()
-
-    inputprojectionstring = AssignProjection(inputprojection)
-    outputprojectionstring = AssignProjection(outputprojection)
 
     # File/Directory handler
     inputfiles = lasconverterworkflow.get_input()
@@ -174,11 +181,14 @@ def main():
     cores = lasconverterworkflow.get_cores()
     inputisdir = False
 
+    inputprojection = lasconverterworkflow.get_input_projection()
+    outputprojection = lasconverterworkflow.get_output_projection()
+
+    inputprojectionstring = AssignProjection(inputprojection)
+    outputprojectionstring = AssignProjection(outputprojection)
+
     doing = []
     results = []
-
-    logfilename = 'lastransform_' + datetime.datetime.today().strftime('%Y%m%d_%H%M%S') + '.log'
-    SetLogging(logfilename)
 
     if os.path.isdir(inputfiles):
         inputisdir = True

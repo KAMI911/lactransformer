@@ -26,7 +26,16 @@ Created by: Zoltán Siki <siki@agt.bme.hu>
 
 ### Linux (Debian/Ubuntu/Linux Mint)
 
-Install Python 2.7, Numpy, pyproj
+**Install Python 2.7, Numpy, pyproj**
 
 *sudo apt-get install python2.7 python-numpy python-pyproj*
+
+**Install laspy**
+
+wget https://github.com/grantbrown/laspy/archive/master.zip
+
+unzip master.zip
+
+cd laspy-master.zip
+
 
