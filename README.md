@@ -28,7 +28,19 @@ Created by: Zoltán Siki <siki@agt.bme.hu>
 
 **Install Python 2.7, Numpy, pyproj**
 
-*sudo apt-get install python2.7 python-numpy python-pyproj*
+*sudo apt-get install python2.7 python-numpy
+
+**Install pyproj**
+
+wget https://github.com/jswhit/pyproj/archive/v1.9.4rel.zip
+
+unzip v1.9.4rel.zip
+
+cd pyproj-v1.9.4rel
+
+python setup.py build
+
+sudo python setup.py install
 
 **Install laspy**
 
@@ -36,6 +48,9 @@ wget https://github.com/grantbrown/laspy/archive/master.zip
 
 unzip master.zip
 
-cd laspy-master.zip
+cd laspy-master
 
+python setup.py build
+
+sudo python setup.py install
 
