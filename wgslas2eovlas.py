@@ -1,13 +1,16 @@
-import argparse
-import textwrap
-import glob
-import os
-import logging
-import datetime
-import multiprocessing
-
-from lib import Timing, LasPyConverter
-
+try:
+    import traceback
+    import argparse
+    import textwrap
+    import glob
+    import os
+    import logging
+    import datetime
+    import multiprocessing
+    from lib import Timing, LasPyConverter
+except Exception, err:
+    traceback.print_exc()
+    exit(128)
 
 script_path = __file__
 
@@ -97,7 +100,7 @@ def ConvertLas(parameters):
     logging.info('[%s] Starting ...' % (proc_name))
     logging.info(
         '[%s] Opening %s LAS PointCloud file for converting to %s LAS PointCloud file ... Source projections is: "%s", destination projection is: "%s".' % (
-        proc_name, source_file, destination_file, source_projection, destination_projection))
+            proc_name, source_file, destination_file, source_projection, destination_projection))
     # Opening source LAS files for read and write
     lasFiles = LasPyConverter.LasPyConverter(source_file, source_projection, destination_file, destination_projection)
     lasFiles.Open()
