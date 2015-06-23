@@ -7,7 +7,7 @@ try:
     import logging
     import datetime
     import multiprocessing
-    from lib import Timing, LasPyConverter
+    from lib import LasPyConverter
 except Exception, err:
     traceback.print_exc()
     exit(128)
@@ -172,7 +172,6 @@ def main():
     SetLogging(logfilename)
     logging.info(header)
 
-    timer = Timing.Timing()
     lasconverterworkflow = LasPyParameters()
     lasconverterworkflow.parse()
 
