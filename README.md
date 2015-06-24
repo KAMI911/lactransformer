@@ -54,3 +54,44 @@ python setup.py build
 
 sudo python setup.py install
 
+### Windows
+
+**Install Python 2.7**
+https://www.python.org/downloads/
+
+**Install pip**
+
+Installation manual: https://pip.pypa.io/en/latest/installing.html
+
+Download: https://bootstrap.pypa.io/get-pip.py
+
+python get-pip.py
+
+**Install Numpy**
+
+Download:
+http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
+
+One of these files:
+numpy-1.9.2+mkl-cp27-none-win32.whl for 32 bit version
+numpy-1.9.2+mkl-cp27-none-win_amd64.whl for 64 bit version
+
+And install it:
+C:\Python27\Scripts\pip.exe install "numpy-1.9.2+mkl-cp27-none-win_amd64.whl"
+
+**Install pyproj**
+pip install pyproj
+
+**Install laspy**
+
+Download: https://github.com/grantbrown/laspy/archive/master.zip
+
+Unzip master.zip file
+
+Enter to the folder of laspy-master
+
+And build it:
+python setup.py build
+
+Then install it:
+sudo python setup.py install
