@@ -28,7 +28,7 @@ Created by: Zoltán Siki <siki@agt.bme.hu>
 
 **Install Python 2.7, Numpy, pyproj**
 
-*sudo apt-get install python2.7 python-numpy
+sudo apt-get install python2.7 python-numpy
 
 **Install pyproj**
 
@@ -57,6 +57,7 @@ sudo python setup.py install
 ### Windows
 
 **Install Python 2.7**
+
 https://www.python.org/downloads/
 
 **Install pip**
@@ -70,16 +71,21 @@ python get-pip.py
 **Install Numpy**
 
 Download:
+
 http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
 
 One of these files:
+
 numpy-1.9.2+mkl-cp27-none-win32.whl for 32 bit version
+
 numpy-1.9.2+mkl-cp27-none-win_amd64.whl for 64 bit version
 
 And install it:
+
 C:\Python27\Scripts\pip.exe install "numpy-1.9.2+mkl-cp27-none-win_amd64.whl"
 
 **Install pyproj**
+
 pip install pyproj
 
 **Install laspy**
@@ -91,7 +97,9 @@ Unzip master.zip file
 Enter to the folder of laspy-master
 
 And build it:
+
 python setup.py build
 
 Then install it:
+
 python setup.py install
