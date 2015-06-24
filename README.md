@@ -94,4 +94,4 @@ And build it:
 python setup.py build
 
 Then install it:
-sudo python setup.py install
+python setup.py install
