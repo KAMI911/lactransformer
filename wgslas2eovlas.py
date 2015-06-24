@@ -7,7 +7,7 @@ try:
     import logging
     import datetime
     import multiprocessing
-    from lib import Timing, LasPyConverter
+    from lib import LasPyConverter
 except Exception as err:
     traceback.print_exc()
     exit(128)
@@ -123,7 +123,7 @@ def AssignProjection(projection):
     # Init does not work on Linux
     # WGS84 = Proj(init='EPSG:4326')
     # WGS84Geo = Proj(init='EPSG:4328')
-    projectionstring = ''
+
     if projection == 'WGS84':
         projectionstring = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
     elif projection == 'WGS84geo':
@@ -172,7 +172,6 @@ def main():
     SetLogging(logfilename)
     logging.info(header)
 
-    timer = Timing.Timing()
     lasconverterworkflow = LasPyParameters()
     lasconverterworkflow.parse()
 
