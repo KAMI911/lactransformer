@@ -8,7 +8,7 @@ try:
     import datetime
     import multiprocessing
     from lib import LasPyConverter
-except Exception, err:
+except Exception as err:
     traceback.print_exc()
     exit(128)
 
@@ -219,10 +219,14 @@ def main():
     if inputisdir is False:
         cores = 1
 
-    pool = multiprocessing.Pool(processes=cores)
-    results = pool.map_async(ConvertLas, doing)
-    pool.close()
-    pool.join()
+    if cores != 1:
+        pool = multiprocessing.Pool(processes=cores)
+        results = pool.map_async(ConvertLas, doing)
+        pool.close()
+        pool.join()
+    else:
+        for d in doing:
+            ConvertLas(d)
 
     logging.info('Finished, exiting and go home ...')
 
