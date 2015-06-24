@@ -123,7 +123,7 @@ def AssignProjection(projection):
     # Init does not work on Linux
     # WGS84 = Proj(init='EPSG:4326')
     # WGS84Geo = Proj(init='EPSG:4328')
-
+    projectionstring = ''
     if projection == 'WGS84':
         projectionstring = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
     elif projection == 'WGS84geo':
@@ -220,10 +220,13 @@ def main():
     if inputisdir is False:
         cores = 1
 
-    pool = multiprocessing.Pool(processes=cores)
-    results = pool.map_async(ConvertLas, doing)
-    pool.close()
-    pool.join()
+    if cores <> 1:
+        pool = multiprocessing.Pool(processes=cores)
+        results = pool.map_async(ConvertLas, doing)
+        pool.close()
+        pool.join()
+    else:
+        ConvertLas(doing[0])
 
     logging.info('Finished, exiting and go home ...')
 
