@@ -1,4 +1,5 @@
 import logging
+import os
 import numpy as np
 from pyproj import Proj, transform
 import math
@@ -20,6 +21,9 @@ class LasPyConverter:
         self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
         self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='w',
                                                        header=self.__SourceOpenedFile.header)
+    def OpenReanOnly(self):
+        self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
+        self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='r')
 
     def DumpHeaderFormat(self):
         for spec in self.__SourceOpenedFile.header.header_format:
@@ -104,6 +108,26 @@ class LasPyConverter:
     def UpdateDestinationMinMax(self):
         logging.info('Updating LAS file min and max values.')
         self.__DestinationOpenedFile.header.update_min_max()
+
+    def Close(self):
+        self.__SourceOpenedFile.close()
+        self.__DestinationOpenedFile.close()
+
+class LasPyCompare:
+    def __init__(self, source_filename, destination_filename):
+        self.__SourceFileName = source_filename
+        self.__DestinationFileName = destination_filename
+
+    def OpenReanOnly(self):
+        self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
+        self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='r')
+
+    def ComparePointCloud(self):
+        diff_x = self.__SourceOpenedFile.x - self.__DestinationOpenedFile.x
+        diff_y = self.__SourceOpenedFile.y - self.__DestinationOpenedFile.y
+        diff_z = self.__SourceOpenedFile.z - self.__DestinationOpenedFile.z
+
+        logging.info('%s diff: Xmin: %s / Xmax: %s, Ymin: %s / Ymax: %s, Zmin: %s / Zmax: %s' % (os.path.basename(self.__SourceFileName), np.min(diff_x), np.max(diff_x), np.min(diff_y), np.max(diff_y), np.min(diff_z), np.max(diff_z)))
 
     def Close(self):
         self.__SourceOpenedFile.close()
