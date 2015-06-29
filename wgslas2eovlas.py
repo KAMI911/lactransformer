@@ -150,6 +150,55 @@ def AssignProjection(projection):
     return projectionstring
 
 
+class FileListWithProjection:
+    def __init__(self, input_file_or_dir, output_file_or_dir, input_projection_string, output_projection_string,
+                 file_format='las'):
+        self.__input_isdir = False
+        self.__file_and_projection = []
+        self.__input_file_or_dir = input_file_or_dir
+        self.__output_file_or_dir = output_file_or_dir
+        self.__input_projection_string = input_projection_string
+        self.__output_projection_string = output_projection_string
+        self.__file_format = file_format
+        self.__output_path = os.path.normpath(self.__output_file_or_dir)
+
+    # ---------PUBLIC METHODS--------------------
+
+    def create_list(self):
+        # If the specified folder is directory read all the matching file
+        if os.path.isdir(self.__input_file_or_dir):
+            self.__input_isdir = True
+            inputfiles = glob.glob(os.path.join(self.__input_file_or_dir, '*' + self.__file_format))
+            if not os.path.exists(self.__output_file_or_dir):
+                os.makedirs(self.__output_file_or_dir)
+            for in_file in inputfiles:
+                logging.info('Adding %s to the queue.' % (in_file))
+                out_file = os.path.join(self.__output_path, os.path.basename(in_file))
+                self.__file_and_projection.append([in_file, out_file, self.__input_projection_string,
+                                                   self.__output_projection_string])
+        elif os.path.isfile(self.__input_file_or_dir):
+            self.__input_isdir = False
+            in_file = self.__input_file_or_dir
+            if os.path.basename(self.__output_file_or_dir) is not "":
+                self.__file_and_projection.append([in_file, self.__output_file_or_dir, self.__input_projection_string,
+                                                   self.__output_projection_string])
+            else:
+                out_file = os.path.join(self.__output_path, os.path.basename(in_file))
+                self.__file_and_projection.append([in_file, out_file, self.__input_projection_string,
+                                                   self.__output_projection_string])
+            logging.info('Adding %s to the queue.' % (in_file))
+        else:
+            # Not a file, not a dir
+            logging.error('Cannot found input LAS PointCloud file: %s' % (self.__input_file_or_dir))
+            exit(1)
+
+    def get_filelist(self):
+        return self.__file_and_projection
+
+    def get_isdir(self):
+        return self.__input_isdir
+
+
 def SetLogging(logfilename):
     logging.basicConfig(
         filename=logfilename,
@@ -176,56 +225,28 @@ def main():
     lasconverterworkflow.parse()
 
     # File/Directory handler
-    inputfiles = lasconverterworkflow.get_input()
-    inputformat = lasconverterworkflow.get_input_format()
-    outputfiles = lasconverterworkflow.get_output()
-    outputpath = os.path.normpath(outputfiles)
     cores = lasconverterworkflow.get_cores()
-    inputisdir = False
 
-    inputprojection = lasconverterworkflow.get_input_projection()
-    outputprojection = lasconverterworkflow.get_output_projection()
-
-    inputprojectionstring = AssignProjection(inputprojection)
-    outputprojectionstring = AssignProjection(outputprojection)
-
-    doing = []
+    file_queue = []
     results = []
-
-    if os.path.isdir(inputfiles):
-        inputisdir = True
-        inputfiles = glob.glob(os.path.join(inputfiles, '*' + inputformat))
-        if not os.path.exists(outputfiles):
-            os.makedirs(outputfiles)
-        for workfile in inputfiles:
-            logging.info('Adding %s to the queue.' % (workfile))
-            doing.append([workfile, os.path.join(outputpath, os.path.basename(workfile)), inputprojectionstring,
-                          outputprojectionstring])
-    elif os.path.isfile(inputfiles):
-        inputisdir = False
-        workfile = inputfiles
-        if os.path.basename(outputfiles) is not "":
-            doing.append([workfile, outputfiles, inputprojectionstring, outputprojectionstring])
-        else:
-            doing.append([workfile, os.path.join(outputpath, os.path.basename(workfile)), inputprojectionstring,
-                          outputprojectionstring])
-        logging.info('Adding %s to the queue.' % (workfile))
-    else:
-        # Not a file, not a dir
-        logging.error('Cannot found input LAS PointCloud file: %s' % (inputfiles))
-        exit(1)
+    filelist = FileListWithProjection(lasconverterworkflow.get_input(), lasconverterworkflow.get_output(),
+                                      AssignProjection(lasconverterworkflow.get_input_projection()),
+                                      AssignProjection(lasconverterworkflow.get_output_projection()),
+                                      lasconverterworkflow.get_input_format())
+    filelist.create_list()
+    file_queue = filelist.get_filelist()
 
     # If we got one file, start only one process
-    if inputisdir is False:
+    if filelist.get_isdir() is False:
         cores = 1
 
     if cores != 1:
         pool = multiprocessing.Pool(processes=cores)
-        results = pool.map_async(ConvertLas, doing)
+        results = pool.map_async(ConvertLas, file_queue)
         pool.close()
         pool.join()
     else:
-        for d in doing:
+        for d in file_queue:
             ConvertLas(d)
 
     logging.info('Finished, exiting and go home ...')
