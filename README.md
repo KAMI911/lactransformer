@@ -28,31 +28,29 @@ Created by: Zoltán Siki <siki@agt.bme.hu>
 
 **Install Python 2.7, Numpy, pyproj**
 
+```
 sudo apt-get install python2.7 python-numpy
+```
 
 **Install pyproj**
 
+```
 wget https://github.com/jswhit/pyproj/archive/v1.9.4rel.zip
-
 unzip v1.9.4rel.zip
-
 cd pyproj-v1.9.4rel
-
 python setup.py build
-
 sudo python setup.py install
+```
 
 **Install laspy**
 
+```
 wget https://github.com/grantbrown/laspy/archive/master.zip
-
 unzip master.zip
-
 cd laspy-master
-
 python setup.py build
-
 sudo python setup.py install
+```
 
 ### Windows
 
@@ -66,7 +64,9 @@ Installation manual: https://pip.pypa.io/en/latest/installing.html
 
 Download: https://bootstrap.pypa.io/get-pip.py
 
+```
 python get-pip.py
+```
 
 **Install Numpy**
 
@@ -82,11 +82,15 @@ numpy-1.9.2+mkl-cp27-none-win_amd64.whl for 64 bit version
 
 And install it:
 
+```
 C:\Python27\Scripts\pip.exe install "numpy-1.9.2+mkl-cp27-none-win_amd64.whl"
+```
 
 **Install pyproj**
 
+```
 pip install pyproj
+```
 
 **Install laspy**
 
@@ -98,11 +102,15 @@ Enter to the folder of laspy-master
 
 And build it:
 
+```
 python setup.py build
+```
 
 Then install it:
 
+```
 python setup.py install
+```
 
 ## Usage
 
@@ -110,13 +118,31 @@ python setup.py install
 
 Convert LAS file from WGS84 to EOV:
 
-`wgslas2eovlas.py -i wgs84.las -o eov.las`
+```
+wgslas2eovlas.py -i wgs84.las -o eov.las
+```
 
 ### A directory of LAS files
 
 Convert all LAS files in a directory from WGS84 to EOV using 2 cores:
 
-`wgslas2eovlas.py -i wgs84dir/ -o eovdir/ -cores 2`
+```
+wgslas2eovlas.py -i wgs84dir/ -o eovdir/ -cores 2
+```
 
 Converting LAZ file is currently not supported.
+
+### One Trajectory (CSV) text file
+
+Convert Trajectory (CSV) text file from WGS84 to EOV:
+
+```
+wgslas2eovlas.py -i wgs84_trj.txt -o eov_trj.txt -input_format=txt
+```
+
+Convert all Trajectory (CSV) text files in a directory from WGS84 to EOV using 2 cores:
+
+```
+wgslas2eovlas.py -i wgs84dir_trj/ -o eovdir_trj/ -cores 2 -input_format=txt
+```
 
