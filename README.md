@@ -103,3 +103,20 @@ python setup.py build
 Then install it:
 
 python setup.py install
+
+## Usage
+
+### One LAS file
+
+Convert LAS file from WGS84 to EOV:
+
+`wgslas2eovlas.py -i wgs84.las -o eov.las`
+
+### A directory of LAS files
+
+Convert all LAS files in a directory from WGS84 to EOV using 2 cores:
+
+`wgslas2eovlas.py -i wgs84dir/ -o eovdir/ -cores 2`
+
+Converting LAZ file is currently not supported.
+
