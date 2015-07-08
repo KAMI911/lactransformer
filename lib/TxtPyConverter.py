@@ -36,6 +36,26 @@ class TxtPyConverter:
                                                row[1], row[2], row[3])
             w.writerow(row)
 
+    def TransformPointCSV(self):
+        # Transforming PointText
+        r = csv.reader(self.__SourceOpenedFile, delimiter=',')
+        w = csv.writer(self.__DestinationOpenedFile, delimiter=',')
+        for i, row in enumerate(r):
+            if i > 0:  # skip header transformation
+                row[2], row[3], row[4] = transform(self.__SourceProj, self.__DestinationProj,
+                                               row[2], row[3], row[4])
+            w.writerow(row)
+
+    def TransformPointIML(self):
+        # Transforming PointText
+        r = csv.reader(self.__SourceOpenedFile, delimiter=' ')
+        w = csv.writer(self.__DestinationOpenedFile, delimiter=' ')
+        for i, row in enumerate(r):
+            if i > 0:  # skip header transformation
+                row[1], row[2], row[3] = transform(self.__SourceProj, self.__DestinationProj,
+                                               row[1], row[2], row[3])
+            w.writerow(row)
+
     def Close(self):
         self.__SourceOpenedFile.close()
         self.__DestinationOpenedFile.close()
