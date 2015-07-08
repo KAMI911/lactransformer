@@ -139,6 +139,8 @@ Convert Trajectory (CSV) text file from WGS84 to EOV:
 wgslas2eovlas.py -i wgs84_trj.txt -o eov_trj.txt -input_format=txt
 ```
 
+### A directory of Trajectory (CSV) text files
+
 Convert all Trajectory (CSV) text files in a directory from WGS84 to EOV using 2 cores:
 
 ```
