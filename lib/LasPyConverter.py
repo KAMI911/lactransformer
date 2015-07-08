@@ -18,12 +18,19 @@ class LasPyConverter:
         self.__DestinationProj = Proj(destination_projection)
 
     def Open(self):
-        self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
-        self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='w',
-                                                       header=self.__SourceOpenedFile.header)
+        try:
+            self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
+            self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='w',
+                                                           header=self.__SourceOpenedFile.header)
+        except Exception as err:
+            raise
+
     def OpenReanOnly(self):
-        self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
-        self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='r')
+        try:
+            self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
+            self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='r')
+        except Exception as err:
+            raise
 
     def DumpHeaderFormat(self):
         for spec in self.__SourceOpenedFile.header.header_format:
