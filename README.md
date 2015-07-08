@@ -10,8 +10,7 @@ https://github.com/KAMI911/wgslas2eovlas
 
 Original download: http://www.agt.bme.hu/on_line/etrs2eov/etrs2eov_doc.html
 
-Created by: Zoltán Siki <siki@agt.bme.hu>
-            Bence Takács <bence@agt.bme.hu>
+Created by: Zoltán Siki <siki@agt.bme.hu> and Bence Takács <bence@agt.bme.hu>
 
 ## Supported projections
 
