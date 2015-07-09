@@ -1,11 +1,15 @@
-import logging
-import os
-import numpy as np
-from pyproj import Proj, transform
-import math
+try:
+    import logging
+    import os
+    import numpy as np
+    import math
 
-import laspy
-import laspy.file
+    from pyproj import Proj, transform
+    import laspy
+    import laspy.file
+except Exception as err:
+    print("Error import module: " + str(err))
+    exit(128)
 
 
 class LasPyConverter:
@@ -120,6 +124,7 @@ class LasPyConverter:
         self.__SourceOpenedFile.close()
         self.__DestinationOpenedFile.close()
 
+
 class LasPyCompare:
     def __init__(self, source_filename, destination_filename):
         self.__SourceFileName = source_filename
@@ -134,7 +139,9 @@ class LasPyCompare:
         diff_y = self.__SourceOpenedFile.y - self.__DestinationOpenedFile.y
         diff_z = self.__SourceOpenedFile.z - self.__DestinationOpenedFile.z
 
-        logging.info('%s diff: Xmin: %s / Xmax: %s, Ymin: %s / Ymax: %s, Zmin: %s / Zmax: %s' % (os.path.basename(self.__SourceFileName), np.min(diff_x), np.max(diff_x), np.min(diff_y), np.max(diff_y), np.min(diff_z), np.max(diff_z)))
+        logging.info('%s diff: Xmin: %s / Xmax: %s, Ymin: %s / Ymax: %s, Zmin: %s / Zmax: %s' % (
+        os.path.basename(self.__SourceFileName), np.min(diff_x), np.max(diff_x), np.min(diff_y), np.max(diff_y),
+        np.min(diff_z), np.max(diff_z)))
 
     def Close(self):
         self.__SourceOpenedFile.close()

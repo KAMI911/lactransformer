@@ -53,6 +53,7 @@ class LasPyParameters:
             self.args.input_format = 'las'
         if self.args.cores == None:
             self.args.cores = 1
+
     # ---------PUBLIC METHODS--------------------
     def get_output(self):
         return self.args.output
@@ -86,15 +87,16 @@ def DiffLas(parameters):
     lasFiles = LasPyConverter.LasPyCompare(source_file, destination_file)
     # Opening destination LAS file
     logging.info('[%s] Opening %s LAS PointCloud file and %s LAS PointCloud file ...' % (
-            proc_name, source_file, destination_file))
+        proc_name, source_file, destination_file))
     lasFiles.OpenReanOnly()
     logging.info('[%s] Comparing %s LAS PointCloud file and %s LAS PointCloud file ...' % (
-            proc_name, source_file, destination_file))
+        proc_name, source_file, destination_file))
     lasFiles.ComparePointCloud()
     logging.info('[%s] Closing %s LAS PointCloud.' % (proc_name, destination_file))
     lasFiles.Close()
     logging.info('[%s] %s LAS PointCloud has closed.' % (proc_name, destination_file))
     return 0
+
 
 def SetLogging(logfilename):
     logging.basicConfig(

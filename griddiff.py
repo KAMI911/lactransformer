@@ -52,4 +52,4 @@ with open('point-wgs84geo-hun.txt', 'r') as point_wgs_gc_txtfile:
                     index = index + 1
 
 print ('Diffs minX/maxX: %s/%s minY/maxY: %s/%s minZ/maxZ: %s/%s' % (
-mindiffX, maxdiffX, mindiffY, maxdiffY, mindiffZ, maxdiffZ))
+    mindiffX, maxdiffX, mindiffY, maxdiffY, mindiffZ, maxdiffZ))

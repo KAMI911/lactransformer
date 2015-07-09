@@ -1,12 +1,11 @@
 try:
-    import argparse
     import textwrap
     import glob
     import os
     import logging
     import datetime
     import multiprocessing
-    from lib import LasPyConverter, TxtPyConverter, FileListWithProjection
+    from lib import TransformerCommandLine, TransformerWorkflow, FileListWithProjection
 except Exception as err:
     print("Error import module: " + str(err))
     exit(128)
@@ -14,171 +13,6 @@ except Exception as err:
 script_path = __file__
 
 header = textwrap.dedent('''WGS84 LAS 2 EOV LAS Converter''')
-
-
-class LasPyParameters:
-    def __init__(self):
-        # predefinied paths
-        self.parser = argparse.ArgumentParser(prog="wgslas2eovlas",
-                                              formatter_class=argparse.RawDescriptionHelpFormatter,
-                                              description='',
-                                              epilog=textwrap.dedent('''
-        example:
-            '''))
-        # reguired parameters
-        self.parser.add_argument('-i', type=str, dest='input', required=True,
-                                 help='required:  input file or folder')
-        self.parser.add_argument('-o', type=str, dest='output', required=True,
-                                 help='required:  output file or folder (d:\lasfiles\\tests\\results)')
-
-        # optional parameters
-        self.parser.add_argument('-input_format', type=str, dest='input_format', required=False,
-                                 choices=['las', 'laz', 'txt', 'csv', 'iml'],
-                                 help='optional:  input format (default=las, laz is not implemented (yet))'
-                                      ' txt = Trajectory CSV file, iml = TerraPhoto Image List file, csv = Riegl Camera CSV file')
-        self.parser.add_argument('-input_projection', type=str, dest='input_projection', required=False,
-                                 choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp'],
-                                 help='optional:  input format (default=WGS84geo, EOVp is not implemented (yet))')
-        self.parser.add_argument('-output_projection', type=str, dest='output_projection', required=False,
-                                 choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp'],
-                                 help='optional:  input format (default=EOVc, EOVp is not implemented (yet))')
-        self.parser.add_argument('-cores', type=int, dest='cores', required=False, default=1,
-                                 help='optional:  cores (default=1)')
-        self.parser.add_argument('-v', dest='verbose', required=False,
-                                 help='optional:  verbose toggle (-v=on, nothing=off)', action='store_true')
-        self.parser.add_argument('-version', action='version', version=self.parser.prog)
-
-    def parse(self):
-        self.args = self.parser.parse_args()
-
-        ##defaults
-        if self.args.verbose:
-            self.args.verbose = ' -v'
-        else:
-            self.args.verbose = ''
-        if self.args.input_format == None:
-            self.args.input_format = 'las'
-        if self.args.cores == None:
-            self.args.cores = 1
-        if self.args.input_projection == None:
-            self.args.input_projection = 'WGS84geo'
-        if self.args.output_projection == None:
-            self.args.output_projection = 'EOVc'
-
-    # ---------PUBLIC METHODS--------------------
-    def get_output(self):
-        return self.args.output
-
-    def get_input(self):
-        return self.args.input
-
-    def get_input_format(self):
-        return self.args.input_format
-
-    def get_input_projection(self):
-        return self.args.input_projection
-
-    def get_output_projection(self):
-        return self.args.output_projection
-
-    def get_verbose(self):
-        return self.args.verbose
-
-    def get_cores(self):
-        return self.args.cores
-
-
-def ConvertLas(parameters):
-    # Parse incoming parameters
-    source_file = parameters[0]
-    destination_file = parameters[1]
-    source_projection = parameters[2]
-    destination_projection = parameters[3]
-    input_format = parameters[4]
-    # Get name for this process
-    current = multiprocessing.current_process()
-    proc_name = current.name
-
-    logging.info('[%s] Starting ...' % (proc_name))
-    if input_format in ['las', 'laz']:
-        logging.info(
-            '[%s] Opening %s LAS PointCloud file for converting to %s LAS PointCloud file ... Source projections is: "%s", destination projection is: "%s".' % (
-                proc_name, source_file, destination_file, source_projection, destination_projection))
-        # Opening source LAS files for read and write
-        try:
-            lasFiles = LasPyConverter.LasPyConverter(source_file, source_projection, destination_file,
-                                                     destination_projection)
-            lasFiles.Open()
-        except Exception as err:
-            logging.error('Cannot open file: %s.' % (str(err)))
-            exit(10)
-        # Opening destination LAS file for write and adding header of source LAS file
-        # logging.info('[%s] Dumping LAS PointCloud information.' % (proc_name))
-        # las.DumpHeaderFormat()
-        # lasOut.DumpPointFormat()
-        logging.info('[%s] Scaling LAS PointCloud.' % (proc_name))
-        lasFiles.GetSourceScale()
-        lasFiles.SetDestinationScale()
-        logging.info('[%s] Transforming LAS PointCloud.' % (proc_name))
-        lasFiles.TransformPointCloud()
-        logging.info('[%s] Closing transformed %s LAS PointCloud file.' % (proc_name, destination_file))
-        lasFiles.Close()
-        logging.info('[%s] Transformed %s LAS PointCloud file has created.' % (proc_name, destination_file))
-        return 0
-    elif input_format == 'txt':
-
-        logging.info(
-            '[%s] Opening %s PointText file for converting to %s PointText file ... Source projections is: "%s", destination projection is: "%s".' % (
-                proc_name, source_file, destination_file, source_projection, destination_projection))
-        # Opening source LAS files for read and write
-        try:
-            txtFiles = TxtPyConverter.TxtPyConverter(source_file, source_projection, destination_file,
-                                                     destination_projection)
-            txtFiles.Open()
-        except Exception as err:
-            logging.error('Cannot open file: %s.' % (str(err)))
-            exit(10)
-        txtFiles.TransformPointText()
-        logging.info('[%s] Closing transformed %s PointText file.' % (proc_name, destination_file))
-        txtFiles.Close()
-        logging.info('[%s] Transformed %s PointText file has created.' % (proc_name, destination_file))
-        return 0
-    elif input_format == 'iml':
-
-        logging.info(
-            '[%s] Opening %s TerraPhoto Image List file for converting to %s TerraPhoto Image List file ... Source projections is: "%s", destination projection is: "%s".' % (
-                proc_name, source_file, destination_file, source_projection, destination_projection))
-        # Opening source LAS files for read and write
-        try:
-            txtFiles = TxtPyConverter.TxtPyConverter(source_file, source_projection, destination_file,
-                                                     destination_projection)
-            txtFiles.Open()
-        except Exception as err:
-            logging.error('Cannot open file: %s.' % (str(err)))
-            exit(10)
-        txtFiles.TransformPointIML()
-        logging.info('[%s] Closing transformed %s TerraPhoto Image List file.' % (proc_name, destination_file))
-        txtFiles.Close()
-        logging.info('[%s] Transformed %s TerraPhoto Image List file has created.' % (proc_name, destination_file))
-        return 0
-    elif input_format == 'csv':
-
-        logging.info(
-            '[%s] Opening %s Riegl Camera CSV file for converting to %s Riegl Camera CSV file ... Source projections is: "%s", destination projection is: "%s".' % (
-                proc_name, source_file, destination_file, source_projection, destination_projection))
-        # Opening source LAS files for read and write
-        try:
-            txtFiles = TxtPyConverter.TxtPyConverter(source_file, source_projection, destination_file,
-                                                     destination_projection)
-            txtFiles.Open()
-        except Exception as err:
-            logging.error('Cannot open file: %s.' % (str(err)))
-            exit(10)
-        txtFiles.TransformPointCSV()
-        logging.info('[%s] Closing transformed %s Riegl Camera CSV file.' % (proc_name, destination_file))
-        txtFiles.Close()
-        logging.info('[%s] Transformed %s Riegl Camera CSV file has created.' % (proc_name, destination_file))
-        return 0
 
 
 def AssignProjection(projection):
@@ -230,11 +64,11 @@ def SetLogging(logfilename):
 
 
 def main():
-    logfilename = 'lastransform_' + datetime.datetime.today().strftime('%Y%m%d_%H%M%S') + '.log'
+    logfilename = 'transformer_' + datetime.datetime.today().strftime('%Y%m%d_%H%M%S') + '.log'
     SetLogging(logfilename)
     logging.info(header)
 
-    lasconverterworkflow = LasPyParameters()
+    lasconverterworkflow = TransformerCommandLine.TransformerCommandLine()
     lasconverterworkflow.parse()
 
     # File/Directory handler
@@ -258,12 +92,12 @@ def main():
 
     if cores != 1:
         pool = multiprocessing.Pool(processes=cores)
-        results = pool.map_async(ConvertLas, file_queue)
+        results = pool.map_async(TransformerWorkflow.Transformer, file_queue)
         pool.close()
         pool.join()
     else:
         for d in file_queue:
-            ConvertLas(d)
+            TransformerWorkflow.Transformer(d)
 
     logging.info('Finished, exiting and go home ...')
 

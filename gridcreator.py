@@ -1,4 +1,8 @@
-from pyproj import Proj, transform
+try:
+    from pyproj import Proj, transform
+except Exception as err:
+    print("Error import module: " + str(err))
+    exit(128)
 
 WGS84 = Proj('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
 WGS84Geo = Proj('+proj=geocent +ellps=WGS84 +datum=WGS84 +no_defs')
@@ -41,17 +45,17 @@ with open('plain-wgs84longlat-hun.txt', 'w') as wgs_ll_txtfile:
                                         wgs_gc_txtfile.write(
                                             '%.8f  %.8f  %.8f\n' % (XProjected, YProjected, ZProjected))
                                         point_wgs_gc_txtfile.write('PONT              %.3f      %.3f      %.3f\n' % (
-                                        XProjected, YProjected, ZProjected))
+                                            XProjected, YProjected, ZProjected))
                                         ppac_wgs_gc_txtfile.write('%s,%.14f,%.14f,%.14f,1,1,1\n' % (
-                                        index, XProjected, YProjected, ZProjected))
+                                            index, XProjected, YProjected, ZProjected))
                                         ## EOV
                                         XEOVProjected, YEOVProjected, ZEOVProjected = transform(WGS84, EOV, la, fi, he)
                                         print ('E: %.8f, %.8f, %.8f' % (XEOVProjected, YEOVProjected, ZEOVProjected))
                                         eov_txtfile.write(
                                             '%.8f  %.8f  %.8f\n' % (XEOVProjected, YEOVProjected, ZEOVProjected))
                                         point_eov_txtfile.write('PONT              %.3f      %.3f      %.3f\n' % (
-                                        XEOVProjected, YEOVProjected, ZEOVProjected))
+                                            XEOVProjected, YEOVProjected, ZEOVProjected))
                                         ppac_eov_txtfile.write('%s,%.14f,%.14f,%.14f,1,1,1\n' % (
-                                        index, XEOVProjected, YEOVProjected, ZEOVProjected))
+                                            index, XEOVProjected, YEOVProjected, ZEOVProjected))
                                         index = index + 1
 
