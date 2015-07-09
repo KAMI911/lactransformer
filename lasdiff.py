@@ -169,7 +169,7 @@ def main():
         pool.join()
     else:
         for d in doing:
-            ConvertLas(d)
+            DiffLas(d)
 
     logging.info('Finished, exiting and go home ...')
 
