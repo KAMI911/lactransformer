@@ -2,9 +2,10 @@ try:
     import os
     import logging
     import glob
-except Exception as err:
+except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
+
 
 class FileListWithProjection:
     def __init__(self, input_file_or_dir, output_file_or_dir, input_projection_string, output_projection_string,

@@ -6,7 +6,7 @@ try:
     import datetime
     import multiprocessing
     from lib import TransformerCommandLine, TransformerWorkflow, FileListWithProjection
-except Exception as err:
+except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
 

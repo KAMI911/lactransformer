@@ -1,7 +1,7 @@
 try:
     import argparse
     import textwrap
-except Exception as err:
+except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
 

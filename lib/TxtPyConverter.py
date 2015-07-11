@@ -1,10 +1,10 @@
 try:
     import csv
-
     from pyproj import Proj, transform
-except Exception as err:
+except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
+
 
 class TxtPyConverter:
     def __init__(self, source_filename, source_projection, destination_filename, destination_projection):

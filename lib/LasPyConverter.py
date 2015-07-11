@@ -3,11 +3,10 @@ try:
     import os
     import numpy as np
     import math
-
     from pyproj import Proj, transform
     import laspy
     import laspy.file
-except Exception as err:
+except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
 
@@ -64,85 +63,112 @@ class LasPyConverter:
 
     def GetSourceScale(self):
         # Use scale as is as
-        self.__SourceScale = [self.__SourceOpenedFile.header.scale[0], self.__SourceOpenedFile.header.scale[1],
-                              self.__SourceOpenedFile.header.scale[2]]
-        # Use offset as is as
-        self.__SourceOffset = [self.__SourceOpenedFile.header.offset[0], self.__SourceOpenedFile.header.offset[1],
-                               self.__SourceOpenedFile.header.offset[2]]
+        try:
+            self.__SourceScale = [self.__SourceOpenedFile.header.scale[0], self.__SourceOpenedFile.header.scale[1],
+                                  self.__SourceOpenedFile.header.scale[2]]
+            # Use offset as is as
+            self.__SourceOffset = [self.__SourceOpenedFile.header.offset[0], self.__SourceOpenedFile.header.offset[1],
+                                   self.__SourceOpenedFile.header.offset[2]]
+        except Exception:
+            raise
 
     def SetDestinationScale(self):
         # Use scale as is as
-        self.__DestinationScale = [self.__SourceOpenedFile.header.scale[0],
-                                   self.__SourceOpenedFile.header.scale[1],
-                                   self.__SourceOpenedFile.header.scale[2]]
-        # Use offset as is as
-        self.__DestinationOffset = np.array([0, 0, 0])
-        self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2] = transform(
-            self.__SourceProj, self.__DestinationProj, self.__SourceOffset[0], self.__SourceOffset[1],
-            self.__SourceOffset[2])
-        self.__DestinationOffset = [math.floor(self.__DestinationOffset[0]), math.floor(self.__DestinationOffset[1]),
-                                    math.floor(self.__DestinationOffset[2])]
-        logging.info('LAS PointCloud file transformed offset: %s %s %s' % (
-            self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2]))
-        logging.info('Updating LAS file header offset and scale.')
-        self.__DestinationOpenedFile.header.set_scale((
-            self.__DestinationScale[0], self.__DestinationScale[1], self.__DestinationScale[2]))
-        self.__DestinationOpenedFile.header.set_offset((
-            self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2]))
+        try:
+            self.__DestinationScale = [self.__SourceOpenedFile.header.scale[0],
+                                       self.__SourceOpenedFile.header.scale[1],
+                                       self.__SourceOpenedFile.header.scale[2]]
+            # Use offset as is as
+            self.__DestinationOffset = np.array([0, 0, 0])
+            self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2] = transform(
+                self.__SourceProj, self.__DestinationProj, self.__SourceOffset[0], self.__SourceOffset[1],
+                self.__SourceOffset[2])
+            self.__DestinationOffset = [math.floor(self.__DestinationOffset[0]),
+                                        math.floor(self.__DestinationOffset[1]),
+                                        math.floor(self.__DestinationOffset[2])]
+            self.__DestinationOpenedFile.header.set_scale((
+                self.__DestinationScale[0], self.__DestinationScale[1], self.__DestinationScale[2]))
+            self.__DestinationOpenedFile.header.set_offset((
+                self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2]))
+        except Exception:
+            raise
+        else:
+            return self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2]
 
     def TransformPointCloud(self):
         # Transforming PointCloud
-        self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z = transform(
-            self.__SourceProj, self.__DestinationProj,
-            self.__SourceOpenedFile.x, self.__SourceOpenedFile.y,
-            self.__SourceOpenedFile.z)
+        try:
+            self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z = transform(
+                self.__SourceProj, self.__DestinationProj,
+                self.__SourceOpenedFile.x, self.__SourceOpenedFile.y,
+                self.__SourceOpenedFile.z)
 
-        self.__DestinationOpenedFile.intensity = self.__SourceOpenedFile.intensity
-        self.__DestinationOpenedFile.flag_byte = self.__SourceOpenedFile.flag_byte
-        self.__DestinationOpenedFile.raw_classification = self.__SourceOpenedFile.raw_classification
-        self.__DestinationOpenedFile.scan_angle_rank = self.__SourceOpenedFile.scan_angle_rank
-        self.__DestinationOpenedFile.user_data = self.__SourceOpenedFile.user_data
-        self.__DestinationOpenedFile.pt_src_id = self.__SourceOpenedFile.pt_src_id
-        self.__DestinationOpenedFile.gps_time = self.__SourceOpenedFile.gps_time
-
-        self.UpdateDestinationMinMax()
+            self.__DestinationOpenedFile.intensity = self.__SourceOpenedFile.intensity
+            self.__DestinationOpenedFile.flag_byte = self.__SourceOpenedFile.flag_byte
+            self.__DestinationOpenedFile.raw_classification = self.__SourceOpenedFile.raw_classification
+            self.__DestinationOpenedFile.scan_angle_rank = self.__SourceOpenedFile.scan_angle_rank
+            self.__DestinationOpenedFile.user_data = self.__SourceOpenedFile.user_data
+            self.__DestinationOpenedFile.pt_src_id = self.__SourceOpenedFile.pt_src_id
+            self.__DestinationOpenedFile.gps_time = self.__SourceOpenedFile.gps_time
+            self.UpdateDestinationMinMax()
+        except Exception:
+            raise
 
     def TransformPointCloudCoordsOnly(self):
-        self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z = transform(
-            self.__SourceProj,
-            self.__DestinationProj,
-            self.__SourceOpenedFile.x, self.__SourceOpenedFile.y,
-            self.__SourceOpenedFile.z)
-
-        self.UpdateDestinationMinMax()
+        try:
+            self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z = transform(
+                self.__SourceProj,
+                self.__DestinationProj,
+                self.__SourceOpenedFile.x, self.__SourceOpenedFile.y,
+                self.__SourceOpenedFile.z)
+            self.UpdateDestinationMinMax()
+        except Exception:
+            raise
 
     def UpdateDestinationMinMax(self):
-        logging.info('Updating LAS file min and max values.')
-        self.__DestinationOpenedFile.header.update_min_max()
+        try:
+            self.__DestinationOpenedFile.header.update_min_max()
+        except Exception:
+            raise
 
     def Close(self):
-        self.__SourceOpenedFile.close()
-        self.__DestinationOpenedFile.close()
+        try:
+            self.__SourceOpenedFile.close()
+            self.__DestinationOpenedFile.close()
+        except Exception:
+            raise
 
 
 class LasPyCompare:
     def __init__(self, source_filename, destination_filename):
-        self.__SourceFileName = source_filename
-        self.__DestinationFileName = destination_filename
+        try:
+            self.__SourceFileName = source_filename
+            self.__DestinationFileName = destination_filename
+        except Exception:
+            raise
 
     def OpenReanOnly(self):
-        self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
-        self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='r')
+        try:
+            self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
+            self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='r')
+        except Exception:
+            raise
 
     def ComparePointCloud(self):
-        diff_x = self.__SourceOpenedFile.x - self.__DestinationOpenedFile.x
-        diff_y = self.__SourceOpenedFile.y - self.__DestinationOpenedFile.y
-        diff_z = self.__SourceOpenedFile.z - self.__DestinationOpenedFile.z
+        try:
+            diff_x = self.__SourceOpenedFile.x - self.__DestinationOpenedFile.x
+            diff_y = self.__SourceOpenedFile.y - self.__DestinationOpenedFile.y
+            diff_z = self.__SourceOpenedFile.z - self.__DestinationOpenedFile.z
 
-        logging.info('%s diff: Xmin: %s / Xmax: %s, Ymin: %s / Ymax: %s, Zmin: %s / Zmax: %s' % (
-        os.path.basename(self.__SourceFileName), np.min(diff_x), np.max(diff_x), np.min(diff_y), np.max(diff_y),
-        np.min(diff_z), np.max(diff_z)))
+            logging.info('%s diff: Xmin: %s / Xmax: %s, Ymin: %s / Ymax: %s, Zmin: %s / Zmax: %s' % (
+                os.path.basename(self.__SourceFileName), np.min(diff_x), np.max(diff_x), np.min(diff_y), np.max(diff_y),
+                np.min(diff_z), np.max(diff_z)))
+        except Exception:
+            raise
 
     def Close(self):
-        self.__SourceOpenedFile.close()
-        self.__DestinationOpenedFile.close()
+        try:
+            self.__SourceOpenedFile.close()
+            self.__DestinationOpenedFile.close()
+        except Exception:
+            raise
