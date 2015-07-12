@@ -92,7 +92,7 @@ def main():
 
     if cores != 1:
         pool = multiprocessing.Pool(processes=cores)
-        results = pool.map_async(TransformerWorkflow.Transformer, file_queue)
+        results.append(pool.map_async(TransformerWorkflow.Transformer, file_queue))
         pool.close()
         pool.join()
     else:
