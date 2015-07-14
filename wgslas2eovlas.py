@@ -70,7 +70,6 @@ def main():
 
     lasconverterworkflow = TransformerCommandLine.TransformerCommandLine()
     lasconverterworkflow.parse()
-
     # File/Directory handler
     cores = lasconverterworkflow.get_cores()
 
@@ -82,14 +81,14 @@ def main():
                                                                  lasconverterworkflow.get_input_projection()),
                                                              AssignProjection(
                                                                  lasconverterworkflow.get_output_projection()),
-                                                             lasconverterworkflow.get_input_format())
+                                                             lasconverterworkflow.get_input_format(),
+                                                             lasconverterworkflow.get_full_header_update())
     filelist.create_list()
     file_queue = filelist.get_filelist()
 
     # If we got one file, start only one process
     if filelist.get_isdir() is False:
         cores = 1
-
     if cores != 1:
         pool = multiprocessing.Pool(processes=cores)
         results.append(pool.map_async(TransformerWorkflow.Transformer, file_queue))

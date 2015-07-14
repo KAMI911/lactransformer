@@ -34,6 +34,9 @@ class TransformerCommandLine:
                                  help='optional:  input format (default=EOVc, EOVp is not implemented (yet))')
         self.parser.add_argument('-cores', type=int, dest='cores', required=False, default=1,
                                  help='optional:  cores (default=1)')
+        self.parser.add_argument('-full_header_update', dest='full_header_update', required=False,
+                                 help='optional:  Full header update - makes closing file slow (-full_header_update=on, nothing=off)',
+                                 action='store_true')
         self.parser.add_argument('-v', dest='verbose', required=False,
                                  help='optional:  verbose toggle (-v=on, nothing=off)', action='store_true')
         self.parser.add_argument('-version', action='version', version=self.parser.prog)
@@ -76,3 +79,6 @@ class TransformerCommandLine:
 
     def get_cores(self):
         return self.args.cores
+
+    def get_full_header_update(self):
+        return self.args.full_header_update

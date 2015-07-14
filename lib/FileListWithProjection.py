@@ -9,7 +9,7 @@ except ImportError as err:
 
 class FileListWithProjection:
     def __init__(self, input_file_or_dir, output_file_or_dir, input_projection_string, output_projection_string,
-                 file_format='las'):
+                 file_format='las', full_header_update=False):
         self.__input_isdir = False
         self.__file_and_projection = []
         self.__input_file_or_dir = input_file_or_dir
@@ -17,6 +17,7 @@ class FileListWithProjection:
         self.__input_projection_string = input_projection_string
         self.__output_projection_string = output_projection_string
         self.__file_format = file_format
+        self.__full_header_update = full_header_update
         self.__output_path = os.path.normpath(self.__output_file_or_dir)
 
     # ---------PUBLIC METHODS--------------------
@@ -32,17 +33,20 @@ class FileListWithProjection:
                 logging.info('Adding %s to the queue.' % (in_file))
                 out_file = os.path.join(self.__output_path, os.path.basename(in_file))
                 self.__file_and_projection.append([in_file, out_file, self.__input_projection_string,
-                                                   self.__output_projection_string, self.__file_format])
+                                                   self.__output_projection_string, self.__file_format,
+                                                   self.__full_header_update])
         elif os.path.isfile(self.__input_file_or_dir):
             self.__input_isdir = False
             in_file = self.__input_file_or_dir
             if os.path.basename(self.__output_file_or_dir) is not "":
                 self.__file_and_projection.append([in_file, self.__output_file_or_dir, self.__input_projection_string,
-                                                   self.__output_projection_string, self.__file_format])
+                                                   self.__output_projection_string, self.__file_format,
+                                                   self.__full_header_update])
             else:
                 out_file = os.path.join(self.__output_path, os.path.basename(in_file))
                 self.__file_and_projection.append([in_file, out_file, self.__input_projection_string,
-                                                   self.__output_projection_string, self.__file_format])
+                                                   self.__output_projection_string, self.__file_format,
+                                                   self.__full_header_update])
             logging.info('Adding %s to the queue.' % (in_file))
         else:
             # Not a file, not a dir

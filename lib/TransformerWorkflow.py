@@ -6,6 +6,7 @@ except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
 
+
 def Transformer(parameters):
     # Parse incoming parameters
     source_file = parameters[0]
@@ -13,6 +14,7 @@ def Transformer(parameters):
     source_projection = parameters[2]
     destination_projection = parameters[3]
     input_format = parameters[4]
+    full_header_update = parameters[5]
     # Get name for this process
     current = multiprocessing.current_process()
     proc_name = current.name
@@ -38,13 +40,15 @@ def Transformer(parameters):
             logging.info('[%s] Transforming LAS PointCloud.' % (proc_name))
             lasFiles.TransformPointCloud()
         except Exception as err:
-            logging.error('Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))
+            logging.error(
+                'Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))
             exit(11)
         else:
-            logging.info('[%s] Successfully transformed LAS PointCloud data for file: %s.' % (proc_name, destination_file))
+            logging.info(
+                '[%s] Successfully transformed LAS PointCloud data for file: %s.' % (proc_name, destination_file))
         try:
             logging.info('[%s] Closing transformed %s LAS PointCloud file.' % (proc_name, destination_file))
-            lasFiles.Close()
+            lasFiles.Close(full_header_update)
         except Exception as err:
             logging.error('Cannot close files: %s and %s, error: %s.' % (source_file, destination_file, str(err)))
             exit(12)
@@ -67,7 +71,8 @@ def Transformer(parameters):
         try:
             txtFiles.TransformPointText()
         except Exception as err:
-            logging.error('Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))
+            logging.error(
+                'Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))
             exit(11)
         else:
             logging.info('[%s] Successfully transformed PointText data for file: %s.' % (proc_name, destination_file))
@@ -97,7 +102,8 @@ def Transformer(parameters):
         try:
             txtFiles.TransformPointIML()
         except Exception as err:
-            logging.error('Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))
+            logging.error(
+                'Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))
             exit(11)
         else:
             logging.info('[%s] Successfully transformed PointText data for file: %s.' % (proc_name, destination_file))
@@ -127,10 +133,12 @@ def Transformer(parameters):
         try:
             txtFiles.TransformPointCSV()
         except Exception as err:
-            logging.error('Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))
+            logging.error(
+                'Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))
             exit(11)
         else:
-            logging.info('[%s] Successfully transformed  Riegl Camera CSV data for file: %s.' % (proc_name, destination_file))
+            logging.info(
+                '[%s] Successfully transformed  Riegl Camera CSV data for file: %s.' % (proc_name, destination_file))
         try:
             logging.info('[%s] Closing transformed %s Riegl Camera CSV file.' % (proc_name, destination_file))
             txtFiles.Close()
