@@ -20,6 +20,13 @@ Created by: Zoltán Siki <siki@agt.bme.hu> and Bence Takács <bence@agt.bme.hu>
 
 **EOV**      (EPSG:23700) projection: http://spatialreference.org/ref/epsg/hd72-eov/
 
+## Modules
+
+pyproj - https://pypi.python.org/pypi/pyproj/
+
+laspy - https://pypi.python.org/pypi/laspy/
+
+numpy - https://pypi.python.org/pypi/numpy/
 
 ## Installation
 
@@ -55,6 +62,8 @@ sudo python setup.py install
 
 **Install Python 2.7**
 
+We prefer 64 bit AMD64 version.
+
 https://www.python.org/downloads/
 
 **Install pip**
@@ -75,9 +84,13 @@ http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
 
 One of these files:
 
+numpy-1.9.2+mkl-cp27-none-win_amd64.whl for 64 bit version
+
+http://www.lfd.uci.edu/~gohlke/pythonlibs/3i673h27/numpy-1.9.2+mkl-cp27-none-win_amd64.whl
+
 numpy-1.9.2+mkl-cp27-none-win32.whl for 32 bit version
 
-numpy-1.9.2+mkl-cp27-none-win_amd64.whl for 64 bit version
+http://www.lfd.uci.edu/~gohlke/pythonlibs/3i673h27/numpy-1.9.2+mkl-cp27-none-win32.whl
 
 And install it:
 
@@ -98,6 +111,8 @@ pyproj-1.9.4-cp27-none-win_amd64.whl for 64 bit version
 http://www.lfd.uci.edu/%7Egohlke/pythonlibs/3i673h27/pyproj-1.9.4-cp27-none-win_amd64.whl
 
 pyproj‑1.9.4‑cp27‑none‑win32.whl for 32 bit version
+
+http://www.lfd.uci.edu/~gohlke/pythonlibs/3i673h27/pyproj-1.9.4-cp27-none-win32.whl
 
 And install it:
 
@@ -160,4 +175,3 @@ Convert all Trajectory (CSV) text files in a directory from WGS84 to EOV using 2
 ```
 wgslas2eovlas.py -i wgs84dir_trj/ -o eovdir_trj/ -cores 2 -input_format=txt
 ```
-
