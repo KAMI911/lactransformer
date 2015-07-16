@@ -87,8 +87,22 @@ C:\Python27\Scripts\pip.exe install "numpy-1.9.2+mkl-cp27-none-win_amd64.whl"
 
 **Install pyproj**
 
+Download:
+
+http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
+
+One of these files:
+
+pyproj-1.9.4-cp27-none-win_amd64.whl for 64 bit version
+
+http://www.lfd.uci.edu/%7Egohlke/pythonlibs/3i673h27/pyproj-1.9.4-cp27-none-win_amd64.whl
+
+pyproj‑1.9.4‑cp27‑none‑win32.whl for 32 bit version
+
+And install it:
+
 ```
-pip install pyproj
+C:\Python27\Scripts\pip.exe install "pyproj-1.9.4-cp27-none-win_amd64.whl"
 ```
 
 **Install laspy**
