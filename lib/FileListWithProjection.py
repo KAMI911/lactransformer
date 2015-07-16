@@ -8,22 +8,21 @@ except ImportError as err:
 
 
 class FileListWithProjection:
-    def __init__(self, input_file_or_dir, output_file_or_dir, input_projection_string, output_projection_string,
-                 file_format='las', full_header_update=False):
+    def __init__(self):
         self.__input_isdir = False
         self.__file_and_projection = []
+
+    # ---------PUBLIC METHODS--------------------
+
+    def create_list(self, input_file_or_dir, output_file_or_dir, input_projection_string, output_projection_string,
+                 file_format='las', full_header_update=False):
         self.__input_file_or_dir = input_file_or_dir
         self.__output_file_or_dir = output_file_or_dir
         self.__input_projection_string = input_projection_string
         self.__output_projection_string = output_projection_string
         self.__file_format = file_format
         self.__full_header_update = full_header_update
-        self.__output_path = os.path.normpath(self.__output_file_or_dir)
-
-    # ---------PUBLIC METHODS--------------------
-
-    def create_list(self):
-        # If the specified folder is directory read all the matching file
+        self.__output_path = os.path.normpath(self.__output_file_or_dir)        # If the specified folder is directory read all the matching file
         if os.path.isdir(self.__input_file_or_dir):
             self.__input_isdir = True
             inputfiles = glob.glob(os.path.join(self.__input_file_or_dir, '*' + self.__file_format))
