@@ -15,6 +15,7 @@ def Transformer(parameters):
     destination_projection = parameters[3]
     input_format = parameters[4]
     full_header_update = parameters[5]
+    txt_separator = parameters[6]
     # Get name for this process
     current = multiprocessing.current_process()
     proc_name = current.name
@@ -56,20 +57,23 @@ def Transformer(parameters):
             logging.info('[%s] Transformed %s LAS PointCloud file has created.' % (proc_name, destination_file))
             return 0
 
-    elif input_format == 'txt':
+    elif input_format == 'txt' or input_format == 'lastxt' :
         logging.info(
             '[%s] Opening %s PointText file for converting to %s PointText file ... Source projections is: "%s", destination projection is: "%s".' % (
                 proc_name, source_file, destination_file, source_projection, destination_projection))
         # Opening source LAS files for read and write
         try:
             txtFiles = TxtPyConverter.TxtPyConverter(source_file, source_projection, destination_file,
-                                                     destination_projection)
+                                                     destination_projection, txt_separator)
             txtFiles.Open()
         except Exception as err:
             logging.error('Cannot open file: %s.' % (str(err)))
             exit(10)
         try:
-            txtFiles.TransformPointText()
+            if input_format == 'txt':
+                txtFiles.TransformPointText()
+            elif input_format == 'lastxt':
+                txtFiles.TransformLASText()
         except Exception as err:
             logging.error(
                 'Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))

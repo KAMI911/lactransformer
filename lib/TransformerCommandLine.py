@@ -23,7 +23,7 @@ class TransformerCommandLine:
 
         # optional parameters
         self.parser.add_argument('-input_format', type=str, dest='input_format', required=False,
-                                 choices=['las', 'laz', 'txt', 'csv', 'iml'],
+                                 choices=['las', 'laz', 'txt', 'lastxt', 'csv', 'iml'],
                                  help='optional:  input format (default=las, laz is not implemented (yet))'
                                       ' txt = Trajectory CSV file, iml = TerraPhoto Image List file, csv = Riegl Camera CSV file')
         self.parser.add_argument('-input_projection', type=str, dest='input_projection', required=False,
@@ -37,6 +37,9 @@ class TransformerCommandLine:
         self.parser.add_argument('-full_header_update', dest='full_header_update', required=False,
                                  help='optional:  Full header update - makes closing file slow (-full_header_update=on, nothing=off)',
                                  action='store_true')
+        self.parser.add_argument('-separator', type=str, dest='separator', required=False,
+                                 choices=[',', ' '],
+                                 help='optional:  text separator for text based coordiante files (default=,)')
         self.parser.add_argument('-v', dest='verbose', required=False,
                                  help='optional:  verbose toggle (-v=on, nothing=off)', action='store_true')
         self.parser.add_argument('-version', action='version', version=self.parser.prog)
@@ -57,6 +60,8 @@ class TransformerCommandLine:
             self.args.input_projection = 'WGS84geo'
         if self.args.output_projection == None:
             self.args.output_projection = 'EOVc'
+        if self.args.separator == None:
+            self.args.separator = ','
 
     # ---------PUBLIC METHODS--------------------
     def get_output(self):
@@ -82,3 +87,6 @@ class TransformerCommandLine:
 
     def get_full_header_update(self):
         return self.args.full_header_update
+
+    def get_separator(self):
+        return self.args.separator
