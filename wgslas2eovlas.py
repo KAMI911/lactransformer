@@ -14,6 +14,7 @@ script_path = __file__
 
 header = textwrap.dedent('''WGS84 LAS 2 EOV LAS Converter''')
 
+
 def SetLogging(logfilename):
     logging.basicConfig(
         filename=logfilename,
@@ -45,13 +46,13 @@ def main():
     results = []
     filelist = FileListWithProjection.FileListWithProjection()
     filelist.create_list(lasconverterworkflow.get_input(),
-                                                             lasconverterworkflow.get_output(),
-                                                             Assignprojection.AssignProjection(
-                                                                 lasconverterworkflow.get_input_projection(), script_path),
-                                                             Assignprojection.AssignProjection(
-                                                                 lasconverterworkflow.get_output_projection(), script_path),
-                                                             lasconverterworkflow.get_input_format(),
-                                                             lasconverterworkflow.get_full_header_update())
+                         lasconverterworkflow.get_output(),
+                         Assignprojection.AssignProjection(
+                             lasconverterworkflow.get_input_projection(), script_path),
+                         Assignprojection.AssignProjection(
+                             lasconverterworkflow.get_output_projection(), script_path),
+                         lasconverterworkflow.get_input_format(),
+                         lasconverterworkflow.get_full_header_update(), lasconverterworkflow.get_separator())
     file_queue = filelist.get_filelist()
 
     # If we got one file, start only one process
