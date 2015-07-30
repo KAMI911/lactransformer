@@ -5,6 +5,7 @@ except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
 
+
 def AssignProjection(projection, script_path):
     # Init does not work on Linux
     # WGS84 = Proj(init='EPSG:4326')

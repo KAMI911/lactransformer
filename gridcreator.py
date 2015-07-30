@@ -37,11 +37,11 @@ with open('plain-wgs84longlat-hun.txt', 'w') as wgs_ll_txtfile:
                                 for la in frange(18.9300, 19.1900, 0.001):
                                     for he in range(100, 101, 1):
                                         ## WGS84 longlat
-                                        print ('O: %.8f, %.8f, %.8f' % (la, fi, he))
+                                        print('O: %.8f, %.8f, %.8f' % (la, fi, he))
                                         wgs_ll_txtfile.write('%.8f %.8f %.8f\n' % (la, fi, he))
                                         ## WGS84 geocent
                                         XProjected, YProjected, ZProjected = transform(WGS84, WGS84Geo, la, fi, he)
-                                        print ('P: %.8f, %.8f, %.8f' % (XProjected, YProjected, ZProjected))
+                                        print('P: %.8f, %.8f, %.8f' % (XProjected, YProjected, ZProjected))
                                         wgs_gc_txtfile.write(
                                             '%.8f  %.8f  %.8f\n' % (XProjected, YProjected, ZProjected))
                                         point_wgs_gc_txtfile.write('PONT              %.3f      %.3f      %.3f\n' % (
@@ -50,7 +50,7 @@ with open('plain-wgs84longlat-hun.txt', 'w') as wgs_ll_txtfile:
                                             index, XProjected, YProjected, ZProjected))
                                         ## EOV
                                         XEOVProjected, YEOVProjected, ZEOVProjected = transform(WGS84, EOV, la, fi, he)
-                                        print ('E: %.8f, %.8f, %.8f' % (XEOVProjected, YEOVProjected, ZEOVProjected))
+                                        print('E: %.8f, %.8f, %.8f' % (XEOVProjected, YEOVProjected, ZEOVProjected))
                                         eov_txtfile.write(
                                             '%.8f  %.8f  %.8f\n' % (XEOVProjected, YEOVProjected, ZEOVProjected))
                                         point_eov_txtfile.write('PONT              %.3f      %.3f      %.3f\n' % (
@@ -58,4 +58,3 @@ with open('plain-wgs84longlat-hun.txt', 'w') as wgs_ll_txtfile:
                                         ppac_eov_txtfile.write('%s,%.14f,%.14f,%.14f,1,1,1\n' % (
                                             index, XEOVProjected, YEOVProjected, ZEOVProjected))
                                         index = index + 1
-

@@ -7,7 +7,7 @@ except ImportError as err:
 
 
 class TxtPyConverter:
-    def __init__(self, source_filename, source_projection, destination_filename, destination_projection, separator = ','):
+    def __init__(self, source_filename, source_projection, destination_filename, destination_projection, separator=','):
         self.__SourceFileName = source_filename
         self.__DestinationFileName = destination_filename
         self.__SourceProjection = source_projection
@@ -15,7 +15,6 @@ class TxtPyConverter:
         self.__DestinationProjection = destination_projection
         self.__DestinationProj = Proj(destination_projection)
         self.__Separator = separator
-
 
     def Open(self):
         try:
@@ -37,7 +36,7 @@ class TxtPyConverter:
         w = csv.writer(self.__DestinationOpenedFile, delimiter=self.__Separator)
         for i, row in enumerate(r):
             row[0], row[1], row[2] = transform(self.__SourceProj, self.__DestinationProj,
-                                                       row[0], row[1], row[2])
+                                               row[0], row[1], row[2])
             w.writerow(row)
 
     def TransformPointText(self):
@@ -47,7 +46,7 @@ class TxtPyConverter:
         for i, row in enumerate(r):
             if i > 0:  # skip header transformation
                 row[1], row[2], row[3] = transform(self.__SourceProj, self.__DestinationProj,
-                                                       row[1], row[2], row[3])
+                                                   row[1], row[2], row[3])
             w.writerow(row)
 
     def TransformPointCSV(self):

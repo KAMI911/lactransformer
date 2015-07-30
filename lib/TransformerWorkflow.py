@@ -57,7 +57,7 @@ def Transformer(parameters):
             logging.info('[%s] Transformed %s LAS PointCloud file has created.' % (proc_name, destination_file))
             return 0
 
-    elif input_format == 'txt' or input_format == 'lastxt' :
+    elif input_format == 'txt' or input_format == 'lastxt':
         logging.info(
             '[%s] Opening %s PointText file for converting to %s PointText file ... Source projections is: "%s", destination projection is: "%s".' % (
                 proc_name, source_file, destination_file, source_projection, destination_projection))

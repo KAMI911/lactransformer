@@ -31,7 +31,7 @@ with open('point-wgs84geo-hun.txt', 'r') as point_wgs_gc_txtfile:
                         mindiffZ = diffZ
                         maxdiffZ = diffZ
 
-                    print('%s %s %s %s %s %s' % (wgsX, wgsY, wgsZ, diffX, diffY, diffZ) )
+                    print('%s %s %s %s %s %s' % (wgsX, wgsY, wgsZ, diffX, diffY, diffZ))
                     grid_wgs_gc_eov_eht2_3_0_txtfile.write(
                         '%s %s %s %s %s %s\r\n' % (wgsX, wgsY, wgsZ, diffX, diffY, diffZ))
                     if mindiffX < diffX:
@@ -51,5 +51,5 @@ with open('point-wgs84geo-hun.txt', 'r') as point_wgs_gc_txtfile:
 
                     index = index + 1
 
-print ('Diffs minX/maxX: %s/%s minY/maxY: %s/%s minZ/maxZ: %s/%s' % (
+print('Diffs minX/maxX: %s/%s minY/maxY: %s/%s minZ/maxZ: %s/%s' % (
     mindiffX, maxdiffX, mindiffY, maxdiffY, mindiffZ, maxdiffZ))
