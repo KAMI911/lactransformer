@@ -12,7 +12,7 @@ except ImportError as err:
 
 script_path = __file__
 
-header = textwrap.dedent('''WGS84 LAS 2 EOV LAS Converter''')
+header = textwrap.dedent('''LAS & Co Transformer''')
 
 
 def SetLogging(logfilename):
