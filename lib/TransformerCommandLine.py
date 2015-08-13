@@ -9,7 +9,7 @@ except ImportError as err:
 class TransformerCommandLine:
     def __init__(self):
         # predefinied paths
-        self.parser = argparse.ArgumentParser(prog="wgslas2eovlas",
+        self.parser = argparse.ArgumentParser(prog="lactransformer",
                                               formatter_class=argparse.RawDescriptionHelpFormatter,
                                               description='',
                                               epilog=textwrap.dedent('''

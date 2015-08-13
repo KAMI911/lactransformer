@@ -1,10 +1,10 @@
-# wgslas2eovlas
+# lactransformer - LAS & Co Transformer
 
 Utility to convert geocentric WGS84 (World Geodetic System 1984) projected LiDAR LAS files to Hungarian EOV (Egységes Országos Vetület) projected LiDAR LAS files
 
 ## Fork me on Github
 
-https://github.com/KAMI911/wgslas2eovlas
+https://github.com/KAMI911/lactransformer
 
 ## EOV correction grid
 
@@ -147,7 +147,7 @@ python setup.py install
 Convert LAS file from WGS84 to EOV:
 
 ```
-wgslas2eovlas.py -i wgs84.las -o eov.las
+lactransformer.py -i wgs84.las -o eov.las
 ```
 
 ### A directory of LAS files
@@ -155,7 +155,7 @@ wgslas2eovlas.py -i wgs84.las -o eov.las
 Convert all LAS files in a directory from WGS84 to EOV using 2 cores:
 
 ```
-wgslas2eovlas.py -i wgs84dir/ -o eovdir/ -cores 2
+lactransformer.py -i wgs84dir/ -o eovdir/ -cores 2
 ```
 
 Converting LAZ file is currently not supported.
@@ -165,7 +165,7 @@ Converting LAZ file is currently not supported.
 Convert Trajectory (CSV) text file from WGS84 to EOV:
 
 ```
-wgslas2eovlas.py -i wgs84_trj.txt -o eov_trj.txt -input_format=txt
+lactransformer.py -i wgs84_trj.txt -o eov_trj.txt -input_format=txt
 ```
 
 ### A directory of Trajectory (CSV) text files
@@ -173,5 +173,5 @@ wgslas2eovlas.py -i wgs84_trj.txt -o eov_trj.txt -input_format=txt
 Convert all Trajectory (CSV) text files in a directory from WGS84 to EOV using 2 cores:
 
 ```
-wgslas2eovlas.py -i wgs84dir_trj/ -o eovdir_trj/ -cores 2 -input_format=txt
+lactransformer.py -i wgs84dir_trj/ -o eovdir_trj/ -cores 2 -input_format=txt
 ```

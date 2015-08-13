@@ -33,7 +33,7 @@ def SetLogging(logfilename):
 
 
 def main():
-    logfilename = 'transformer_' + datetime.datetime.today().strftime('%Y%m%d_%H%M%S') + '.log'
+    logfilename = 'lactransformer_' + datetime.datetime.today().strftime('%Y%m%d_%H%M%S') + '.log'
     SetLogging(logfilename)
     logging.info(header)
 
