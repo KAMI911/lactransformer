@@ -27,10 +27,10 @@ class TransformerCommandLine:
                                  help='optional:  input format (default=las, laz is not implemented (yet))'
                                       ' txt = Trajectory CSV file, iml = TerraPhoto Image List file, csv = Riegl Camera CSV file')
         self.parser.add_argument('-input_projection', type=str, dest='input_projection', required=False,
-                                 choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp', 'SVY21'],
+                                 choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp', 'SVY21', 'ETRS89', 'ETRS89geo'],
                                  help='optional:  input format (default=WGS84geo, EOVp is not implemented (yet))')
         self.parser.add_argument('-output_projection', type=str, dest='output_projection', required=False,
-                                 choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp', 'SVY21'],
+                                 choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp', 'SVY21', 'ETRS89', 'ETRS89geo'],
                                  help='optional:  input format (default=EOVc, EOVp is not implemented (yet))')
         self.parser.add_argument('-cores', type=int, dest='cores', required=False, default=1,
                                  help='optional:  cores (default=1)')

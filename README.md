@@ -20,6 +20,10 @@ Created by: Zoltán Siki <siki@agt.bme.hu> and Bence Takács <bence@agt.bme.hu>
 
 **EOV**      (EPSG:23700) projection: http://spatialreference.org/ref/epsg/hd72-eov/
 
+**ETRS89**** (EPSG:4258) projection: http://spatialreference.org/ref/epsg/4258/
+
+**ETRS89geo** (EPSG:4258) projection: http://epsg.io/4936
+
 ## Modules
 
 pyproj - https://pypi.python.org/pypi/pyproj/
