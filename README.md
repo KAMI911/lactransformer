@@ -4,8 +4,8 @@ LAS & Co Transformer is an utility to convert
 
 * WGS84 (World Geodetic System 1984) Geocentric coordinate system
 * WGS84 (World Geodetic System 1984) Geodetic coordinate system
-* ETRS89 (World Geodetic System 1984) Geocentric coordinate system
-* ETRS89 (World Geodetic System 1984) Geodetic coordinate system
+* ETRS89 (European Terrestrial Reference System 1989) Geocentric coordinate system
+* ETRS89 (European Terrestrial Reference System 1989) Geodetic coordinate system
 * Hungarian EOV (Egységes Országos Vetület) Projected coordinate system
 
 in following formats:
@@ -19,12 +19,6 @@ in following formats:
 
 https://github.com/KAMI911/lactransformer
 
-## EOV correction grid
-
-Original download: http://www.agt.bme.hu/on_line/etrs2eov/etrs2eov_doc.html
-
-Created by: Zoltán Siki <siki@agt.bme.hu> and Bence Takács <bence@agt.bme.hu>
-
 ## Supported projections
 
 **WGS84**     (EPSG:4326) projection : http://epsg.io/4326/
@@ -36,6 +30,12 @@ Created by: Zoltán Siki <siki@agt.bme.hu> and Bence Takács <bence@agt.bme.hu>
 **ETRS89**    (EPSG:4258) projection: http://epsg.io/4258/
 
 **ETRS89geo** (EPSG:4936) projection: http://epsg.io/4936/
+
+## EOV correction grid
+
+Original download: http://www.agt.bme.hu/on_line/etrs2eov/etrs2eov_doc.html
+
+Created by: Zoltán Siki <siki@agt.bme.hu> and Bence Takács <bence@agt.bme.hu>
 
 ## Modules
 
