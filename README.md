@@ -14,13 +14,13 @@ Created by: Zoltán Siki <siki@agt.bme.hu> and Bence Takács <bence@agt.bme.hu>
 
 ## Supported projections
 
-**WGS84**    (EPSG:2326) projection : http://spatialreference.org/ref/epsg/4326/
+**WGS84**    (EPSG:2326) projection : http://epsg.io/4326/
 
-**WGS84geo** (EPSG:4978) projection : http://spatialreference.org/ref/epsg/4978/
+**WGS84geo** (EPSG:4978) projection : http://epsg.io/4978/
 
-**EOV**      (EPSG:23700) projection: http://spatialreference.org/ref/epsg/hd72-eov/
+**EOV**      (EPSG:23700) projection: http://epsg.io/23700/
 
-**ETRS89**** (EPSG:4258) projection: http://spatialreference.org/ref/epsg/4258/
+**ETRS89** (EPSG:4258) projection: http://epsg.io/4258/
 
 **ETRS89geo** (EPSG:4258) projection: http://epsg.io/4936
 
