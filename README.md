@@ -1,6 +1,19 @@
 # lactransformer - LAS & Co Transformer
 
-Utility to convert geocentric WGS84 (World Geodetic System 1984) projected LiDAR LAS files to Hungarian EOV (Egységes Országos Vetület) projected LiDAR LAS files
+LAS & Co Transformer is an utility to convert
+
+* WGS84 (World Geodetic System 1984) Geocentric coordinate system
+* WGS84 (World Geodetic System 1984) Geodetic coordinate system
+* ETRS89 (World Geodetic System 1984) Geocentric coordinate system
+* ETRS89 (World Geodetic System 1984) Geodetic coordinate system
+* Hungarian EOV (Egységes Országos Vetület) Projected coordinate system
+
+in following formats:
+
+* LiDAR LAS files
+* Trajectory CSV file
+* TerraPhoto Image List file
+* Riegl Camera CSV file
 
 ## Fork me on Github
 
@@ -14,15 +27,15 @@ Created by: Zoltán Siki <siki@agt.bme.hu> and Bence Takács <bence@agt.bme.hu>
 
 ## Supported projections
 
-**WGS84**    (EPSG:2326) projection : http://epsg.io/4326/
+**WGS84**     (EPSG:4326) projection : http://epsg.io/4326/
 
-**WGS84geo** (EPSG:4978) projection : http://epsg.io/4978/
+**WGS84geo**  (EPSG:4978) projection : http://epsg.io/4978/
 
-**EOV**      (EPSG:23700) projection: http://epsg.io/23700/
+**EOV**       (EPSG:23700) projection: http://epsg.io/23700/
 
-**ETRS89** (EPSG:4258) projection: http://epsg.io/4258/
+**ETRS89**    (EPSG:4258) projection: http://epsg.io/4258/
 
-**ETRS89geo** (EPSG:4258) projection: http://epsg.io/4936
+**ETRS89geo** (EPSG:4936) projection: http://epsg.io/4936/
 
 ## Modules
 
