@@ -106,7 +106,7 @@ C:\Python27\Scripts\pip.exe install "numpy-1.9.2+mkl-cp27-none-win_amd64.whl"
 
 Download:
 
-http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
+http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyproj
 
 One of these files:
 
