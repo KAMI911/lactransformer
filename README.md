@@ -37,6 +37,8 @@ Original download: http://www.agt.bme.hu/on_line/etrs2eov/etrs2eov_doc.html
 
 Created by: Zoltán Siki <siki@agt.bme.hu> and Bence Takács <bence@agt.bme.hu>
 
+Github page: https://github.com/OSGeoLabBp/eov2etrs
+
 ## Modules
 
 pyproj - https://pypi.python.org/pypi/pyproj/
