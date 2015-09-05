@@ -5,7 +5,7 @@ try:
     import logging
     import datetime
     import multiprocessing
-    from lib import TransformerCommandLine, TransformerWorkflow, FileListWithProjection, Assignprojection
+    from lib import Logging, TransformerCommandLine, TransformerWorkflow, FileListWithProjection, Assignprojection
 except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
@@ -14,27 +14,9 @@ script_path = __file__
 
 header = textwrap.dedent('''LAS & Co Transformer''')
 
-
-def SetLogging(logfilename):
-    logging.basicConfig(
-        filename=logfilename,
-        filemode='w',
-        format='%(asctime)s %(name)s %(levelname)s %(message)s', datefmt='%d-%m-%Y %H:%M:%S',
-        level=logging.DEBUG)
-    # define a Handler which writes INFO messages or higher to the sys.stderr
-    console = logging.StreamHandler()
-    console.setLevel(logging.INFO)
-    # set a format which is simpler for console use
-    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s', datefmt='%d-%m-%Y %H:%M:%S')
-    # tell the handler to use this format
-    console.setFormatter(formatter)
-    # add the handler to the root logger
-    logging.getLogger('').addHandler(console)
-
-
 def main():
     logfilename = 'lactransformer_' + datetime.datetime.today().strftime('%Y%m%d_%H%M%S') + '.log'
-    SetLogging(logfilename)
+    Logging.SetLogging(logfilename)
     logging.info(header)
 
     lasconverterworkflow = TransformerCommandLine.TransformerCommandLine()
