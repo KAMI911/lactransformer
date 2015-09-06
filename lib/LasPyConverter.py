@@ -93,7 +93,7 @@ class LasPyConverter:
         except Exception:
             raise
         else:
-            return self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2]
+            return self.__SourceOffset, self.__DestinationOffset
 
     def TransformPointCloud(self):
         # Transforming PointCloud
