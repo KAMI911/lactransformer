@@ -31,7 +31,11 @@ def main():
                          lasconverterworkflow.get_output(),
                          Assignprojection.AssignProjection(
                              lasconverterworkflow.get_input_projection(), script_path),
+                         Assignprojection.AssignFallbackProjection(
+                             lasconverterworkflow.get_input_projection(), script_path),
                          Assignprojection.AssignProjection(
+                             lasconverterworkflow.get_output_projection(), script_path),
+                         Assignprojection.AssignFallbackProjection(
                              lasconverterworkflow.get_output_projection(), script_path),
                          lasconverterworkflow.get_input_format(),
                          lasconverterworkflow.get_full_header_update(), lasconverterworkflow.get_separator())

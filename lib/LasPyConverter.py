@@ -12,13 +12,26 @@ except ImportError as err:
 
 
 class LasPyConverter:
-    def __init__(self, source_filename, source_projection, destination_filename, destination_projection):
+    def __init__(self, source_filename, source_projection, source_fallback_projection, destination_filename,
+                 destination_projection, destination_fallback_projection):
         self.__SourceFileName = source_filename
         self.__DestinationFileName = destination_filename
         self.__SourceProjection = source_projection
         self.__SourceProj = Proj(source_projection)
+        if source_fallback_projection:
+            self.__SourceFallbackProjection = source_fallback_projection
+            self.__SourceFallbackProj = Proj(source_fallback_projection)
+        else:
+            self.__SourceFallbackProjection = ''
+            self.__SourceFallbackProj = ''
         self.__DestinationProjection = destination_projection
         self.__DestinationProj = Proj(destination_projection)
+        if destination_fallback_projection:
+            self.__DestinationFallbackProjection = destination_fallback_projection
+            self.__DestinationFallbackProj = Proj(destination_fallback_projection)
+        else:
+            self.__DestinationFallbackProjection = ''
+            self.__DestinationFallbackProj = ''
 
     def Open(self):
         try:
@@ -80,9 +93,16 @@ class LasPyConverter:
                                        self.__SourceOpenedFile.header.scale[2]]
             # Use offset as is as
             self.__DestinationOffset = np.array([0, 0, 0])
-            self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2] = transform(
-                self.__SourceProj, self.__DestinationProj, self.__SourceOffset[0], self.__SourceOffset[1],
+            if self.__DestinationFallbackProjection:
+                self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2] = transform(
+                    self.__SourceProj, self.__DestinationFallbackProj,
+                    self.__SourceOffset[0], self.__SourceOffset[1],
                 self.__SourceOffset[2])
+            else:
+                self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2] = transform(
+                    self.__SourceProj, self.__DestinationProj,
+                    self.__SourceOffset[0], self.__SourceOffset[1],
+                    self.__SourceOffset[2])
             self.__DestinationOffset = [math.floor(self.__DestinationOffset[0]),
                                         math.floor(self.__DestinationOffset[1]),
                                         math.floor(self.__DestinationOffset[2])]
@@ -124,6 +144,20 @@ class LasPyConverter:
             self.UpdateDestinationMinMax()
         except Exception:
             raise
+
+    def ReturnOriginalMin(self):
+        return np.amin([self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z], axis=1)
+
+    def ReturnOriginalMax(self):
+        return np.amax([self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z], axis=1)
+
+    def ReturnTransformedMin(self):
+        return np.amin([self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z],
+                       axis=1)
+
+    def ReturnTransformedMax(self):
+        return np.amax([self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z],
+                       axis=1)
 
     def UpdateDestinationMinMax(self):
         try:
