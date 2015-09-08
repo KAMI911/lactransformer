@@ -37,7 +37,7 @@ def AssignProjection(projection, script_path):
     elif projection == 'SVY21':
         projectionstring = '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +units=m +no_defs'
     elif projection == 'SVY21c':
-        geoidgrids = os.path.join(os.path.dirname(script_path), 'grid', 'svy21-geoid09.gtx')
+        geoidgrids = os.path.join(os.path.dirname(script_path), 'grid', 'geoid_svy21_2009.gtx')
         if os.path.isfile(geoidgrids):
             logging.info('Found all required grids ...')
             projectionstring = '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +geoidgrids=' + geoidgrids + ' +units=m +no_defs'
