@@ -14,6 +14,7 @@ in following formats:
 * Trajectory CSV file
 * TerraPhoto Image List file
 * Riegl Camera CSV file
+* PEF file
 
 ## Fork me on Github
 

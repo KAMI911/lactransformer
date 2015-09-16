@@ -69,8 +69,7 @@ def Transformer(parameters):
         else:
             logging.info('[%s] Transformed %s %s file has created.' % (proc_name, destination_file, input_format_name))
             return 0
-
-    elif input_format in ['txt', 'lastxt', 'iml', 'csv']:
+    elif input_format in ['txt', 'lastxt', 'iml', 'csv', 'pef']:
         logging.info(
             '[%s] Opening %s %s file for converting to %s %s file ... Source projections is: "%s", destination projection is: "%s".' % (
                 proc_name, source_file, input_format_name, destination_file, input_format_name, source_projection,
@@ -79,10 +78,10 @@ def Transformer(parameters):
         try:
             if input_format in ['txt', 'lastxt']:
                 txtFiles = TxtPyConverter.TxtPyConverter(source_file, source_projection, destination_file,
-                                                         destination_projection, txt_separator)
-            if input_format in ['iml', 'csv']:
+                                                         destination_projection, input_format, txt_separator)
+            if input_format in ['iml', 'csv', 'pef']:
                 txtFiles = TxtPyConverter.TxtPyConverter(source_file, source_projection, destination_file,
-                                                         destination_projection)
+                                                         destination_projection, input_format, txt_separator)
             txtFiles.Open()
         except Exception as err:
             logging.error('Cannot open file: %s.' % (str(err)))
@@ -96,6 +95,8 @@ def Transformer(parameters):
                 txtFiles.TransformPointIML()
             elif input_format == 'csv':
                 txtFiles.TransformPointCSV()
+            elif input_format == 'pef':
+                txtFiles.TransformPEF()
         except Exception as err:
             logging.error(
                 'Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))

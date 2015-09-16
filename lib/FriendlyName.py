@@ -19,3 +19,5 @@ def FriendlyName(input_format):
         return 'TerraPhoto Image List'
     elif input_format == 'csv':
         return 'Riegl Camera CSV'
+    elif input_format == 'pef':
+        return 'PEF'

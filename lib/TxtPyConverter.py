@@ -1,13 +1,16 @@
 try:
     import csv
+    import re
     from pyproj import Proj, transform
+    from lib import PefFile
 except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
 
 
 class TxtPyConverter:
-    def __init__(self, source_filename, source_projection, destination_filename, destination_projection, separator=','):
+    def __init__(self, source_filename, source_projection, destination_filename, destination_projection, type='txt',
+                 separator=','):
         self.__SourceFileName = source_filename
         self.__DestinationFileName = destination_filename
         self.__SourceProjection = source_projection
@@ -15,11 +18,18 @@ class TxtPyConverter:
         self.__DestinationProjection = destination_projection
         self.__DestinationProj = Proj(destination_projection)
         self.__Separator = separator
+        self.__Type = type
 
     def Open(self):
         try:
-            self.__SourceOpenedFile = open(self.__SourceFileName, 'rb')
-            self.__DestinationOpenedFile = open(self.__DestinationFileName, 'wb')
+            if self.__Type != 'pef':
+                self.__SourceOpenedFile = open(self.__SourceFileName, 'rb')
+                self.__DestinationOpenedFile = open(self.__DestinationFileName, 'wb')
+            elif self.__Type == 'pef':
+                self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName)
+                self.__SourceOpenedFile.OpenRO()
+                self.__DestinationOpenedFile = PefFile.PefFile(self.__DestinationFileName)
+                self.__DestinationOpenedFile.OpenOW()
         except Exception as err:
             raise
 
@@ -69,6 +79,28 @@ class TxtPyConverter:
                                                    row[1], row[2], row[3])
             w.writerow(row)
 
-    def Close(self):
-        self.__SourceOpenedFile.close()
-        self.__DestinationOpenedFile.close()
+    def TransformPEF(self):
+        point_pattern = re.compile('P\d{1,3}')  # format is Pn or Pnn or Pnnn
+        while True:
+            Content = self.__SourceOpenedFile.ReadNextItem()
+            if not Content:
+                break
+            # self.__DestinationOpenedFile.
+            for i, row in enumerate(Content):
+                point_number = point_pattern.search(row[0])
+                if point_number is not None:
+                    coordinates = row[1].split(' ')
+                    coordinates[0], coordinates[1], coordinates[2] = transform(self.__SourceProj,
+                                                                               self.__DestinationProj,
+                                                                               coordinates[0], coordinates[1],
+                                                                               coordinates[2])
+                    Content[i][1] = '%s %s %s' % (coordinates[0], coordinates[1], coordinates[2])
+            self.__DestinationOpenedFile.WriteNextItem(Content)
+
+    def Close(self, type='txt'):
+        if self.__Type != 'pef':
+            self.__SourceOpenedFile.close()
+            self.__DestinationOpenedFile.close()
+        elif self.__Type == 'pef':
+            self.__SourceOpenedFile.Close()
+            self.__DestinationOpenedFile.Close()
