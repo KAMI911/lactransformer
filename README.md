@@ -7,6 +7,7 @@ LAS & Co Transformer is an utility to convert
 * ETRS89 (European Terrestrial Reference System 1989) Geocentric coordinate system
 * ETRS89 (European Terrestrial Reference System 1989) Geodetic coordinate system
 * Hungarian EOV (Egységes Országos Vetület) Projected coordinate system
+* SVY21 (Singapore) Projected coordinate system
 
 in following formats:
 
@@ -31,6 +32,8 @@ https://github.com/KAMI911/lactransformer
 **ETRS89**    (EPSG:4258) projection: http://epsg.io/4258/
 
 **ETRS89geo** (EPSG:4936) projection: http://epsg.io/4936/
+
+**SVY21**     (EPSG:3414) projection: http://epsg.io/3414
 
 ## EOV correction grid
 
