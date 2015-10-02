@@ -165,10 +165,22 @@ class LasPyConverter:
         except Exception:
             raise
 
-    def Close(self, full_header_update=False):
+    def CloseSourceFile(self):
         try:
             self.__SourceOpenedFile.close()
+        except Exception:
+            raise
+
+    def CloseDestinationFile(self, full_header_update=False):
+        try:
             self.__DestinationOpenedFile.close(ignore_header_changes=not (full_header_update))
+        except Exception:
+            raise
+
+    def Close(self, full_header_update=False):
+        try:
+            self.CloseSourceFile()
+            self.CloseDestinationFile(full_header_update)
         except Exception:
             raise
 
