@@ -10,8 +10,8 @@ class PefFile:
     def OpenRO(self):
         try:
             self.__PefFileHandler = open(self.__FileName, 'r')
-        except IOError, ErrorText:
-            print('Error: %s' % str(ErrorText))
+        except IOError as ErrorText:
+            print ('Error: %s' % str(ErrorText))
 
     def Open(self):
         self.__PefFileHandler = open(self.__FileName, 'a')

@@ -42,7 +42,7 @@ def AssignProjection(projection, script_path):
             logging.info('Found all required grids ...')
             projectionstring = '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +geoidgrids=' + geoidgrids + ' +units=m +no_defs'
         else:
-            logging.error('Cannot found %s and/or %s grids.' % (nadgrids, geoidgrids))
+            logging.error('Cannot found %s grid.' % (geoidgrids))
             exit(2)
     elif projection == 'ETRS89':
         projectionstring = '+proj=longlat +ellps=GRS80 +no_defs'
