@@ -1,2 +1,2 @@
--e https://github.com/jswhit/pyproj.git@bb005aca2d933d77b78c0018f8b5d04c471b4608
--e https://github.com/grantbrown/laspy.git@a0f5bef1d0b6e06b2aaa25409741a992b36be363
+-e git://github.com/jswhit/pyproj.git@bb005aca2d933d77b78c0018f8b5d04c471b4608
+-e git://github.com/grantbrown/laspy.git@a0f5bef1d0b6e06b2aaa25409741a992b36be363
