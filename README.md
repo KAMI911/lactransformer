@@ -1,5 +1,7 @@
 # lactransformer - LAS & Co Transformer
 
+Travis status: [![Build Status](https://travis-ci.org/KAMI911/lactransformer.svg?branch=master)](https://travis-ci.org/KAMI911/lactransformer)
+
 LAS & Co Transformer is an utility to convert
 
 * WGS84 (World Geodetic System 1984) Geocentric coordinate system
