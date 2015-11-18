@@ -44,11 +44,11 @@ class PefFile:
     def TestItem(self, PefContent):
         errors = 0
         if PefContent[0][0] == 'TYPE' and PefContent[0][1] == 'PlaneObj':
-            ('PEF Type is okay...')
+            print('PEF Type is okay...')
         else:
             errors += 1
         if PefContent[3][1] == '8':
-            print ('Count is 8')
+            print('Count is 8')
         else:
             errors += 1
         print (errors)
