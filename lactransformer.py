@@ -5,7 +5,7 @@ try:
     import logging
     import datetime
     import multiprocessing
-    from lib import Logging, TransformerCommandLine, TransformerWorkflow, FileListWithProjection, Assignprojection
+    from libs import Logging, TransformerCommandLine, TransformerWorkflow, FileListWithProjection, Assignprojection
 except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)

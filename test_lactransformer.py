@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from lib import FriendlyName, Assignprojection
+from libs import FriendlyName, Assignprojection
 
 script_path = os.path.join(__file__)
 script_path_local = os.path.dirname(script_path)

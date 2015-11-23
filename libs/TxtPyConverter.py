@@ -2,7 +2,7 @@ try:
     import csv
     import re
     from pyproj import Proj, transform
-    from lib import PefFile
+    from libs import PefFile
 except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)

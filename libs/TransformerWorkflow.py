@@ -1,7 +1,7 @@
 try:
     import logging
     import multiprocessing
-    from lib import LasPyConverter, TxtPyConverter, FriendlyName
+    from libs import LasPyConverter, TxtPyConverter, FriendlyName
 except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
