@@ -1,7 +1,9 @@
 import unittest
 import os
+import filecmp
 
-from libs import FriendlyName, Assignprojection
+from libs import FriendlyName, Assignprojection, TxtPyConverter
+
 
 script_path = os.path.join(__file__)
 script_path_local = os.path.dirname(script_path)
@@ -48,10 +50,28 @@ class TestAssignProjection(unittest.TestCase):
             self.assertEqual(Assignprojection.AssignFallbackProjection(projection, script_path), projection_string)
 
 
+class TestTextTransformation(unittest.TestCase):
+    def setUp(self):
+        self.input_file = os.path.join('.', 'test', 'input', 'lastext_wgs84geo_bp.txt')
+        self.compare_file = os.path.join('.', 'test', 'compare', 'lastext_eov_bp.txt')
+        self.temp_file = 'test_out.txt'
+        self.text_data = TxtPyConverter.TxtPyConverter(self.input_file,
+                                                       Assignprojection.AssignProjection('WGS84geo', '.'),
+                                                       self.temp_file, Assignprojection.AssignProjection('EOVc', '.'))
+
+    def test_text_transformation_wgs84geo_eov(self):
+        self.text_data.Open()
+        self.text_data.TransformPointText()
+        self.text_data.Close()
+        self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
+        os.remove(self.temp_file)
+
+
 def testing_lactransformer():
     friendly_name = unittest.TestLoader().loadTestsFromTestCase(TestFriendlyName)
     assign_projection = unittest.TestLoader().loadTestsFromTestCase(TestAssignProjection)
-    suite = unittest.TestSuite([friendly_name, assign_projection])
+    text_transformation = unittest.TestLoader().loadTestsFromTestCase(TestTextTransformation)
+    suite = unittest.TestSuite([friendly_name, assign_projection, text_transformation])
     return unittest.TextTestRunner(verbosity=2).run(suite)
 
 

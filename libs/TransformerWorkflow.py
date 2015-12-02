@@ -76,10 +76,7 @@ def Transformer(parameters):
                 destination_projection))
         # Opening source LAS files for read and write
         try:
-            if input_format in ['txt', 'lastxt']:
-                txtFiles = TxtPyConverter.TxtPyConverter(source_file, source_projection, destination_file,
-                                                         destination_projection, input_format, txt_separator)
-            if input_format in ['iml', 'csv', 'pef']:
+            if input_format in ['txt', 'lastxt', 'iml', 'csv', 'pef']:
                 txtFiles = TxtPyConverter.TxtPyConverter(source_file, source_projection, destination_file,
                                                          destination_projection, input_format, txt_separator)
             txtFiles.Open()
@@ -87,16 +84,7 @@ def Transformer(parameters):
             logging.error('Cannot open file: %s.' % (str(err)))
             exit(10)
         try:
-            if input_format == 'txt':
-                txtFiles.TransformPointText()
-            elif input_format == 'lastxt':
-                txtFiles.TransformLASText()
-            elif input_format == 'iml':
-                txtFiles.TransformPointIML()
-            elif input_format == 'csv':
-                txtFiles.TransformPointCSV()
-            elif input_format == 'pef':
-                txtFiles.TransformPEF()
+            txtFiles.Transform()
         except Exception as err:
             logging.error(
                 'Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))

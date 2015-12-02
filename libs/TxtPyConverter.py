@@ -40,46 +40,45 @@ class TxtPyConverter:
         except Exception as err:
             raise
 
+    def Transform(self):
+        if self.__Type == 'txt':
+            self.TransformPointText()
+        elif self.__Type == 'lastxt':
+            self.TransformLASText()
+        elif self.__Type == 'iml':
+            self.TransformPointIML()
+        elif self.__Type == 'csv':
+            self.TransformPointCSV()
+        elif self.__Type == 'pef':
+            self.TransformPEF()
+
+    def DoTransform(self, x_in, y_in, z_in, x_out, y_out, z_out, skip_first_lines):
+        self.r = csv.reader(self.__SourceOpenedFile, delimiter=self.__Separator)
+        self.w = csv.writer(self.__DestinationOpenedFile, delimiter=self.__Separator)
+        for i, row in enumerate(self.r):
+            if i >= skip_first_lines:  # skip header transformation
+                row[x_out], row[y_out], row[z_out] = transform(self.__SourceProj, self.__DestinationProj,
+                                                               row[x_in], row[y_in], row[z_in])
+            self.w.writerow(row)
+
     def TransformLASText(self):
-        # Transforming PointText
-        r = csv.reader(self.__SourceOpenedFile, delimiter=self.__Separator)
-        w = csv.writer(self.__DestinationOpenedFile, delimiter=self.__Separator)
-        for i, row in enumerate(r):
-            row[0], row[1], row[2] = transform(self.__SourceProj, self.__DestinationProj,
-                                               row[0], row[1], row[2])
-            w.writerow(row)
+        # Transforming LASText, type lastxt
+        self.DoTransform(0, 1, 2, 0, 1, 2, 0)
 
     def TransformPointText(self):
-        # Transforming PointText
-        r = csv.reader(self.__SourceOpenedFile, delimiter=self.__Separator)
-        w = csv.writer(self.__DestinationOpenedFile, delimiter=self.__Separator)
-        for i, row in enumerate(r):
-            if i > 0:  # skip header transformation
-                row[1], row[2], row[3] = transform(self.__SourceProj, self.__DestinationProj,
-                                                   row[1], row[2], row[3])
-            w.writerow(row)
+        # Transforming PointText, type txt
+        self.DoTransform(1, 2, 3, 1, 2, 3, 1)
 
     def TransformPointCSV(self):
-        # Transforming PointText
-        r = csv.reader(self.__SourceOpenedFile, self.__Separator)
-        w = csv.writer(self.__DestinationOpenedFile, self.__Separator)
-        for i, row in enumerate(r):
-            if i > 0:  # skip header transformation
-                row[2], row[3], row[4] = transform(self.__SourceProj, self.__DestinationProj,
-                                                   row[2], row[3], row[4])
-            w.writerow(row)
+        # Transforming CSV, type csv
+        self.DoTransform(2, 3, 4, 2, 3, 4, 1)
 
     def TransformPointIML(self):
-        # Transforming PointText
-        r = csv.reader(self.__SourceOpenedFile, delimiter=' ')
-        w = csv.writer(self.__DestinationOpenedFile, delimiter=' ')
-        for i, row in enumerate(r):
-            if i > 0:  # skip header transformation
-                row[1], row[2], row[3] = transform(self.__SourceProj, self.__DestinationProj,
-                                                   row[1], row[2], row[3])
-            w.writerow(row)
+        # Transforming IML, type iml
+        self.DoTransform(1, 2, 3, 1, 2, 3, 1)
 
     def TransformPEF(self):
+        # Transforming PEF, type pef
         point_pattern = re.compile('P\d{1,3}')  # format is Pn or Pnn or Pnnn
         while True:
             Content = self.__SourceOpenedFile.ReadNextItem()
