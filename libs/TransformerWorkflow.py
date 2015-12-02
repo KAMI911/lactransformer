@@ -74,11 +74,10 @@ def Transformer(parameters):
             '[%s] Opening %s %s file for converting to %s %s file ... Source projections is: "%s", destination projection is: "%s".' % (
                 proc_name, source_file, input_format_name, destination_file, input_format_name, source_projection,
                 destination_projection))
-        # Opening source LAS files for read and write
+        # Opening source Text pointcloud files for read and write
         try:
-            if input_format in ['txt', 'lastxt', 'iml', 'csv', 'pef']:
-                txtFiles = TxtPyConverter.TxtPyConverter(source_file, source_projection, destination_file,
-                                                         destination_projection, input_format, txt_separator)
+            txtFiles = TxtPyConverter.TxtPyConverter(source_file, source_projection, destination_file,
+                                                     destination_projection, input_format, txt_separator)
             txtFiles.Open()
         except Exception as err:
             logging.error('Cannot open file: %s.' % (str(err)))
