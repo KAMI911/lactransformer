@@ -1,4 +1,5 @@
 language: python
+
 python:
   - "2.7"
 
@@ -10,14 +11,8 @@ before_install:
 install:
   - pip install --upgrade pip
   - pip install numpy
-  - cd pyproj-v1.9.4rel
-  - python setup.py build
-  - sudo python setup.py install
-  - cd ..
-  - cd laspy-1.2.5
-  - python setup.py build
-  - sudo python setup.py install
-  - cd ..
+  - pip install https://github.com/jswhit/pyproj/archive/v1.9.4rel.zip
+  - pip install https://github.com/grantbrown/laspy/archive/1.2.5-zip
 
 # command to run test
 script: python test_lactransformer.py
