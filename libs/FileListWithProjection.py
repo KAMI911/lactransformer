@@ -39,7 +39,7 @@ class FileListWithProjection:
                 self.__file_and_projection.append(
                     [in_file, out_file, self.__input_projection_string, self.__input_fallback_projection_string,
                      self.__output_projection_string, self.__output_fallback_projection_string, self.__file_format,
-                                                   self.__full_header_update, self.__txt_separator])
+                     self.__full_header_update, self.__txt_separator])
         elif os.path.isfile(self.__input_file_or_dir):
             self.__input_isdir = False
             in_file = self.__input_file_or_dir
@@ -54,7 +54,7 @@ class FileListWithProjection:
                 self.__file_and_projection.append(
                     [in_file, out_file, self.__input_projection_string, self.__input_fallback_projection_string,
                      self.__output_projection_string, self.__output_fallback_projection_string, self.__file_format,
-                                                   self.__full_header_update, self.__txt_separator])
+                     self.__full_header_update, self.__txt_separator])
             logging.info('Adding %s to the queue.' % (in_file))
         else:
             # Not a file, not a dir

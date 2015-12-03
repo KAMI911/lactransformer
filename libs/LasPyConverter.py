@@ -97,7 +97,7 @@ class LasPyConverter:
                 self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2] = transform(
                     self.__SourceProj, self.__DestinationFallbackProj,
                     self.__SourceOffset[0], self.__SourceOffset[1],
-                self.__SourceOffset[2])
+                    self.__SourceOffset[2])
             else:
                 self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2] = transform(
                     self.__SourceProj, self.__DestinationProj,
