@@ -84,7 +84,7 @@ def testing_lactransformer():
     text_transformation = unittest.TestLoader().loadTestsFromTestCase(TestTextTransformation_EOVc)
     text_transformation_wgs = unittest.TestLoader().loadTestsFromTestCase(TestTextTransformation_WGS84)
     suite = unittest.TestSuite([friendly_name, assign_projection, text_transformation, text_transformation_wgs])
-    return unittest.TextTestRunner(verbosity=1).run(suite)
+    return unittest.TextTestRunner(verbosity=2).run(suite)
 
 
 if __name__ == '__main__':
