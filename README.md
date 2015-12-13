@@ -53,14 +53,16 @@ laspy - https://pypi.python.org/pypi/laspy/
 
 numpy - https://pypi.python.org/pypi/numpy/
 
+pandas - https://pypi.python.org/pypi/pandas/
+
 ## Installation
 
 ### Linux (Debian/Ubuntu/Linux Mint)
 
-**Install Python 2.7, Numpy, pyproj**
+**Install Python 2.7, Numpy, Pandas, pyproj, laspy**
 
 ```
-sudo apt-get install python2.7 python-numpy
+sudo apt-get install python2.7 python-numpy python-pandas
 ```
 
 **Install pyproj**
@@ -121,6 +123,28 @@ And install it:
 
 ```
 C:\Python27\Scripts\pip.exe install "numpy-1.9.2+mkl-cp27-none-win_amd64.whl"
+```
+
+**Install Pandas**
+
+Download:
+
+http://www.lfd.uci.edu/~gohlke/pythonlibs/#pandas
+
+One of these files:
+
+pandas-0.17.1-cp27-none-win_amd64.whl for 64 bit version
+
+http://www.lfd.uci.edu/~gohlke/pythonlibs/2y3mcodk/pandas-0.17.1-cp27-none-win_amd64.whl
+
+pandas-0.17.1-cp27-none-win32.whl for 32 bit version
+
+http://www.lfd.uci.edu/~gohlke/pythonlibs/2y3mcodk/pandas-0.17.1-cp27-none-win32.whl
+
+And install it:
+
+```
+C:\Python27\Scripts\pip.exe install "pandas-0.17.1-cp27-none-win_amd64.whl"
 ```
 
 **Install pyproj**
