@@ -1,5 +1,7 @@
 try:
     import csv
+    import numpy as np
+    import pandas
     import re
     from pyproj import Proj, transform
     from libs import PefFile, AssignProjection
@@ -8,25 +10,43 @@ except ImportError as err:
     exit(128)
 
 
-class TxtPyConverter:
+class TxtPanPyConverter:
     def __init__(self, source_filename, source_projection, destination_filename, destination_projection, type='txt',
                  separator=','):
         self.__SourceFileName = source_filename
         self.__DestinationFileName = destination_filename
         self.__SourceProjection = source_projection
-        self.__SourceProjectionString = AssignProjection.AssignProjection(self.__SourceProjection, '..')
+        self.__SourceProjectionString = AssignProjection.AssignProjection(source_projection, '..')
         self.__SourceProj = Proj(self.__SourceProjectionString)
         self.__DestinationProjection = destination_projection
         self.__DestinationProjectionString = AssignProjection.AssignProjection(self.__DestinationProjection, '..')
         self.__DestinationProj = Proj(self.__DestinationProjectionString)
         self.__Separator = separator
         self.__Type = type
+        self.__Format = ['%1.6f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f']
+        if self.__Type == 'txt':
+            self.__SkipRows = 1
+            self.__Fields = [1, 2, 3]
+        elif self.__Type == 'lastxt':
+            self.__SkipRows = 0
+            self.__Fields = [0, 1, 2]
+        elif self.__Type == 'iml':
+            self.__SkipRows = 1
+            self.__Fields = [1, 2, 3]
+        elif self.__Type == 'csv':
+            self.__SkipRows = 1
+            self.__Fields = [2, 3, 4]
+        if self.__DestinationProjection in ['WGS84']:
+            for f in self.__Fields:
+                self.__Format[f] = '%1.15f'
 
     def Open(self):
         try:
             if self.__Type != 'pef':
-                self.__SourceOpenedFile = open(self.__SourceFileName, 'rb')
                 self.__DestinationOpenedFile = open(self.__DestinationFileName, 'wb')
+                df = pandas.read_csv(self.__SourceFileName,
+                                     sep=self.__Separator)
+                self.__SourceData = df.values
             elif self.__Type == 'pef':
                 self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName)
                 self.__SourceOpenedFile.OpenRO()
@@ -35,52 +55,20 @@ class TxtPyConverter:
         except Exception as err:
             raise
 
-    def OpenReanOnly(self):
-        try:
-            self.__SourceOpenedFile = open(self.__SourceFileName, 'rb')
-            self.__DestinationOpenedFile = open(self.__DestinationFileName, 'wb')
-        except Exception as err:
-            raise
-
     def Transform(self):
-        if self.__Type == 'txt':
-            self.TransformPointText()
-        elif self.__Type == 'lastxt':
-            self.TransformLASText()
-        elif self.__Type == 'iml':
-            self.TransformPointIML()
-        elif self.__Type == 'csv':
-            self.TransformPointCSV()
-        elif self.__Type == 'pef':
+        if self.__Type != 'pef':
+            self.TransformTxt()
+        else:
             self.TransformPEF()
 
-    def DoTransform(self, x_in, y_in, z_in, skip_first_lines):
-        self.r = csv.reader(self.__SourceOpenedFile, delimiter=self.__Separator)
-        self.w = csv.writer(self.__DestinationOpenedFile, delimiter=self.__Separator)
-        if skip_first_lines > 0:  # skip header transformation
-            self.__Header = next(self.r, None)
-            self.w.writerow(self.__Header)
-        for i, row in enumerate(self.r):
-            if i >= skip_first_lines - 1:  # skip header transformation
-                row[x_in], row[y_in], row[z_in] = transform(self.__SourceProj, self.__DestinationProj,
-                                                            row[x_in], row[y_in], row[z_in])
-                self.w.writerow(row)
-
-    def TransformLASText(self):
-        # Transforming LASText, type lastxt
-        self.DoTransform(0, 1, 2, 0)
-
-    def TransformPointText(self):
-        # Transforming PointText, type txt
-        self.DoTransform(1, 2, 3, 1)
-
-    def TransformPointCSV(self):
-        # Transforming CSV, type csv
-        self.DoTransform(2, 3, 4, 1)
-
-    def TransformPointIML(self):
-        # Transforming IML, type iml
-        self.DoTransform(1, 2, 3, 1)
+    def TransformTxt(self):
+        self.__SourceData[:, self.__Fields[0]], self.__SourceData[:, self.__Fields[1]], self.__SourceData[:,
+                                                                                        self.__Fields[2]] = transform(
+            self.__SourceProj,
+            self.__DestinationProj,
+            self.__SourceData[:, self.__Fields[0]],
+            self.__SourceData[:, self.__Fields[1]],
+            self.__SourceData[:, self.__Fields[2]])
 
     def TransformPEF(self):
         # Transforming PEF, type pef
@@ -103,8 +91,10 @@ class TxtPyConverter:
 
     def Close(self, type='txt'):
         if self.__Type != 'pef':
-            self.__SourceOpenedFile.close()
-            self.__DestinationOpenedFile.close()
-        elif self.__Type == 'pef':
+            np.savetxt(self.__DestinationFileName, self.__SourceData,
+                       fmt=self.__Format,
+                       header="Time[s],X[m],Y[m],Z[m],Roll[deg],Pitch[deg],Yaw[deg]",
+                       delimiter=self.__Separator, comments='')
+        else:
             self.__SourceOpenedFile.Close()
             self.__DestinationOpenedFile.Close()

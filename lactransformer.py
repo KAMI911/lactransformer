@@ -5,7 +5,7 @@ try:
     import logging
     import datetime
     import multiprocessing
-    from libs import Logging, TransformerCommandLine, TransformerWorkflow, FileListWithProjection, Assignprojection
+    from libs import Logging, TransformerCommandLine, TransformerWorkflow, FileListWithProjection
 except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
@@ -30,14 +30,8 @@ def main():
     filelist = FileListWithProjection.FileListWithProjection()
     filelist.create_list(lasconverterworkflow.get_input(),
                          lasconverterworkflow.get_output(),
-                         Assignprojection.AssignProjection(
-                             lasconverterworkflow.get_input_projection(), script_path),
-                         Assignprojection.AssignFallbackProjection(
-                             lasconverterworkflow.get_input_projection(), script_path),
-                         Assignprojection.AssignProjection(
-                             lasconverterworkflow.get_output_projection(), script_path),
-                         Assignprojection.AssignFallbackProjection(
-                             lasconverterworkflow.get_output_projection(), script_path),
+                         lasconverterworkflow.get_input_projection(),
+                         lasconverterworkflow.get_output_projection(),
                          lasconverterworkflow.get_input_format(),
                          lasconverterworkflow.get_full_header_update(), lasconverterworkflow.get_separator())
     file_queue = filelist.get_filelist()

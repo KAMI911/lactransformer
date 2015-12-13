@@ -2,7 +2,7 @@ import unittest
 import os
 import filecmp
 
-from libs import FriendlyName, Assignprojection, TxtPyConverter
+from libs import FriendlyName, AssignProjection, TxtPanPyConverter
 
 
 script_path = os.path.join(__file__)
@@ -43,36 +43,48 @@ class TestAssignProjection(unittest.TestCase):
 
     def test_assign_projection_all(self):
         for projection, projection_string in self.projections.items():
-            self.assertEqual(Assignprojection.AssignProjection(projection, script_path), projection_string)
+            self.assertEqual(AssignProjection.AssignProjection(projection, script_path), projection_string)
 
     def test_assign_fallback_projection_all(self):
         for projection, projection_string in self.fallback_projections.items():
-            self.assertEqual(Assignprojection.AssignFallbackProjection(projection, script_path), projection_string)
+            self.assertEqual(AssignProjection.AssignFallbackProjection(projection, script_path), projection_string)
 
 
-class TestTextTransformation(unittest.TestCase):
+class TestTextTransformation_EOVc(unittest.TestCase):
     def setUp(self):
         self.input_file = os.path.join('.', 'test', 'input', 'lastext_wgs84geo_bp.txt')
         self.compare_file = os.path.join('.', 'test', 'compare', 'lastext_eov_bp.txt')
-        self.temp_file = 'test_out.txt'
-        self.text_data = TxtPyConverter.TxtPyConverter(self.input_file,
-                                                       Assignprojection.AssignProjection('WGS84geo', '.'),
-                                                       self.temp_file, Assignprojection.AssignProjection('EOVc', '.'))
+        self.temp_file = 'test_out_bp_eov.txt'
+        self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOVc', 'txt')
 
-    def test_text_transformation_wgs84geo_eov(self):
+    def test_text_transformation_lastext(self):
         self.text_data.Open()
-        self.text_data.TransformPointText()
+        self.text_data.Transform()
         self.text_data.Close()
         self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
         os.remove(self.temp_file)
 
+class TestTextTransformation_WGS84(unittest.TestCase):
+    def setUp(self):
+        self.input_file = os.path.join('.', 'test', 'input', 'lastext_wgs84geo_bp.txt')
+        self.compare_file = os.path.join('.', 'test', 'compare', 'lastext_wgs84_bp.txt')
+        self.temp_file = 'test_out_bp_wgs84.txt'
+        self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'WGS84', 'txt')
+
+    def test_text_transformation_lastext(self):
+        self.text_data.Open()
+        self.text_data.Transform()
+        self.text_data.Close()
+        self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
+        os.remove(self.temp_file)
 
 def testing_lactransformer():
     friendly_name = unittest.TestLoader().loadTestsFromTestCase(TestFriendlyName)
     assign_projection = unittest.TestLoader().loadTestsFromTestCase(TestAssignProjection)
-    text_transformation = unittest.TestLoader().loadTestsFromTestCase(TestTextTransformation)
-    suite = unittest.TestSuite([friendly_name, assign_projection, text_transformation])
-    return unittest.TextTestRunner(verbosity=2).run(suite)
+    text_transformation = unittest.TestLoader().loadTestsFromTestCase(TestTextTransformation_EOVc)
+    text_transformation_wgs = unittest.TestLoader().loadTestsFromTestCase(TestTextTransformation_WGS84)
+    suite = unittest.TestSuite([friendly_name, assign_projection, text_transformation, text_transformation_wgs])
+    return unittest.TextTestRunner(verbosity=1).run(suite)
 
 
 if __name__ == '__main__':

@@ -6,29 +6,37 @@ try:
     from pyproj import Proj, transform
     import laspy
     import laspy.file
+    from libs import AssignProjection
 except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
 
 
 class LasPyConverter:
-    def __init__(self, source_filename, source_projection, source_fallback_projection, destination_filename,
-                 destination_projection, destination_fallback_projection):
+    def __init__(self, source_filename, source_projection, destination_filename,
+                 destination_projection):
         self.__SourceFileName = source_filename
         self.__DestinationFileName = destination_filename
+
         self.__SourceProjection = source_projection
-        self.__SourceProj = Proj(source_projection)
-        if source_fallback_projection:
-            self.__SourceFallbackProjection = source_fallback_projection
-            self.__SourceFallbackProj = Proj(source_fallback_projection)
+        self.__SourceProjectionString = AssignProjection.AssignProjection(self.__SourceProjection, '..')
+        self.__SourceProj = Proj(self.__SourceProjectionString)
+
+        self.__SourceFallbackProjectionString = AssignProjection.AssignFallbackProjection(self.__SourceProjection, '..')
+        if self.__SourceFallbackProjectionString:
+            self.__SourceFallbackProj = Proj(self.__SourceFallbackProjectionString)
         else:
             self.__SourceFallbackProjection = ''
             self.__SourceFallbackProj = ''
+
         self.__DestinationProjection = destination_projection
-        self.__DestinationProj = Proj(destination_projection)
-        if destination_fallback_projection:
-            self.__DestinationFallbackProjection = destination_fallback_projection
-            self.__DestinationFallbackProj = Proj(destination_fallback_projection)
+        self.__DestinationProjectionString = AssignProjection.AssignProjection(self.__DestinationProjection, '..')
+        self.__DestinationProj = Proj(self.__DestinationProjectionString)
+
+        self.__DestinationFallbackProjectionString = AssignProjection.AssignFallbackProjection(
+            self.__DestinationProjection, '..')
+        if self.__DestinationFallbackProjectionString:
+            self.__DestinationFallbackProj = Proj(self.__DestinationFallbackProjectionString)
         else:
             self.__DestinationFallbackProjection = ''
             self.__DestinationFallbackProj = ''

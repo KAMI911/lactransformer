@@ -1,7 +1,7 @@
 try:
     import logging
     import multiprocessing
-    from libs import LasPyConverter, TxtPyConverter, FriendlyName
+    from libs import LasPyConverter, TxtPanPyConverter, FriendlyName
 except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
@@ -12,12 +12,10 @@ def Transformer(parameters):
     source_file = parameters[0]
     destination_file = parameters[1]
     source_projection = parameters[2]
-    source_fallback_projection = parameters[3]
-    destination_projection = parameters[4]
-    destination_fallback_projection = parameters[5]
-    input_format = parameters[6]
-    full_header_update = parameters[7]
-    txt_separator = parameters[8]
+    destination_projection = parameters[3]
+    input_format = parameters[4]
+    full_header_update = parameters[5]
+    txt_separator = parameters[6]
     # Get name for this process
     current = multiprocessing.current_process()
     proc_name = current.name
@@ -34,8 +32,7 @@ def Transformer(parameters):
         # Opening source LAS files for read and write
         try:
             lasFiles = LasPyConverter.LasPyConverter(
-                source_file, source_projection, source_fallback_projection,
-                destination_file, destination_projection, destination_fallback_projection)
+                source_file, source_projection, destination_file, destination_projection)
             lasFiles.Open()
         except Exception as err:
             logging.error('Cannot open files: %s and %s, error: %s.' % (source_file, destination_file, str(err)))
@@ -76,8 +73,8 @@ def Transformer(parameters):
                 destination_projection))
         # Opening source Text pointcloud files for read and write
         try:
-            txtFiles = TxtPyConverter.TxtPyConverter(source_file, source_projection, destination_file,
-                                                     destination_projection, input_format, txt_separator)
+            txtFiles = TxtPanPyConverter.TxtPanPyConverter(source_file, source_projection, destination_file,
+                                                           destination_projection, input_format, txt_separator)
             txtFiles.Open()
         except Exception as err:
             logging.error('Cannot open file: %s.' % (str(err)))
