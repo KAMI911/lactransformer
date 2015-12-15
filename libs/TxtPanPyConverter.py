@@ -36,7 +36,7 @@ class TxtPanPyConverter:
         elif self.__Type == 'csv':
             self.__SkipRows = 1
             self.__Fields = [2, 3, 4]
-        if self.__DestinationProjection in ['WGS84']:
+        if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
             for f in self.__Fields:
                 self.__Format[f] = '%1.15f'
 
