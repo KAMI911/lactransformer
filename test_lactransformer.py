@@ -53,8 +53,8 @@ class TestAssignProjection(unittest.TestCase):
 class TestTextTransformation_EOVc(unittest.TestCase):
     def setUp(self):
         self.input_file = os.path.join('.', 'test', 'input', 'lastext_wgs84geo_bp.txt')
-        self.compare_file = os.path.join('.', 'test', 'compare', 'lastext_eov_bp.txt')
-        self.temp_file = 'test_out_bp_eov.txt'
+        self.compare_file = os.path.join('.', 'test', 'compare', 'lastext_eovc_bp.txt')
+        self.temp_file = 'test_lastex__bp_eovc.txt'
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOVc', 'txt')
 
     def test_text_transformation_lastext(self):
@@ -68,8 +68,22 @@ class TestTextTransformation_WGS84(unittest.TestCase):
     def setUp(self):
         self.input_file = os.path.join('.', 'test', 'input', 'lastext_wgs84geo_bp.txt')
         self.compare_file = os.path.join('.', 'test', 'compare', 'lastext_wgs84_bp.txt')
-        self.temp_file = 'test_out_bp_wgs84.txt'
+        self.temp_file = 'test_lastext_bp_wgs84.txt'
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'WGS84', 'txt')
+
+    def test_text_transformation_lastext(self):
+        self.text_data.Open()
+        self.text_data.Transform()
+        self.text_data.Close()
+        self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
+        os.remove(self.temp_file)
+
+class TestPefTransformation_EOVc(unittest.TestCase):
+    def setUp(self):
+        self.input_file = os.path.join('.', 'test', 'input', 'pef_wgs84geo_bp.txt')
+        self.compare_file = os.path.join('.', 'test', 'compare', 'pef_eovc_bp.txt')
+        self.temp_file = 'test_pef_eovc_bp.txt'
+        self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOVc', 'pef')
 
     def test_text_transformation_lastext(self):
         self.text_data.Open()
