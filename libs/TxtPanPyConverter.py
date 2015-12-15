@@ -29,6 +29,9 @@ class TxtPanPyConverter:
         elif self.__Type == 'lastxt':
             self.__HeaderRow = None
             self.__Fields = [0, 1, 2]
+        elif self.__Type == 'strtxt':
+            self.__HeaderRow = None
+            self.__Fields = [1, 2, 3]
         elif self.__Type == 'iml':
             self.__HeaderRow = 0
             self.__Fields = [1, 2, 3]
@@ -54,6 +57,8 @@ class TxtPanPyConverter:
                     self.__Format[0] = '%1.6f'
                 elif self.__Type == 'csv':
                     self.__Format[0] = '%1.6f'
+                elif self.__Type == 'strtxt':
+                    self.__Format[0] = '%s'
                 if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
                     for f in self.__Fields:
                         self.__Format[f] = '%1.15f'

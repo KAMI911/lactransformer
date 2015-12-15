@@ -66,7 +66,7 @@ def Transformer(parameters):
         else:
             logging.info('[%s] Transformed %s %s file has created.' % (proc_name, destination_file, input_format_name))
             return 0
-    elif input_format in ['txt', 'lastxt', 'iml', 'csv', 'pef']:
+    elif input_format in ['txt', 'lastxt', 'iml', 'csv', 'pef', 'strtxt']:
         logging.info(
             '[%s] Opening %s %s file for converting to %s %s file ... Source projections is: "%s", destination projection is: "%s".' % (
                 proc_name, source_file, input_format_name, destination_file, input_format_name, source_projection,
