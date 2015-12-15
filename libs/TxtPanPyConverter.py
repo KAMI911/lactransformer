@@ -26,29 +26,38 @@ class TxtPanPyConverter:
         if self.__Type == 'txt':
             self.__HeaderRow = 0
             self.__Fields = [1, 2, 3]
-            self.__Format = ['%1.6f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f']
         elif self.__Type == 'lastxt':
             self.__HeaderRow = None
             self.__Fields = [0, 1, 2]
-            self.__Format = ['%1.12f', '%1.12f', '%1.12f']
         elif self.__Type == 'iml':
             self.__HeaderRow = 0
             self.__Fields = [1, 2, 3]
         elif self.__Type == 'csv':
             self.__HeaderRow = 0
             self.__Fields = [2, 3, 4]
-            self.__Format = ['%1.6f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f']
-        if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
-            for f in self.__Fields:
-                self.__Format[f] = '%1.15f'
 
     def Open(self):
         try:
             if self.__Type != 'pef':
                 self.__DestinationOpenedFile = open(self.__DestinationFileName, 'wb')
-                df = pandas.read_csv(self.__SourceFileName,
-                                     sep=self.__Separator, header=self.__HeaderRow)
+                df = pandas.read_csv(self.__SourceFileName, sep=self.__Separator, header=self.__HeaderRow)
                 self.__SourceData = df.values
+                self.__Columns = df.columns
+                self.__Header = ''
+                if self.__HeaderRow != None:
+                    self.__HeaderList = list(df.columns.values)
+                    self.__Header = ','.join(self.__HeaderList)
+                self.__Format = []
+                for h in range(0, len(self.__Columns)):
+                    self.__Format.append('%1.12f')
+                if self.__Type == 'txt':
+                    self.__Format[0] = '%1.6f'
+                elif self.__Type == 'csv':
+                    self.__Format[0] = '%1.6f'
+                if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
+                    for f in self.__Fields:
+                        self.__Format[f] = '%1.15f'
+
             elif self.__Type == 'pef':
                 self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName)
                 self.__SourceOpenedFile.OpenRO()
@@ -93,14 +102,9 @@ class TxtPanPyConverter:
 
     def Close(self, type='txt'):
         if self.__Type != 'pef':
-            if self.__Type == 'lastxt':
-                self.__Header = ''
-            else:
-                self.__Header = 'Time[s],X[m],Y[m],Z[m],Roll[deg],Pitch[deg],Yaw[deg]'
-            np.savetxt(self.__DestinationFileName, self.__SourceData,
-                       fmt=self.__Format,
-                       header=self.__Header,
+            np.savetxt(self.__DestinationFileName, self.__SourceData, fmt=self.__Format, header=self.__Header,
                        delimiter=self.__Separator, comments='')
+
         else:
             self.__SourceOpenedFile.Close()
             self.__DestinationOpenedFile.Close()
