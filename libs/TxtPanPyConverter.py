@@ -24,18 +24,18 @@ class TxtPanPyConverter:
         self.__Separator = separator
         self.__Type = type
         if self.__Type == 'txt':
-            self.__SkipRows = 1
+            self.__HeaderRow = 0
             self.__Fields = [1, 2, 3]
             self.__Format = ['%1.6f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f']
         elif self.__Type == 'lastxt':
-            self.__SkipRows = 0
+            self.__HeaderRow = None
             self.__Fields = [0, 1, 2]
             self.__Format = ['%1.12f', '%1.12f', '%1.12f']
         elif self.__Type == 'iml':
-            self.__SkipRows = 1
+            self.__HeaderRow = 0
             self.__Fields = [1, 2, 3]
         elif self.__Type == 'csv':
-            self.__SkipRows = 1
+            self.__HeaderRow = 0
             self.__Fields = [2, 3, 4]
             self.__Format = ['%1.6f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f']
         if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
@@ -47,7 +47,7 @@ class TxtPanPyConverter:
             if self.__Type != 'pef':
                 self.__DestinationOpenedFile = open(self.__DestinationFileName, 'wb')
                 df = pandas.read_csv(self.__SourceFileName,
-                                     sep=self.__Separator)
+                                     sep=self.__Separator, header=self.__HeaderRow)
                 self.__SourceData = df.values
             elif self.__Type == 'pef':
                 self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName)
@@ -93,9 +93,13 @@ class TxtPanPyConverter:
 
     def Close(self, type='txt'):
         if self.__Type != 'pef':
+            if self.__Type == 'lastxt':
+                self.__Header = ''
+            else:
+                self.__Header = 'Time[s],X[m],Y[m],Z[m],Roll[deg],Pitch[deg],Yaw[deg]'
             np.savetxt(self.__DestinationFileName, self.__SourceData,
                        fmt=self.__Format,
-                       header="Time[s],X[m],Y[m],Z[m],Roll[deg],Pitch[deg],Yaw[deg]",
+                       header=self.__Header,
                        delimiter=self.__Separator, comments='')
         else:
             self.__SourceOpenedFile.Close()

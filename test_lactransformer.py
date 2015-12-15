@@ -54,7 +54,7 @@ class TestTxtTransformation_EOVc(unittest.TestCase):
     def setUp(self):
         self.input_file = os.path.join('.', 'test', 'input', 'txt_wgs84geo_bp.txt')
         self.compare_file = os.path.join('.', 'test', 'compare', 'txt_eovc_bp.txt')
-        self.temp_file = 'test_txt__bp_eovc.txt'
+        self.temp_file = 'test_txt_eovc_bp.txt'
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOVc', 'txt')
 
     def test_text_transformation_lastext_eovc(self):
@@ -69,7 +69,7 @@ class TestTxtTransformation_WGS84(unittest.TestCase):
     def setUp(self):
         self.input_file = os.path.join('.', 'test', 'input', 'txt_wgs84geo_bp.txt')
         self.compare_file = os.path.join('.', 'test', 'compare', 'txt_wgs84_bp.txt')
-        self.temp_file = 'test_txt_bp_wgs84.txt'
+        self.temp_file = 'test_txt_wgs84_bp.txt'
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'WGS84',
                                                              'txt')
 
