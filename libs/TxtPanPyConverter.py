@@ -23,19 +23,21 @@ class TxtPanPyConverter:
         self.__DestinationProj = Proj(self.__DestinationProjectionString)
         self.__Separator = separator
         self.__Type = type
-        self.__Format = ['%1.6f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f']
         if self.__Type == 'txt':
             self.__SkipRows = 1
             self.__Fields = [1, 2, 3]
+            self.__Format = ['%1.6f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f']
         elif self.__Type == 'lastxt':
             self.__SkipRows = 0
             self.__Fields = [0, 1, 2]
+            self.__Format = ['%1.12f', '%1.12f', '%1.12f']
         elif self.__Type == 'iml':
             self.__SkipRows = 1
             self.__Fields = [1, 2, 3]
         elif self.__Type == 'csv':
             self.__SkipRows = 1
             self.__Fields = [2, 3, 4]
+            self.__Format = ['%1.6f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f', '%1.12f']
         if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
             for f in self.__Fields:
                 self.__Format[f] = '%1.15f'
