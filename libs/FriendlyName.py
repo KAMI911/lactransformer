@@ -21,3 +21,5 @@ def FriendlyName(input_format):
         return 'Riegl Camera CSV'
     elif input_format == 'pef':
         return 'PEF'
+    elif input_format == 'strtxt':
+        return 'String PointText'

@@ -12,7 +12,7 @@ script_path_local = os.path.dirname(script_path)
 class TestFriendlyName(unittest.TestCase):
     def test_friendly_name_all(self):
         file_formats = {'las': 'LAS PointCloud', 'laz': 'LAZ PointCloud', 'txt': 'PointText', 'lastxt': 'PointText',
-                        'iml': 'TerraPhoto Image List', 'csv': 'Riegl Camera CSV', 'pef': 'PEF'}
+                        'iml': 'TerraPhoto Image List', 'csv': 'Riegl Camera CSV', 'pef': 'PEF', 'strtxt': 'String PointText'}
         for type, type_name in file_formats.items():
             self.assertEqual(FriendlyName.FriendlyName(type), type_name)
 
