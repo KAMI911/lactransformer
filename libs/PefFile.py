@@ -56,9 +56,9 @@ class PefFile:
 
     def WriteNextItem(self, PefContent):
         for line in PefContent:
-            OneLine = '%s=%s\n' % (line[0], line[1])
+            OneLine = '%s=%s\r\n' % (line[0], line[1])
             self.__PefFileHandler.writelines(OneLine)
-        self.__PefFileHandler.writelines('\n')
+        self.__PefFileHandler.writelines('\r\n')
 
     def PrintNextItem(self):
         print (self.__FileIndex)
