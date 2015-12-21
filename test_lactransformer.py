@@ -58,11 +58,14 @@ class TestTxtTransformation_EOVc(unittest.TestCase):
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOVc', 'txt')
 
     def test_text_transformation_lastext_eovc(self):
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
         self.text_data.Open()
         self.text_data.Transform()
         self.text_data.Close()
         self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
-        os.remove(self.temp_file)
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
 
 
 class TestTxtTransformation_WGS84(unittest.TestCase):
@@ -74,11 +77,14 @@ class TestTxtTransformation_WGS84(unittest.TestCase):
                                                              'txt')
 
     def test_text_transformation_lastext_wgs84(self):
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
         self.text_data.Open()
         self.text_data.Transform()
         self.text_data.Close()
         self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
-        os.remove(self.temp_file)
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
 
 
 class TestPefTransformation_EOVc(unittest.TestCase):
@@ -89,11 +95,14 @@ class TestPefTransformation_EOVc(unittest.TestCase):
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOVc', 'pef')
 
     def test_text_transformation_pef_eovc(self):
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
         self.text_data.Open()
         self.text_data.Transform()
         self.text_data.Close()
         self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
-        os.remove(self.temp_file)
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
 
 
 class TestPefTransformation_WGS84(unittest.TestCase):
@@ -105,11 +114,14 @@ class TestPefTransformation_WGS84(unittest.TestCase):
                                                              'pef')
 
     def test_text_transformation_pef_wgs84(self):
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
         self.text_data.Open()
         self.text_data.Transform()
         self.text_data.Close()
         self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
-        os.remove(self.temp_file)
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
 
 
 class TestLasTxtTransformation_WGS84geo(unittest.TestCase):
@@ -121,11 +133,14 @@ class TestLasTxtTransformation_WGS84geo(unittest.TestCase):
                                                              'lastxt', ' ')
 
     def test_lastxt_transformation_pef_eovc(self):
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
         self.text_data.Open()
         self.text_data.Transform()
         self.text_data.Close()
         self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
-        os.remove(self.temp_file)
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
 
 
 def testing_lactransformer():

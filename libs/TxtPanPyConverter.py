@@ -62,6 +62,9 @@ class TxtPanPyConverter:
                 if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
                     for f in self.__Fields:
                         self.__Format[f] = '%1.15f'
+                elif self.__DestinationProjection not in ['WGS84'] and self.__Type != 'pef':
+                    for f in self.__Fields:
+                        self.__Format[f] = '%1.4f'
 
             elif self.__Type == 'pef':
                 self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName)
@@ -107,9 +110,9 @@ class TxtPanPyConverter:
 
     def Close(self, type='txt'):
         if self.__Type != 'pef':
-            np.savetxt(self.__DestinationFileName, self.__SourceData, fmt=self.__Format, header=self.__Header,
-                       delimiter=self.__Separator, comments='')
-
+            with open(self.__DestinationFileName, 'wb') as f:
+                np.savetxt(f, self.__SourceData, fmt=self.__Format, header=self.__Header, delimiter=self.__Separator,
+                           comments='', newline='\r\n')
         else:
             self.__SourceOpenedFile.Close()
             self.__DestinationOpenedFile.Close()
