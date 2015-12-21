@@ -23,6 +23,12 @@ in following formats:
 
 https://github.com/KAMI911/lactransformer
 
+## Donation
+
+If you find this useful, please consider a donation:
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RLQZ58B26XSLA)
+
 ## Supported projections
 
 **WGS84**     (EPSG:4326) projection : http://epsg.io/4326/
