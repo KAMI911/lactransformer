@@ -39,6 +39,17 @@ class TxtPanPyConverter:
             self.__HeaderRow = 0
             self.__Fields = [2, 3, 4]
 
+    # Replaces the header of text files to the correct one based on Destination Projection
+    def __projection_replace_header(self):
+        new_header_part = []
+        if self.__DestinationProjection in ['WGS84geo']:
+            new_header_part = [ 'X[m]', 'Y[m]', 'Z[m]' ]
+        elif self.__DestinationProjection in ['EOV', 'EOVc', 'SVY21', 'SVY21c' ]:
+            new_header_part = [ 'Easting[m]', 'Northing[m]', 'Elevation[m]' ]
+        if new_header_part != []:
+            for i in range(0,3):
+                self.__HeaderList[self.__Fields[i]] = new_header_part[i]
+
     def Open(self):
         try:
             if self.__Type != 'pef':
@@ -49,6 +60,7 @@ class TxtPanPyConverter:
                 self.__Header = ''
                 if self.__HeaderRow != None:
                     self.__HeaderList = list(df.columns.values)
+                    self.__projection_replace_header()
                     self.__Header = ','.join(self.__HeaderList)
                 self.__Format = []
                 for h in range(0, len(self.__Columns)):
