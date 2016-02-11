@@ -74,9 +74,9 @@ sudo apt-get install python2.7 python-numpy python-pandas
 **Install pyproj**
 
 ```
-wget https://github.com/jswhit/pyproj/archive/v1.9.4rel.zip
-unzip v1.9.4rel.zip
-cd pyproj-v1.9.4rel
+wget https://github.com/jswhit/pyproj/archive/v1.9.5rel.zip
+unzip v1.9.5rel.zip
+cd pyproj-v1.9.5rel
 python setup.py build
 sudo python setup.py install
 ```
@@ -161,18 +161,18 @@ http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyproj
 
 One of these files:
 
-pyproj-1.9.4-cp27-none-win_amd64.whl for 64 bit version
+pyproj-1.9.5-cp27-none-win_amd64.whl for 64 bit version
 
-http://www.lfd.uci.edu/%7Egohlke/pythonlibs/3i673h27/pyproj-1.9.4-cp27-none-win_amd64.whl
+http://www.lfd.uci.edu/%7Egohlke/pythonlibs/3i673h27/pyproj-1.9.5-cp27-none-win_amd64.whl
 
-pyproj‑1.9.4‑cp27‑none‑win32.whl for 32 bit version
+pyproj‑1.9.5‑cp27‑none‑win32.whl for 32 bit version
 
-http://www.lfd.uci.edu/~gohlke/pythonlibs/3i673h27/pyproj-1.9.4-cp27-none-win32.whl
+http://www.lfd.uci.edu/~gohlke/pythonlibs/3i673h27/pyproj-1.9.5-cp27-none-win32.whl
 
 And install it:
 
 ```
-C:\Python27\Scripts\pip.exe install "pyproj-1.9.4-cp27-none-win_amd64.whl"
+C:\Python27\Scripts\pip.exe install "pyproj-1.9.5-cp27-none-win_amd64.whl"
 ```
 
 **Install laspy**
