@@ -35,8 +35,15 @@ def Transformer(parameters):
             lasFiles = LasPyConverter.LasPyConverter(
                 source_file, source_projection, destination_file, destination_projection)
             lasFiles.Open()
+        except ValueError as err:
+            logging.error(
+                'Cannot open files: %s and %s, error: %s. Probably this type of errors (ValueError) caused by corrupt LAS PointCloud file.' % (
+                source_file, destination_file, str(err)))
+            traceback.print_exc()
+            exit(10)
         except Exception as err:
             logging.error('Cannot open files: %s and %s, error: %s.' % (source_file, destination_file, str(err)))
+            traceback.print_exc()
             exit(10)
         try:
             logging.info('[%s] Scaling %s.' % (proc_name, input_format_name))
