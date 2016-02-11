@@ -33,7 +33,6 @@ class LasPyConverter:
             self.__SourceFallbackProj = ''
 
         self.__DestinationProjection = destination_projection
-        print (self.__DestinationProjection)
         self.__DestinationProjectionString = AssignProjection.AssignProjectionString(self.__DestinationProjection, '..')
         self.__DestinationProj = Proj(self.__DestinationProjectionString)
 
