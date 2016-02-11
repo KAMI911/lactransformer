@@ -14,10 +14,10 @@ class TxtPyConverter:
         self.__SourceFileName = source_filename
         self.__DestinationFileName = destination_filename
         self.__SourceProjection = source_projection
-        self.__SourceProjectionString = AssignProjection.AssignProjection(self.__SourceProjection, '..')
+        self.__SourceProjectionString = AssignProjection.AssignProjectionString(self.__SourceProjection, '..')
         self.__SourceProj = Proj(self.__SourceProjectionString)
         self.__DestinationProjection = destination_projection
-        self.__DestinationProjectionString = AssignProjection.AssignProjection(self.__DestinationProjection, '..')
+        self.__DestinationProjectionString = AssignProjection.AssignProjectionString(self.__DestinationProjection, '..')
         self.__DestinationProj = Proj(self.__DestinationProjectionString)
         self.__Separator = separator
         self.__Type = type

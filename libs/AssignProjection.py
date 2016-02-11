@@ -6,7 +6,7 @@ except ImportError as err:
     exit(128)
 
 
-def AssignProjection(projection, script_path):
+def AssignProjectionString(projection, script_path):
     # Init does not work on Linux
     # WGS84 = Proj(init='EPSG:4326')
     # WGS84Geo = Proj(init='EPSG:4328')
@@ -51,7 +51,7 @@ def AssignProjection(projection, script_path):
     return projectionstring
 
 
-def AssignFallbackProjection(projection, script_path):
+def AssignFallbackProjectionString(projection, script_path):
     # Init does not work on Linux
     # WGS84 = Proj(init='EPSG:4326')
     # WGS84Geo = Proj(init='EPSG:4328')
@@ -74,4 +74,26 @@ def AssignFallbackProjection(projection, script_path):
         fallback_projectionstring = ''
     elif projection == 'ETRS89geo':
         fallback_projectionstring = ''
+    return fallback_projectionstring
+
+
+def AssignProjectionName(projection):
+    if projection == 'WGS84':
+        fallback_projectionstring = 'WGS84'
+    elif projection == 'WGS84geo':
+        fallback_projectionstring = 'WGS84geo'
+    elif projection == 'EOV':
+        fallback_projectionstring = 'EOV'
+    elif projection == 'EOVc':
+        fallback_projectionstring = 'EOV'
+    elif projection == 'EOVp':  # do not use
+        fallback_projectionstring = 'EOV'
+    elif projection == 'SVY21':
+        fallback_projectionstring = 'SVY21'
+    elif projection == 'SVY21c':
+        fallback_projectionstring = 'SVY21'
+    elif projection == 'ETRS89':
+        fallback_projectionstring = 'ETRS89'
+    elif projection == 'ETRS89geo':
+        fallback_projectionstring = 'ETRS89geo'
     return fallback_projectionstring

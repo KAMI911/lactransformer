@@ -3,6 +3,7 @@ try:
     import numpy as np
     import pandas
     import re
+    import sys
     from pyproj import Proj, transform
     from libs import PefFile, AssignProjection
 except ImportError as err:
@@ -16,10 +17,10 @@ class TxtPanPyConverter:
         self.__SourceFileName = source_filename
         self.__DestinationFileName = destination_filename
         self.__SourceProjection = source_projection
-        self.__SourceProjectionString = AssignProjection.AssignProjection(source_projection, '..')
+        self.__SourceProjectionString = AssignProjection.AssignProjectionString(source_projection, '..')
         self.__SourceProj = Proj(self.__SourceProjectionString)
         self.__DestinationProjection = destination_projection
-        self.__DestinationProjectionString = AssignProjection.AssignProjection(self.__DestinationProjection, '..')
+        self.__DestinationProjectionString = AssignProjection.AssignProjectionString(self.__DestinationProjection, '..')
         self.__DestinationProj = Proj(self.__DestinationProjectionString)
         self.__Separator = separator
         self.__Type = type
@@ -43,18 +44,21 @@ class TxtPanPyConverter:
     def __projection_replace_header(self):
         new_header_part = []
         if self.__DestinationProjection in ['WGS84geo']:
-            new_header_part = [ 'X[m]', 'Y[m]', 'Z[m]' ]
-        elif self.__DestinationProjection in ['EOV', 'EOVc', 'SVY21', 'SVY21c' ]:
-            new_header_part = [ 'Easting[m]', 'Northing[m]', 'Elevation[m]' ]
+            new_header_part = ['X[m]', 'Y[m]', 'Z[m]']
+        elif self.__DestinationProjection in ['EOV', 'EOVc', 'SVY21', 'SVY21c']:
+            new_header_part = ['Easting[m]', 'Northing[m]', 'Elevation[m]']
         if new_header_part != []:
-            for i in range(0,3):
+            for i in range(0, 3):
                 self.__HeaderList[self.__Fields[i]] = new_header_part[i]
 
     def Open(self):
         try:
             if self.__Type != 'pef':
                 self.__DestinationOpenedFile = open(self.__DestinationFileName, 'wb')
-                df = pandas.read_csv(self.__SourceFileName, sep=self.__Separator, header=self.__HeaderRow)
+                if self.__SourceFileName != 'stdin':
+                    df = pandas.read_csv(self.__SourceFileName, sep=self.__Separator, header=self.__HeaderRow)
+                else:
+                    df = pandas.read_csv(sys.stdin, sep=self.__Separator, header=self.__HeaderRow)
                 self.__SourceData = df.values
                 self.__Columns = df.columns
                 self.__Header = ''
@@ -79,7 +83,10 @@ class TxtPanPyConverter:
                         self.__Format[f] = '%1.4f'
 
             elif self.__Type == 'pef':
-                self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName)
+                if self.__SourceFileName != 'stdin':
+                    self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName)
+                else:
+                    self.__SourceOpenedFile = PefFile.PefFile(sys.stdin)
                 self.__SourceOpenedFile.OpenRO()
                 self.__DestinationOpenedFile = PefFile.PefFile(self.__DestinationFileName)
                 self.__DestinationOpenedFile.OpenOW()

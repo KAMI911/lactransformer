@@ -5,6 +5,7 @@ try:
     import math
     from pyproj import Proj, transform
     import laspy
+    import sys
     import laspy.file
     from libs import AssignProjection
 except ImportError as err:
@@ -19,31 +20,38 @@ class LasPyConverter:
         self.__DestinationFileName = destination_filename
 
         self.__SourceProjection = source_projection
-        self.__SourceProjectionString = AssignProjection.AssignProjection(self.__SourceProjection, '..')
+        self.__SourceProjectionString = AssignProjection.AssignProjectionString(self.__SourceProjection, '..')
         self.__SourceProj = Proj(self.__SourceProjectionString)
 
-        self.__SourceFallbackProjectionString = AssignProjection.AssignFallbackProjection(self.__SourceProjection, '..')
+        self.__SourceFallbackProjectionString = AssignProjection.AssignFallbackProjectionString(self.__SourceProjection,
+                                                                                                '..')
         if self.__SourceFallbackProjectionString:
+            self.__SourceFallbackProjection = AssignProjection.AssignProjectionName(self.__SourceProjection)
             self.__SourceFallbackProj = Proj(self.__SourceFallbackProjectionString)
         else:
-            self.__SourceFallbackProjection = ''
+            self.__SourceFallbackProjection = AssignProjection.AssignProjectionName(self.__SourceProjection)
             self.__SourceFallbackProj = ''
 
         self.__DestinationProjection = destination_projection
-        self.__DestinationProjectionString = AssignProjection.AssignProjection(self.__DestinationProjection, '..')
+        print (self.__DestinationProjection)
+        self.__DestinationProjectionString = AssignProjection.AssignProjectionString(self.__DestinationProjection, '..')
         self.__DestinationProj = Proj(self.__DestinationProjectionString)
 
-        self.__DestinationFallbackProjectionString = AssignProjection.AssignFallbackProjection(
+        self.__DestinationFallbackProjectionString = AssignProjection.AssignFallbackProjectionString(
             self.__DestinationProjection, '..')
         if self.__DestinationFallbackProjectionString:
+            self.__DestinationFallbackProjection = AssignProjection.AssignProjectionName(self.__DestinationProjection)
             self.__DestinationFallbackProj = Proj(self.__DestinationFallbackProjectionString)
         else:
-            self.__DestinationFallbackProjection = ''
+            self.__DestinationFallbackProjection = AssignProjection.AssignProjectionName(self.__DestinationProjection)
             self.__DestinationFallbackProj = ''
 
     def Open(self):
         try:
-            self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
+            if self.__SourceFileName != 'stdin':
+                self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
+            else:
+                self.__SourceOpenedFile = laspy.file.File(sys.stdin, mode='r')
             self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='w',
                                                            header=self.__SourceOpenedFile.header)
         except Exception as err:
@@ -51,7 +59,10 @@ class LasPyConverter:
 
     def OpenReanOnly(self):
         try:
-            self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
+            if self.__SourceFileName != 'stdin':
+                self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
+            else:
+                self.__SourceOpenedFile = laspy.file.File(sys.stdin, mode='r')
             self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='r')
         except Exception as err:
             raise

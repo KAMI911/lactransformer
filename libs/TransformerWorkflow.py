@@ -1,4 +1,5 @@
 try:
+    import traceback
     import logging
     import multiprocessing
     from libs import LasPyConverter, TxtPanPyConverter, FriendlyName
@@ -51,6 +52,7 @@ def Transformer(parameters):
         except Exception as err:
             logging.error(
                 'Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))
+            traceback.print_exc()
             exit(11)
         else:
             logging.info('[%s] Successfully transformed %s data for file: %s.' % (

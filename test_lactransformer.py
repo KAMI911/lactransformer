@@ -12,7 +12,8 @@ script_path_local = os.path.dirname(script_path)
 class TestFriendlyName(unittest.TestCase):
     def test_friendly_name_all(self):
         file_formats = {'las': 'LAS PointCloud', 'laz': 'LAZ PointCloud', 'txt': 'PointText', 'lastxt': 'PointText',
-                        'iml': 'TerraPhoto Image List', 'csv': 'Riegl Camera CSV', 'pef': 'PEF', 'strtxt': 'String PointText'}
+                        'iml': 'TerraPhoto Image List', 'csv': 'Riegl Camera CSV', 'pef': 'PEF',
+                        'strtxt': 'String PointText'}
         for type, type_name in file_formats.items():
             self.assertEqual(FriendlyName.FriendlyName(type), type_name)
 
@@ -43,11 +44,12 @@ class TestAssignProjection(unittest.TestCase):
 
     def test_assign_projection_all(self):
         for projection, projection_string in self.projections.items():
-            self.assertEqual(AssignProjection.AssignProjection(projection, script_path), projection_string)
+            self.assertEqual(AssignProjection.AssignProjectionString(projection, script_path), projection_string)
 
     def test_assign_fallback_projection_all(self):
         for projection, projection_string in self.fallback_projections.items():
-            self.assertEqual(AssignProjection.AssignFallbackProjection(projection, script_path), projection_string)
+            self.assertEqual(AssignProjection.AssignFallbackProjectionString(projection, script_path),
+                             projection_string)
 
 
 class TestTxtTransformation_EOVc(unittest.TestCase):

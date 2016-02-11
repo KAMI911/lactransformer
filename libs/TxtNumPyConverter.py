@@ -2,6 +2,7 @@ try:
     import csv
     import numpy as np
     import re
+    import sys
     from pyproj import Proj, transform
     from libs import PefFile, AssignProjection
 except ImportError as err:
@@ -15,10 +16,10 @@ class TxtNumPyConverter:
         self.__SourceFileName = source_filename
         self.__DestinationFileName = destination_filename
         self.__SourceProjection = source_projection
-        self.__SourceProjectionString = AssignProjection.AssignProjection(source_projection, '..')
+        self.__SourceProjectionString = AssignProjection.AssignProjectionString(source_projection, '..')
         self.__SourceProj = Proj(self.__SourceProjectionString)
         self.__DestinationProjection = destination_projection
-        self.__DestinationProjectionString = AssignProjection.AssignProjection(self.__DestinationProjection, '..')
+        self.__DestinationProjectionString = AssignProjection.AssignProjectionString(self.__DestinationProjection, '..')
         self.__DestinationProj = Proj(self.__DestinationProjectionString)
         self.__Separator = separator
         self.__Type = type
@@ -44,10 +45,17 @@ class TxtNumPyConverter:
     def Open(self):
         try:
             if self.__Type != 'pef':
-                self.__SourceData = np.loadtxt(self.__SourceFileName, delimiter=self.__Separator,
-                                               dtype=float, skiprows=self.__SkipRows)
+                if self.__SourceFileName != 'stdin':
+                    self.__SourceData = np.loadtxt(self.__SourceFileName, delimiter=self.__Separator,
+                                                   dtype=float, skiprows=self.__SkipRows)
+                else:
+                    self.__SourceData = np.loadtxt(sys.stdin, delimiter=self.__Separator,
+                                                   dtype=float, skiprows=self.__SkipRows)
             elif self.__Type == 'pef':
-                self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName)
+                if self.__SourceFileName != 'stdin':
+                    self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName)
+                else:
+                    self.__SourceOpenedFile = PefFile.PefFile(sys.stdin)
                 self.__SourceOpenedFile.OpenRO()
                 self.__DestinationOpenedFile = PefFile.PefFile(self.__DestinationFileName)
                 self.__DestinationOpenedFile.OpenOW()
