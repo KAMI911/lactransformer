@@ -49,10 +49,10 @@ def Transformer(parameters):
             logging.info('[%s] Scaling %s.' % (proc_name, input_format_name))
             lasFiles.GetSourceScale()
             original, transformed = lasFiles.SetDestinationScale()
-            logging.info('[%s] %s file original / transformed offset: %s %s %s / %s %s %s coordinates.' % (
+            logging.info('[%s] %s file original/transformed offset: [%.2f,%.2f,%.2f]/[%.2f,%.2f,%.2f] coordinates.' % (
                 proc_name, input_format_name, original[0], original[1], original[2], transformed[0], transformed[1],
                 transformed[2]))
-            logging.info('[%s] Bounding box of original PointCloud min: %s max: %s.' % (
+            logging.info('[%s] Bounding box of original PointCloud min: [%.2f,%.2f,%.2f] max: [%.2f,%.2f,%.2f].' % (
                 proc_name, lasFiles.ReturnOriginalMin(), lasFiles.ReturnOriginalMax()))
             logging.info('[%s] Transforming %s.' % (proc_name, input_format_name))
             lasFiles.TransformPointCloud()

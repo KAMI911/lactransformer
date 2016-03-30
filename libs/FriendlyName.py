@@ -10,9 +10,9 @@ def FriendlyName(input_format):
     if input_format == 'las':
         return 'LAS PointCloud'
     elif input_format == 'laz':
-        return 'LAZ PointCloud'
+        return 'LAZ (compressed) PointCloud'
     elif input_format == 'txt':
-        return 'PointText'
+        return 'Trajectory CSV file'
     elif input_format == 'lastxt':
         return 'PointText'
     elif input_format == 'iml':
