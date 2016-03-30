@@ -38,7 +38,7 @@ def Transformer(parameters):
         except ValueError as err:
             logging.error(
                 'Cannot open files: %s and %s, error: %s. Probably this type of errors (ValueError) caused by corrupt LAS PointCloud file.' % (
-                source_file, destination_file, str(err)))
+                    source_file, destination_file, str(err)))
             traceback.print_exc()
             exit(10)
         except Exception as err:
@@ -52,8 +52,11 @@ def Transformer(parameters):
             logging.info('[%s] %s file original/transformed offset: [%.2f,%.2f,%.2f]/[%.2f,%.2f,%.2f] coordinates.' % (
                 proc_name, input_format_name, original[0], original[1], original[2], transformed[0], transformed[1],
                 transformed[2]))
+            original_min = lasFiles.ReturnOriginalMin()
+            original_max = lasFiles.ReturnOriginalMax()
             logging.info('[%s] Bounding box of original PointCloud min: [%.2f,%.2f,%.2f] max: [%.2f,%.2f,%.2f].' % (
-                proc_name, lasFiles.ReturnOriginalMin(), lasFiles.ReturnOriginalMax()))
+                proc_name, original_min[0], original_min[1], original_min[2], original_max[0], original_max[1],
+                original_max[2]))
             logging.info('[%s] Transforming %s.' % (proc_name, input_format_name))
             lasFiles.TransformPointCloud()
         except Exception as err:
@@ -64,8 +67,11 @@ def Transformer(parameters):
         else:
             logging.info('[%s] Successfully transformed %s data for file: %s.' % (
                 proc_name, input_format_name, destination_file))
-            logging.info('[%s] Bounding box of transformed PointCloud min: %s max %s.' % (
-                proc_name, lasFiles.ReturnTransformedMin(), lasFiles.ReturnTransformedMax()))
+            transformed_min = lasFiles.ReturnTransformedMin()
+            transformed_max = lasFiles.ReturnTransformedMax()
+            logging.info('[%s] Bounding box of transformed PointCloud min: [%.2f,%.2f,%.2f] max: [%.2f,%.2f,%.2f].' % (
+                proc_name, transformed_min[0], transformed_min[1], transformed_min[2], transformed_max[0], transformed_max[1],
+                transformed_max[2]))
         try:
             logging.info('[%s] Closing transformed %s %s file.' % (proc_name, destination_file, input_format_name))
             lasFiles.Close(full_header_update)

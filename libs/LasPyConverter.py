@@ -136,18 +136,11 @@ class LasPyConverter:
     def TransformPointCloud(self):
         # Transforming PointCloud
         try:
+            self.__DestinationOpenedFile.points = self.__SourceOpenedFile.points
             self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z = transform(
                 self.__SourceProj, self.__DestinationProj,
                 self.__SourceOpenedFile.x, self.__SourceOpenedFile.y,
                 self.__SourceOpenedFile.z)
-
-            self.__DestinationOpenedFile.intensity = self.__SourceOpenedFile.intensity
-            self.__DestinationOpenedFile.flag_byte = self.__SourceOpenedFile.flag_byte
-            self.__DestinationOpenedFile.raw_classification = self.__SourceOpenedFile.raw_classification
-            self.__DestinationOpenedFile.scan_angle_rank = self.__SourceOpenedFile.scan_angle_rank
-            self.__DestinationOpenedFile.user_data = self.__SourceOpenedFile.user_data
-            self.__DestinationOpenedFile.pt_src_id = self.__SourceOpenedFile.pt_src_id
-            self.__DestinationOpenedFile.gps_time = self.__SourceOpenedFile.gps_time
             self.UpdateDestinationMinMax()
         except Exception:
             raise
