@@ -10,7 +10,7 @@ class TransformerCommandLine:
     def __init__(self):
         # predefinied paths
         self.parser = argparse.ArgumentParser(prog="lactransformer",
-                                              formatter_class=argparse.RawDescriptionHelpFormatter,
+                                              formatter_class=argparse.RawTextHelpFormatter,
                                               description='',
                                               epilog=textwrap.dedent('''
         example:
@@ -25,22 +25,31 @@ class TransformerCommandLine:
         self.parser.add_argument('-input_format', type=str, dest='input_format', required=False,
                                  choices=['las', 'laz', 'txt', 'lastxt', 'csv', 'iml', 'pef', 'strtxt'],
                                  help='optional:  input format (default=las, laz is not implemented (yet))'
-                                      ', las = LAS PointCloud'
-                                      ', laz = LAZ (compressed) PointCloud'
-                                      ', txt = Trajectory CSV file'
-                                      ', lastxt = PointText'
-                                      ', csv = Riegl Camera CSV file'
-                                      ', iml = TerraPhoto Image List file'
-                                      ', pef = PEF file'
-                                      ', strtxt = String PointText')
+                                      '  las = LAS PointCloud\n'
+                                      '  laz = LAZ (compressed) PointCloud\n'
+                                      '  txt = Trajectory CSV file\n'
+                                      '  lastxt = PointText\n'
+                                      '  csv = Riegl Camera CSV file\n'
+                                      '  iml = TerraPhoto Image List file\n'
+                                      '  pef = PEF file\n'
+                                      '  strtxt = String PointText\n')
         self.parser.add_argument('-input_projection', type=str, dest='input_projection', required=False,
                                  choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
                                           'ETRS89geo'],
-                                 help='optional:  input format (default=WGS84geo, EOVp is not implemented (yet))')
+                                 help='optional:  input format (default=WGS84geo, EOVp is not implemented (yet))\n'
+                                      '  WGS84 (EPSG:4326) projection : http://epsg.io/4326/\n'
+                                      '  WGS84geo (EPSG:4978) projection : http://epsg.io/4978/\n'
+                                      '  EOV (EPSG:23700) projection: http://epsg.io/23700/\n'
+                                      '  EOVc (EPSG:23700) projection with grid correction: http://epsg.io/23700/\n'
+                                      '  SVY21 (EPSG:3414) projection: http://epsg.io/3414/\n'
+                                      '  SVY21c (EPSG:3414) projection with correction: http://epsg.io/3414/\n'
+                                      '  ETRS89 (EPSG:4258) projection: http://epsg.io/4258/\n'
+                                      '  ETRS89geo (EPSG:4936) projection: http://epsg.io/4936/\n')
         self.parser.add_argument('-output_projection', type=str, dest='output_projection', required=False,
                                  choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
                                           'ETRS89geo'],
-                                 help='optional:  input format (default=EOVc, EOVp is not implemented (yet))')
+                                 help='optional:  output format (default=EOVc, EOVp is not implemented (yet))\n'
+                                      '  same as input_projection')
         self.parser.add_argument('-cores', type=int, dest='cores', required=False, default=1,
                                  help='optional:  cores (default=1)')
         self.parser.add_argument('-full_header_update', dest='full_header_update', required=False,
