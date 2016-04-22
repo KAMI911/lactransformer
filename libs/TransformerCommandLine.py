@@ -34,11 +34,12 @@ class TransformerCommandLine:
                                       '  pef = PEF file\n'
                                       '  strtxt = String PointText\n')
         self.parser.add_argument('-input_projection', type=str, dest='input_projection', required=False,
-                                 choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
+                                 choices=['WGS84', 'WGS84geo', 'WGS84PM', 'EOV', 'EOVc', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
                                           'ETRS89geo'],
                                  help='optional:  input format (default=WGS84geo, EOVp is not implemented (yet))\n'
-                                      '  WGS84 (EPSG:4326) projection : http://epsg.io/4326/\n'
-                                      '  WGS84geo (EPSG:4978) projection : http://epsg.io/4978/\n'
+                                      '  WGS84 (EPSG:4326) projection: http://epsg.io/4326/\n'
+                                      '  WGS84geo (EPSG:4978) geocentric projection: http://epsg.io/4978/\n'
+                                      '  WGS84PM (EPSG:3857) Pseudo-Mercator projection: http://epsg.io/3857/\n'
                                       '  EOV (EPSG:23700) projection: http://epsg.io/23700/\n'
                                       '  EOVc (EPSG:23700) projection with grid correction: http://epsg.io/23700/\n'
                                       '  SVY21 (EPSG:3414) projection: http://epsg.io/3414/\n'
@@ -46,7 +47,7 @@ class TransformerCommandLine:
                                       '  ETRS89 (EPSG:4258) projection: http://epsg.io/4258/\n'
                                       '  ETRS89geo (EPSG:4936) projection: http://epsg.io/4936/\n')
         self.parser.add_argument('-output_projection', type=str, dest='output_projection', required=False,
-                                 choices=['WGS84', 'WGS84geo', 'EOV', 'EOVc', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
+                                 choices=['WGS84', 'WGS84geo', 'WGS84PM', 'EOV', 'EOVc', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
                                           'ETRS89geo'],
                                  help='optional:  output format (default=EOVc, EOVp is not implemented (yet))\n'
                                       '  same as input_projection')

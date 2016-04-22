@@ -15,6 +15,8 @@ def AssignProjectionString(projection, script_path):
         projectionstring = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
     elif projection == 'WGS84geo':
         projectionstring = '+proj=geocent +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
+    elif projection == 'WGS84PM':
+        projectionstring = '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs'
     elif projection == 'EOV':
         projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
     elif projection == 'EOVc':
@@ -60,6 +62,8 @@ def AssignFallbackProjectionString(projection, script_path):
         fallback_projectionstring = ''
     elif projection == 'WGS84geo':
         fallback_projectionstring = ''
+    elif projection == 'WGS84PM':
+        fallback_projectionstring = ''
     elif projection == 'EOV':
         fallback_projectionstring = ''
     elif projection == 'EOVc':
@@ -82,6 +86,8 @@ def AssignProjectionName(projection):
         fallback_projectionstring = 'WGS84'
     elif projection == 'WGS84geo':
         fallback_projectionstring = 'WGS84geo'
+    elif projection == 'WGS84PM':
+        fallback_projectionstring = 'WGS84PM'
     elif projection == 'EOV':
         fallback_projectionstring = 'EOV'
     elif projection == 'EOVc':

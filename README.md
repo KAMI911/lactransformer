@@ -6,6 +6,7 @@ LAS & Co Transformer is an utility to convert
 
 * WGS84 (World Geodetic System 1984) Geocentric coordinate system
 * WGS84 (World Geodetic System 1984) Geodetic coordinate system
+* WGS84 (World Geodetic System 1984) Pseudo-Mercator -- Spherical Mercator, Google Maps, OpenStreetMap, Bing, ArcGIS, ESRI coordinate system
 * ETRS89 (European Terrestrial Reference System 1989) Geocentric coordinate system
 * ETRS89 (European Terrestrial Reference System 1989) Geodetic coordinate system
 * Hungarian EOV (Egységes Országos Vetület) Projected coordinate system
@@ -34,6 +35,8 @@ If you find this useful, please consider a donation:
 **WGS84**     (EPSG:4326) projection : http://epsg.io/4326/
 
 **WGS84geo**  (EPSG:4978) projection : http://epsg.io/4978/
+
+**WGS84PM**  (EPSG:3857) projection : http://epsg.io/3857/
 
 **EOV**       (EPSG:23700) projection: http://epsg.io/23700/
 
