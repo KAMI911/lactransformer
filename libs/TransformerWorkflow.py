@@ -2,7 +2,7 @@ try:
     import traceback
     import logging
     import multiprocessing
-    from libs import LasPyConverter, TxtPanPyConverter, FriendlyName
+    from libs import LasPyConverter, TxtPanPyConverter, FriendlyName, AssignProjection
 except ImportError as err:
     print("Error import module: " + str(err))
     exit(128)
@@ -29,7 +29,7 @@ def Transformer(parameters):
                 proc_name, source_file, input_format_name, destination_file, input_format_name))
         logging.info(
             '[%s] Source projections is: "%s", destination projection is: "%s".' % (
-                proc_name, source_projection, destination_projection))
+                proc_name, AssignProjection.AssignProjectionName(source_projection), AssignProjection.AssignProjectionName(destination_projection)))
         # Opening source LAS files for read and write
         try:
             lasFiles = LasPyConverter.LasPyConverter(

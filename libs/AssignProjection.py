@@ -19,7 +19,16 @@ def AssignProjectionString(projection, script_path):
         projectionstring = '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs'
     elif projection == 'EOV':
         projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
-    elif projection == 'EOVc':
+    elif projection in [ 'EOVc', 'EOV2014' ]:
+        nadgrids = os.path.join(os.path.dirname(script_path), 'grid', 'etrs2eov_notowgs.gsb')
+        geoidgrids = os.path.join(os.path.dirname(script_path), 'grid', 'geoid_eht2014.gtx')
+        if os.path.isfile(nadgrids) and os.path.isfile(geoidgrids):
+            logging.info('Found all required grids ...')
+            projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids + ' +geoidgrids=' + geoidgrids + ' +units=m +no_defs'
+        else:
+            logging.error('Cannot found %s and/or %s grids.' % (nadgrids, geoidgrids))
+            exit(2)
+    elif projection == 'EOV2009':
         nadgrids = os.path.join(os.path.dirname(script_path), 'grid', 'etrs2eov_notowgs.gsb')
         geoidgrids = os.path.join(os.path.dirname(script_path), 'grid', 'geoid_eht.gtx')
         if os.path.isfile(nadgrids) and os.path.isfile(geoidgrids):
@@ -66,7 +75,9 @@ def AssignFallbackProjectionString(projection, script_path):
         fallback_projectionstring = ''
     elif projection == 'EOV':
         fallback_projectionstring = ''
-    elif projection == 'EOVc':
+    elif projection in [ 'EOVc', 'EOV2014' ]:
+        fallback_projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
+    elif projection == 'EOV2009':
         fallback_projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
     elif projection == 'EOVp':  # do not use
         fallback_projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
@@ -90,10 +101,12 @@ def AssignProjectionName(projection):
         fallback_projectionstring = 'WGS84PM'
     elif projection == 'EOV':
         fallback_projectionstring = 'EOV'
-    elif projection == 'EOVc':
-        fallback_projectionstring = 'EOV'
+    elif projection in [ 'EOVc', 'EOV2014' ]:
+        fallback_projectionstring = 'EOV2014'
+    elif projection == 'EOV2009':
+        fallback_projectionstring = 'EOV2009'
     elif projection == 'EOVp':  # do not use
-        fallback_projectionstring = 'EOV'
+        fallback_projectionstring = 'EOVp'
     elif projection == 'SVY21':
         fallback_projectionstring = 'SVY21'
     elif projection == 'SVY21c':

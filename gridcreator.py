@@ -33,12 +33,12 @@ with open('plain-wgs84longlat-hun.txt', 'w') as wgs_ll_txtfile:
                             # Hungary:
                             # 45.7800, 48.6000, 0.01
                             # 16.1200,  22.9100, 0.01
-                            for fi in frange(47.3900, 47.5700, 0.001):
-                                for la in frange(18.9300, 19.1900, 0.001):
-                                    for he in range(100, 101, 1):
+                            for fi in frange(45.56000000, 48.91000000, 0.009):
+                                for la in frange(16.10000000, 23.07000000, 0.0013):
+                                    for he in range(150, 151, 1):
                                         ## WGS84 longlat
                                         print('O: %.8f, %.8f, %.8f' % (la, fi, he))
-                                        wgs_ll_txtfile.write('%.8f %.8f %.8f\n' % (la, fi, he))
+                                        wgs_ll_txtfile.write('%.4f %.4f %.1f\n' % (la, fi, he))
                                         ## WGS84 geocent
                                         XProjected, YProjected, ZProjected = transform(WGS84, WGS84Geo, la, fi, he)
                                         print('P: %.8f, %.8f, %.8f' % (XProjected, YProjected, ZProjected))
