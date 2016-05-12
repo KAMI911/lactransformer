@@ -45,7 +45,7 @@ class TxtPanPyConverter:
         new_header_part = []
         if self.__DestinationProjection in ['WGS84geo']:
             new_header_part = ['X[m]', 'Y[m]', 'Z[m]']
-        elif self.__DestinationProjection in ['EOV', 'EOVc', 'SVY21', 'SVY21c']:
+        elif self.__DestinationProjection in ['EOV', 'EOVc', 'EOV2009', 'EOV2014', 'SVY21', 'SVY21c']:
             new_header_part = ['Easting[m]', 'Northing[m]', 'Elevation[m]']
         if new_header_part != []:
             for i in range(0, 3):

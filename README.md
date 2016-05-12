@@ -9,7 +9,8 @@ LAS & Co Transformer is an utility to convert
 * WGS84 (World Geodetic System 1984) Pseudo-Mercator -- Spherical Mercator, Google Maps, OpenStreetMap, Bing, ArcGIS, ESRI coordinate system
 * ETRS89 (European Terrestrial Reference System 1989) Geocentric coordinate system
 * ETRS89 (European Terrestrial Reference System 1989) Geodetic coordinate system
-* Hungarian EOV (Egységes Országos Vetület) Projected coordinate system
+* Hungarian EOV (Egységes Országos Vetület) Projected 2014 coordinate system
+* Hungarian EOV (Egységes Országos Vetület) Projected 2009 coordinate system
 * SVY21 (Singapore) Projected coordinate system
 
 in following formats:
@@ -38,7 +39,7 @@ If you find this useful, please consider a donation:
 
 **WGS84PM**  (EPSG:3857) projection : http://epsg.io/3857/
 
-**EOV**       (EPSG:23700) projection: http://epsg.io/23700/
+**EOV**       (EPSG:23700) projection: http://epsg.io/23700/ [EOV - without correction, EOV2014 - correction 2014, EOV2009 - correction 2009]
 
 **ETRS89**    (EPSG:4258) projection: http://epsg.io/4258/
 
