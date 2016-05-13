@@ -9,6 +9,13 @@ script_path = os.path.join(__file__)
 script_path_local = os.path.dirname(script_path)
 
 
+def input_file_path(filename):
+    return os.path.join('.', 'test', 'input', filename)
+
+def compare_file_path(filename):
+    return os.path.join('.', 'test', 'compare', filename)
+
+
 class TestFriendlyName(unittest.TestCase):
     def test_friendly_name_all(self):
         file_formats = {'las': 'LAS PointCloud', 'laz': 'LAZ (compressed) PointCloud', 'txt': 'Trajectory CSV file', 'lastxt': 'PointText',
@@ -58,12 +65,13 @@ class TestAssignProjection(unittest.TestCase):
                              projection_string)
 
 
-class TestTxtTransformation(unittest.TestCase):
-    def setUp(self):
-        self.input_file = os.path.join('.', 'test', 'input', 'txt_wgs84geo_bp.txt')
+class TestTxtTransformation_from_WGS84geo(unittest.TestCase):
 
-    def test_text_transformation_lastext_eov2009(self):
-        self.compare_file = os.path.join('.', 'test', 'compare', 'txt_eov2009_bp.txt')
+    def setUp(self):
+        self.input_file = input_file_path('txt_wgs84geo_bp.txt')
+
+    def test_text_transformation_lastext_to_EOV2009(self):
+        self.compare_file = compare_file_path('txt_eov2009_bp.txt')
         self.temp_file = 'test_txt_eov2009_bp.txt'
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOV2009',
                                                              'txt')
@@ -77,8 +85,8 @@ class TestTxtTransformation(unittest.TestCase):
             os.remove(self.temp_file)
 
 
-    def test_text_transformation_lastext_eov2014(self):
-        self.compare_file = os.path.join('.', 'test', 'compare', 'txt_eov2014_bp.txt')
+    def test_text_transformation_lastext_to_EOV2014(self):
+        self.compare_file = compare_file_path('txt_eov2014_bp.txt')
         self.temp_file = 'test_txt_eov2014_bp.txt'
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOV2014',
                                                              'txt')
@@ -92,8 +100,8 @@ class TestTxtTransformation(unittest.TestCase):
             os.remove(self.temp_file)
 
 
-    def test_text_transformation_lastext_eovc(self):
-        self.compare_file = os.path.join('.', 'test', 'compare', 'txt_eov2014_bp.txt')
+    def test_text_transformation_lastext_to_EOVc(self):
+        self.compare_file = compare_file_path('txt_eov2014_bp.txt')
         self.temp_file = 'test_txt_eov2014_bp.txt'
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOVc',
                                                              'txt')
@@ -106,12 +114,8 @@ class TestTxtTransformation(unittest.TestCase):
         if os.path.exists(self.temp_file):
             os.remove(self.temp_file)
 
-class TestTxtTransformation_WGS84(unittest.TestCase):
-    def setUp(self):
-        self.input_file = os.path.join('.', 'test', 'input', 'txt_wgs84geo_bp.txt')
-
-    def test_text_transformation_lastext_wgs84(self):
-        self.compare_file = os.path.join('.', 'test', 'compare', 'txt_wgs84_bp.txt')
+    def test_text_transformation_lastext_to_WGS84(self):
+        self.compare_file = compare_file_path('txt_wgs84_bp.txt')
         self.temp_file = 'test_txt_wgs84_bp.txt'
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'WGS84',
                                                              'txt')
@@ -124,13 +128,12 @@ class TestTxtTransformation_WGS84(unittest.TestCase):
         if os.path.exists(self.temp_file):
             os.remove(self.temp_file)
 
-
-class TestPefTransformation(unittest.TestCase):
+class TestPefTransformation_from_WGS84geo(unittest.TestCase):
     def setUp(self):
         self.input_file = os.path.join('.', 'test', 'input', 'pef_wgs84geo_bp.txt')
 
-    def test_text_transformation_pef_eov2009(self):
-        self.compare_file = os.path.join('.', 'test', 'compare', 'pef_eov2009_bp.txt')
+    def test_text_transformation_pef_to_EOV2009(self):
+        self.compare_file = compare_file_path('pef_eov2009_bp.txt')
         self.temp_file = 'test_pef_eov2009_bp.txt'
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOV2009',
                                                              'pef')
@@ -144,8 +147,8 @@ class TestPefTransformation(unittest.TestCase):
             os.remove(self.temp_file)
 
 
-    def test_text_transformation_pef_eov2014(self):
-        self.compare_file = os.path.join('.', 'test', 'compare', 'pef_eov2014_bp.txt')
+    def test_text_transformation_pef_to_EOV2014(self):
+        self.compare_file = compare_file_path('pef_eov2014_bp.txt')
         self.temp_file = 'test_pef_eov2014_bp.txt'
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOV2014',
                                                              'pef')
@@ -158,16 +161,11 @@ class TestPefTransformation(unittest.TestCase):
         if os.path.exists(self.temp_file):
             os.remove(self.temp_file)
 
-
-class TestPefTransformation_WGS84(unittest.TestCase):
-    def setUp(self):
-        self.input_file = os.path.join('.', 'test', 'input', 'pef_wgs84geo_bp.txt')
-        self.compare_file = os.path.join('.', 'test', 'compare', 'pef_wgs84_bp.txt')
-        self.temp_file = 'test_pef_wgs84_bp.txt'
-        self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'WGS84',
+    def test_text_transformation_pef_to_EOVc(self):
+        self.compare_file = compare_file_path('pef_eov2014_bp.txt')
+        self.temp_file = 'test_pef_eov2014_bp.txt'
+        self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOVc',
                                                              'pef')
-
-    def test_text_transformation_pef_wgs84(self):
         if os.path.exists(self.temp_file):
             os.remove(self.temp_file)
         self.text_data.Open()
@@ -177,16 +175,67 @@ class TestPefTransformation_WGS84(unittest.TestCase):
         if os.path.exists(self.temp_file):
             os.remove(self.temp_file)
 
+    def test_text_transformation_pef_to_WGS84(self):
+        self.compare_file = compare_file_path('pef_wgs84_bp.txt')
+        self.temp_file = 'test_pef_wgs84_bp.txt'
+        self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'WGS84',
+                                                             'pef')
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
+        self.text_data.Open()
+        self.text_data.Transform()
+        self.text_data.Close()
+        self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
 
-class TestLasTxtTransformation_WGS84geo(unittest.TestCase):
+class TestLasTxtTransformation_from_WGS84geo(unittest.TestCase):
+    def setUp(self):
+        self.input_file = os.path.join('.', 'test', 'input', 'lastxt_wgs84geo_bp.txt')
+
+    def test_lastxt_transformation_pef_to_EOV2014(self):
+        self.compare_file = compare_file_path('lastxt_eov2014_bp.txt')
+        self.temp_file = 'test_lastxt_eov2014_bp.txt'
+        self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOV2014',
+                                                             'lastxt', ' ')
+
+class TestLasTxtTransformation_from_EOV2009(unittest.TestCase):
     def setUp(self):
         self.input_file = os.path.join('.', 'test', 'input', 'lastxt_eov2009_bp.txt')
-        self.compare_file = os.path.join('.', 'test', 'compare', 'lastxt_wgs84geo_bp.txt')
+
+    def test_lastxt_transformation_pef_to_WGS84geo(self):
+        self.compare_file = compare_file_path('lastxt_wgs84geo_bp.txt')
         self.temp_file = 'test_lastxt_wgs84geo_bp.txt'
         self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'EOV2009', self.temp_file, 'WGS84geo',
                                                              'lastxt', ' ')
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
+        self.text_data.Open()
+        self.text_data.Transform()
+        self.text_data.Close()
+        self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
 
-    def test_lastxt_transformation_pef_eov2009(self):
+    def test_lastxt_transformation_pef_to_EOV2014(self):
+        self.compare_file = compare_file_path('lastxt_eov2014_bp.txt')
+        self.temp_file = 'test_lastxt_eov2014_bp.txt'
+        self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'EOV2009', self.temp_file, 'EOV2014',
+                                                             'lastxt', ' ')
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
+        self.text_data.Open()
+        self.text_data.Transform()
+        self.text_data.Close()
+        self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
+
+    def test_lastxt_transformation_pef_to_EOVc(self):
+        self.compare_file = compare_file_path('lastxt_eov2014_bp.txt')
+        self.temp_file = 'test_lastxt_eovc_bp.txt'
+        self.text_data = TxtPanPyConverter.TxtPanPyConverter(self.input_file, 'EOV2009', self.temp_file, 'EOVc',
+                                                             'lastxt', ' ')
         if os.path.exists(self.temp_file):
             os.remove(self.temp_file)
         self.text_data.Open()
@@ -200,14 +249,12 @@ class TestLasTxtTransformation_WGS84geo(unittest.TestCase):
 def testing_lactransformer():
     friendly_name = unittest.TestLoader().loadTestsFromTestCase(TestFriendlyName)
     assign_projection = unittest.TestLoader().loadTestsFromTestCase(TestAssignProjection)
-    txt_transformation = unittest.TestLoader().loadTestsFromTestCase(TestTxtTransformation)
-    txt_transformation_wgs = unittest.TestLoader().loadTestsFromTestCase(TestTxtTransformation_WGS84)
-    pef_transformation = unittest.TestLoader().loadTestsFromTestCase(TestPefTransformation)
-    pef_transformation_wgs = unittest.TestLoader().loadTestsFromTestCase(TestPefTransformation_WGS84)
-    lastxt_transformation_wgs = unittest.TestLoader().loadTestsFromTestCase(TestLasTxtTransformation_WGS84geo)
+    txt_transformation_wgs84geo = unittest.TestLoader().loadTestsFromTestCase(TestTxtTransformation_from_WGS84geo)
+    pef_transformation_wgs84geo = unittest.TestLoader().loadTestsFromTestCase(TestPefTransformation_from_WGS84geo)
+    lastxt_transformation_eov2009 = unittest.TestLoader().loadTestsFromTestCase(TestLasTxtTransformation_from_EOV2009)
+    lastxt_transformation_wgs84geo = unittest.TestLoader().loadTestsFromTestCase(TestLasTxtTransformation_from_WGS84geo)
     suite = unittest.TestSuite(
-        [friendly_name, assign_projection, txt_transformation, txt_transformation_wgs, pef_transformation,
-         pef_transformation_wgs, lastxt_transformation_wgs])
+        [friendly_name, assign_projection, txt_transformation_wgs84geo, pef_transformation_wgs84geo, lastxt_transformation_eov2009, lastxt_transformation_wgs84geo])
     return unittest.TextTestRunner(verbosity=2).run(suite)
 
 
