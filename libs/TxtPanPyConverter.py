@@ -67,14 +67,16 @@ class TxtPanPyConverter:
                     self.__projection_replace_header()
                     self.__Header = ','.join(self.__HeaderList)
                 self.__Format = []
-                for h in range(0, len(self.__Columns)):
-                    self.__Format.append('%1.12f')
+                if self.__Type != 'strtxt':
+                    for h in range(0, len(self.__Columns)):
+                        self.__Format.append('%1.12f')
+                else:
+                    for h in range(0, len(self.__Columns)):
+                        self.__Format.append('%s')
                 if self.__Type == 'txt':
                     self.__Format[0] = '%1.6f'
                 elif self.__Type == 'csv':
                     self.__Format[0] = '%1.6f'
-                elif self.__Type == 'strtxt':
-                    self.__Format[0] = '%s'
                 if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
                     for f in self.__Fields:
                         self.__Format[f] = '%1.15f'

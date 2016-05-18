@@ -20,6 +20,7 @@ in following formats:
 * TerraPhoto Image List file
 * Riegl Camera CSV file
 * PEF file
+* RTK CSV format (strtxt)
 
 ## Fork me on Github
 
