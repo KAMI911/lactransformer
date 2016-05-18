@@ -141,7 +141,8 @@ class TestTxtTransformation_from_WGS84geo(unittest.TestCase):
 
 class TestPefTransformation_from_WGS84geo(unittest.TestCase):
     def setUp(self):
-        self.input_file = os.path.join('.', 'test', 'input', 'pef_wgs84geo_bp.txt')
+        input_filename = 'pef_wgs84geo_bp.txt'
+        self.input_file = input_file_path(input_filename)
 
     def test_text_transformation_pef_to_EOV2009(self):
         output_filename = 'pef_eov2009_bp.txt'
@@ -206,7 +207,8 @@ class TestPefTransformation_from_WGS84geo(unittest.TestCase):
 
 class TestLasTxtTransformation_from_WGS84geo(unittest.TestCase):
     def setUp(self):
-        self.input_file = os.path.join('.', 'test', 'input', 'lastxt_wgs84geo_bp.txt')
+        input_filename = 'lastxt_wgs84geo_bp.txt'
+        self.input_file = input_file_path(input_filename)
 
     def test_lastxt_transformation_pef_to_EOV2014(self):
         output_filename = 'lastxt_eov2014_bp.txt'
@@ -226,7 +228,8 @@ class TestLasTxtTransformation_from_WGS84geo(unittest.TestCase):
 
 class TestLasTxtTransformation_from_EOV2009(unittest.TestCase):
     def setUp(self):
-        self.input_file = os.path.join('.', 'test', 'input', 'lastxt_eov2009_bp.txt')
+        input_filename = 'lastxt_eov2009_bp.txt'
+        self.input_file = input_file_path(input_filename)
 
     def test_lastxt_transformation_pef_to_WGS84geo(self):
         output_filename = 'lastxt_wgs84geo_bp.txt'
@@ -276,7 +279,8 @@ class TestLasTxtTransformation_from_EOV2009(unittest.TestCase):
 
 class TestLasTxtTransformation_from_Javad_EOV2009(unittest.TestCase):
     def setUp(self):
-        self.input_file = os.path.join('.', 'test', 'input', 'javad_rtk_eov.csv')
+        input_filename = 'javad_rtk_eov.csv'
+        self.input_file = input_file_path(input_filename)
 
     def test_lastxt_transformation_javad_to_WGS84geo(self):
         output_filename = 'javad_rtk_wgs84geo.csv'
