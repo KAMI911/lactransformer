@@ -17,7 +17,10 @@ def compare_file_path(filename):
 
 
 def temp_file_path(filename):
-    return os.path.join('.', 'test', 'tmp', filename)
+    temp_dir = os.path.join('.', 'test', 'tmp')
+    if not os.path.exists(temp_dir):
+        os.makedirs(temp_dir)
+    return os.path.join(temp_dir, filename)
 
 
 class TestFriendlyName(unittest.TestCase):
