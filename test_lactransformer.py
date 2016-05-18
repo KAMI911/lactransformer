@@ -1,6 +1,8 @@
 import filecmp
 import os
 import unittest
+import difflib
+import sys
 
 from libs import FriendlyName, AssignProjection, TxtPanPyConverter
 
@@ -309,6 +311,16 @@ class TestLasTxtTransformation_from_Javad_EOV2009(unittest.TestCase):
         self.text_data.Open()
         self.text_data.Transform()
         self.text_data.Close()
+        with open(self.compare_file, 'r') as cmpf:
+            with open(self.temp_file, 'r') as tmpf:
+                diff = difflib.unified_diff(
+                    cmpf.readlines(),
+                    tmpf.readlines(),
+                    fromfile=self.compare_file,
+                    tofile=self.temp_file,
+                )
+                for line in diff:
+                    sys.stdout.write(line)
         self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
         if os.path.exists(self.temp_file):
             os.remove(self.temp_file)
