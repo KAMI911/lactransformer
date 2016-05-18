@@ -310,6 +310,8 @@ class TestLasTxtTransformation_from_Javad_EOV2009(unittest.TestCase):
         self.text_data.Transform()
         self.text_data.Close()
         self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
+        with open(self.temp_file, 'r') as fin:
+            print fin.read()
         if os.path.exists(self.temp_file):
             os.remove(self.temp_file)
 
