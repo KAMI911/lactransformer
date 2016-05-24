@@ -18,13 +18,11 @@ class LasPyConverter:
                  destination_projection):
         self.__SourceFileName = source_filename
         self.__DestinationFileName = destination_filename
-
         self.__SourceProjection = source_projection
-        self.__SourceProjectionString = AssignProjection.AssignProjectionString(self.__SourceProjection, '..')
+        self.__SourceProjectionString = AssignProjection.AssignProjectionString(self.__SourceProjection)
         self.__SourceProj = Proj(self.__SourceProjectionString)
 
-        self.__SourceFallbackProjectionString = AssignProjection.AssignFallbackProjectionString(self.__SourceProjection,
-                                                                                                '..')
+        self.__SourceFallbackProjectionString = AssignProjection.AssignFallbackProjectionString(self.__SourceProjection)
         if self.__SourceFallbackProjectionString:
             self.__SourceFallbackProjection = AssignProjection.AssignProjectionName(self.__SourceProjection)
             self.__SourceFallbackProj = Proj(self.__SourceFallbackProjectionString)
@@ -33,11 +31,11 @@ class LasPyConverter:
             self.__SourceFallbackProj = ''
 
         self.__DestinationProjection = destination_projection
-        self.__DestinationProjectionString = AssignProjection.AssignProjectionString(self.__DestinationProjection, '..')
+        self.__DestinationProjectionString = AssignProjection.AssignProjectionString(self.__DestinationProjection)
         self.__DestinationProj = Proj(self.__DestinationProjectionString)
 
         self.__DestinationFallbackProjectionString = AssignProjection.AssignFallbackProjectionString(
-            self.__DestinationProjection, '..')
+            self.__DestinationProjection)
         if self.__DestinationFallbackProjectionString:
             self.__DestinationFallbackProjection = AssignProjection.AssignProjectionName(self.__DestinationProjection)
             self.__DestinationFallbackProj = Proj(self.__DestinationFallbackProjectionString)

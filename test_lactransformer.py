@@ -1,13 +1,10 @@
 import filecmp
 import os
 import unittest
-import difflib
-import sys
 
 from libs import FriendlyName, AssignProjection, TxtPanPyConverter
 
-script_path = os.path.join(__file__)
-script_path_local = os.path.dirname(script_path)
+grid_path = os.path.join(os.path.dirname(__file__), 'grid')
 
 
 def input_file_path(filename):
@@ -37,11 +34,11 @@ class TestFriendlyName(unittest.TestCase):
 
 class TestAssignProjection(unittest.TestCase):
     def setUp(self):
-        nadgrids_EOV2009 = os.path.join(os.path.dirname(script_path), 'grid', 'etrs2eov_notowgs.gsb')
-        geoidgrids_EOV2009 = os.path.join(os.path.dirname(script_path), 'grid', 'geoid_eht.gtx')
-        nadgrids_EOV2014 = os.path.join(os.path.dirname(script_path), 'grid', 'etrs2eov_notowgs.gsb')
-        geoidgrids_EOV2014 = os.path.join(os.path.dirname(script_path), 'grid', 'geoid_eht2014.gtx')
-        geoidgrids_SVY21c = os.path.join(os.path.dirname(script_path), 'grid', 'geoid_svy21_2009.gtx')
+        nadgrids_EOV2009 = os.path.join(grid_path, 'etrs2eov_notowgs.gsb')
+        geoidgrids_EOV2009 = os.path.join(grid_path, 'geoid_eht.gtx')
+        nadgrids_EOV2014 = os.path.join(grid_path, 'etrs2eov_notowgs.gsb')
+        geoidgrids_EOV2014 = os.path.join(grid_path, 'geoid_eht2014.gtx')
+        geoidgrids_SVY21c = os.path.join(grid_path, 'geoid_svy21_2009.gtx')
 
         self.projections = {'WGS84': '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
                             'WGS84geo': '+proj=geocent +ellps=WGS84 +datum=WGS84 +units=m +no_defs',
@@ -67,11 +64,11 @@ class TestAssignProjection(unittest.TestCase):
 
     def test_assign_projection_all(self):
         for projection, projection_string in self.projections.items():
-            self.assertEqual(AssignProjection.AssignProjectionString(projection, script_path), projection_string)
+            self.assertEqual(AssignProjection.AssignProjectionString(projection), projection_string)
 
     def test_assign_fallback_projection_all(self):
         for projection, projection_string in self.fallback_projections.items():
-            self.assertEqual(AssignProjection.AssignFallbackProjectionString(projection, script_path),
+            self.assertEqual(AssignProjection.AssignFallbackProjectionString(projection),
                              projection_string)
 
 
@@ -298,7 +295,6 @@ class TestLasTxtTransformation_from_Javad_EOV2009(unittest.TestCase):
         self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
         if os.path.exists(self.temp_file):
             os.remove(self.temp_file)
-
 
     def test_lastxt_transformation_javad_to_WGS84(self):
         output_filename = 'javad_rtk_wgs84.csv'
