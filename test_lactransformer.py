@@ -4,7 +4,9 @@ import unittest
 
 from libs import FriendlyName, AssignProjection, TxtPanPyConverter
 
-grid_path = os.path.join(os.path.dirname(__file__), 'grid')
+
+def grid_path(filename):
+    return os.path.join(os.path.dirname(__file__), 'grid', filename)
 
 
 def input_file_path(filename):
@@ -34,11 +36,11 @@ class TestFriendlyName(unittest.TestCase):
 
 class TestAssignProjection(unittest.TestCase):
     def setUp(self):
-        nadgrids_EOV2009 = os.path.join(grid_path, 'etrs2eov_notowgs.gsb')
-        geoidgrids_EOV2009 = os.path.join(grid_path, 'geoid_eht.gtx')
-        nadgrids_EOV2014 = os.path.join(grid_path, 'etrs2eov_notowgs.gsb')
-        geoidgrids_EOV2014 = os.path.join(grid_path, 'geoid_eht2014.gtx')
-        geoidgrids_SVY21c = os.path.join(grid_path, 'geoid_svy21_2009.gtx')
+        nadgrids_EOV2009 = grid_path('etrs2eov_notowgs.gsb')
+        geoidgrids_EOV2009 = grid_path('geoid_eht.gtx')
+        nadgrids_EOV2014 = grid_path('etrs2eov_notowgs.gsb')
+        geoidgrids_EOV2014 = grid_path('geoid_eht2014.gtx')
+        geoidgrids_SVY21c = grid_path('geoid_svy21_2009.gtx')
 
         self.projections = {'WGS84': '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
                             'WGS84geo': '+proj=geocent +ellps=WGS84 +datum=WGS84 +units=m +no_defs',
