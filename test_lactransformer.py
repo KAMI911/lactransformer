@@ -6,9 +6,9 @@ from libs import FriendlyName, AssignProjection, TxtPanPyConverter
 
 
 def grid_path(filename):
-    print(__file__)
-    print (os.path.join(os.path.dirname(__file__), 'grid', filename))
-    return os.path.join(os.path.dirname(__file__), 'grid', filename)
+    print(os.path.abspath(__file__))
+    print (os.path.abspath(os.path.join(os.path.dirname(__file__), 'grid', filename)))
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), 'grid', filename))
 
 
 def input_file_path(filename):
