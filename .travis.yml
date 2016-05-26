@@ -5,11 +5,8 @@ python:
 
 # command to install dependencies
 install:
-  - pip install --upgrade pip
-  - pip install numpy
-  - pip install pandas
-  - pip install https://github.com/jswhit/pyproj/archive/v1.9.4rel.zip
-  - pip install https://github.com/grantbrown/laspy/archive/1.3.0.zip
+  - "pip install --upgrade pip"
+  - "pip install --pre -r requirements.txt"
 
 # command to run test
 script: python test_lactransformer.py
