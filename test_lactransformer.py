@@ -6,6 +6,7 @@ from libs import FriendlyName, AssignProjection, TxtPanPyConverter
 
 
 def grid_path(filename):
+    print os.path.join(os.path.dirname(__file__), 'grid', filename)
     return os.path.join(os.path.dirname(__file__), 'grid', filename)
 
 
@@ -66,6 +67,7 @@ class TestAssignProjection(unittest.TestCase):
 
     def test_assign_projection_all(self):
         for projection, projection_string in self.projections.items():
+            print ('{} {}'.format(projection, projection_string))
             self.assertEqual(AssignProjection.AssignProjectionString(projection), projection_string)
 
     def test_assign_fallback_projection_all(self):
