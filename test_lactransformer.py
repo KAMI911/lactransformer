@@ -6,21 +6,19 @@ from libs import FriendlyName, AssignProjection, TxtPanPyConverter
 
 
 def grid_path(filename):
-    print(os.path.abspath(__file__))
-    print (os.path.abspath(os.path.join(os.path.dirname(__file__), 'grid', filename)))
     return os.path.abspath(os.path.join(os.path.dirname(__file__), 'grid', filename))
 
 
 def input_file_path(filename):
-    return os.path.join('.', 'test', 'input', filename)
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), 'test', 'input', filename))
 
 
 def compare_file_path(filename):
-    return os.path.join('.', 'test', 'compare', filename)
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), 'test', 'compare', filename))
 
 
 def temp_file_path(filename):
-    temp_dir = os.path.join('.', 'test', 'tmp')
+    temp_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'test', 'tmp'))
     if not os.path.exists(temp_dir):
         os.makedirs(temp_dir)
     return os.path.join(temp_dir, filename)
@@ -68,7 +66,6 @@ class TestAssignProjection(unittest.TestCase):
 
     def test_assign_projection_all(self):
         for projection, projection_string in self.projections.items():
-            print ('{} {}'.format(projection, projection_string))
             self.assertEqual(AssignProjection.AssignProjectionString(projection), projection_string)
 
     def test_assign_fallback_projection_all(self):
