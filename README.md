@@ -40,7 +40,20 @@ If you find this useful, please consider a donation:
 
 **WGS84PM**  (EPSG:3857) projection : http://epsg.io/3857/
 
-**EOV**       (EPSG:23700) projection: http://epsg.io/23700/ [EOV - without correction, EOV2014 - correction 2014, EOV2009 - correction 2009]
+**EOV**       (EPSG:23700) projection: http://epsg.io/23700/
+
+* EOV - without correction
+* EOV2014 - EOV2014 (EPSG:23700) projection with grid correction 2014 (2x2 km grid points)
+** More information: 
+
+http://www.agt.bme.hu/~bence/proj_poszter_3d.pdf
+
+* EOV2014fine - EOV2014 (EPSG:23700) projection with grid correction 2014 (1x1 km geoid grid points)
+* EOV2009 - EOV2009 (EPSG:23700) projection with grid correction 2014 (2x2 km grid points)
+** More information:
+
+http://www.agt.bme.hu/gis/workshop3/eloadasok/transzformacio.pdf
+http://www.agt.bme.hu/~bence/proj_poszter_3d.pdf
 
 **ETRS89**    (EPSG:4258) projection: http://epsg.io/4258/
 

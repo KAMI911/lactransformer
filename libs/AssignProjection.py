@@ -32,6 +32,15 @@ def AssignProjectionString(projection):
         else:
             logging.error('Cannot found %s and/or %s grids.' % (nadgrids, geoidgrids))
             exit(2)
+    elif projection in ['EOV2014fine']:
+        nadgrids = grid_path('etrs2eov_notowgs.gsb')
+        geoidgrids = grid_path('geoid_eht2014_fine.gtx')
+        if os.path.isfile(nadgrids) and os.path.isfile(geoidgrids):
+            logging.info('Found all required grids ...')
+            projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids + ' +geoidgrids=' + geoidgrids + ' +units=m +no_defs'
+        else:
+            logging.error('Cannot found %s and/or %s grids.' % (nadgrids, geoidgrids))
+            exit(2)
     elif projection == 'EOV2009':
         nadgrids = grid_path('etrs2eov_notowgs.gsb')
         geoidgrids = grid_path('geoid_eht.gtx')
@@ -81,6 +90,8 @@ def AssignFallbackProjectionString(projection):
         fallback_projectionstring = ''
     elif projection in ['EOVc', 'EOV2014']:
         fallback_projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
+    elif projection in ['EOV2014fine']:
+        fallback_projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
     elif projection == 'EOV2009':
         fallback_projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
     elif projection == 'EOVp':  # do not use
@@ -107,6 +118,8 @@ def AssignProjectionName(projection):
         fallback_projectionstring = 'EOV'
     elif projection in ['EOVc', 'EOV2014']:
         fallback_projectionstring = 'EOV2014'
+    elif projection in ['EOV2014fine']:
+        fallback_projectionstring = 'EOV2014fine'
     elif projection == 'EOV2009':
         fallback_projectionstring = 'EOV2009'
     elif projection == 'EOVp':  # do not use

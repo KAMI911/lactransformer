@@ -34,7 +34,7 @@ class TransformerCommandLine:
                                       '  pef = PEF file\n'
                                       '  strtxt = String PointText\n')
         self.parser.add_argument('-input_projection', type=str, dest='input_projection', required=False,
-                                 choices=['WGS84', 'WGS84geo', 'WGS84PM', 'EOV', 'EOVc', 'EOV2009', 'EOV2014', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
+                                 choices=['WGS84', 'WGS84geo', 'WGS84PM', 'EOV', 'EOVc', 'EOV2009', 'EOV2014', 'EOV2014fine', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
                                           'ETRS89geo'],
                                  help='optional:  input format (default=WGS84geo, EOVp is not implemented (yet))\n'
                                       '  WGS84 (EPSG:4326) projection: http://epsg.io/4326/\n'
@@ -43,13 +43,14 @@ class TransformerCommandLine:
                                       '  EOV (EPSG:23700) projection: http://epsg.io/23700/\n'
                                       '  EOVc (EPSG:23700) projection with grid correction 2014: http://epsg.io/23700/\n'
                                       '  EOV2009 (EPSG:23700) projection with grid correction 2009: http://epsg.io/23700/\n'
-                                      '  EOV2014 (EPSG:23700) projection with grid correction 2014: http://epsg.io/23700/\n'
+                                      '  EOV2014 (EPSG:23700) projection with grid correction 2014 (2x2 km grid points): http://epsg.io/23700/\n'
+                                      '  EOV2014fine (EPSG:23700) projection with grid correction 2014 (1x1 km geoid grid points): http://epsg.io/23700/\n'
                                       '  SVY21 (EPSG:3414) projection: http://epsg.io/3414/\n'
                                       '  SVY21c (EPSG:3414) projection with correction: http://epsg.io/3414/\n'
                                       '  ETRS89 (EPSG:4258) projection: http://epsg.io/4258/\n'
                                       '  ETRS89geo (EPSG:4936) projection: http://epsg.io/4936/\n')
         self.parser.add_argument('-output_projection', type=str, dest='output_projection', required=False,
-                                 choices=['WGS84', 'WGS84geo', 'WGS84PM', 'EOV', 'EOVc', 'EOV2009', 'EOV2014', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
+                                 choices=['WGS84', 'WGS84geo', 'WGS84PM', 'EOV', 'EOVc', 'EOV2009', 'EOV2014', 'EOV2014fine', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
                                           'ETRS89geo'],
                                  help='optional:  output format (default=EOVc, EOVp is not implemented (yet))\n'
                                       '  same as input_projection')
