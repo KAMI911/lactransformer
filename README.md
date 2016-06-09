@@ -175,13 +175,13 @@ http://www.lfd.uci.edu/~gohlke/pythonlibs/#pyproj
 
 One of these files:
 
-pyproj-1.9.5-cp27-none-win_amd64.whl for 64 bit version
+pyproj-1.9.5.1-cp27-cp27m-win_amd64.whl for 64 bit version
 
-http://www.lfd.uci.edu/%7Egohlke/pythonlibs/3i673h27/pyproj-1.9.5-cp27-none-win_amd64.whl
+http://www.lfd.uci.edu/%7Egohlke/pythonlibs/6kbpejrn/pyproj-1.9.5.1-cp27-cp27m-win_amd64.whl
 
-pyproj‑1.9.5‑cp27‑none‑win32.whl for 32 bit version
+pyproj‑1.9.5.1‑cp27‑none‑win32.whl for 32 bit version
 
-http://www.lfd.uci.edu/~gohlke/pythonlibs/3i673h27/pyproj-1.9.5-cp27-none-win32.whl
+http://www.lfd.uci.edu/%7Egohlke/pythonlibs/6kbpejrn/pyproj-1.9.5.1-cp27-cp27m-win32.whl
 
 And install it:
 
