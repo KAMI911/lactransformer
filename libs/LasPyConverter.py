@@ -215,9 +215,13 @@ class LasPyCompare:
             diff_y = self.__SourceOpenedFile.y - self.__DestinationOpenedFile.y
             diff_z = self.__SourceOpenedFile.z - self.__DestinationOpenedFile.z
 
-            logging.info('%s diff: Xmin: %s / Xmax: %s, Ymin: %s / Ymax: %s, Zmin: %s / Zmax: %s' % (
-                os.path.basename(self.__SourceFileName), np.min(diff_x), np.max(diff_x), np.min(diff_y), np.max(diff_y),
-                np.min(diff_z), np.max(diff_z)))
+            logging.info('%s file differences:)' % (
+                os.path.basename(self.__SourceFileName)))
+            logging.info(
+                'Xmin/max/avg/std: %.4f/%.4f/%.4f/%.4f, Ymin/max/avg/std: %.4f/%.4f/%.4f/%.4f, Zmin/max/avg/std: %.4f/%.4f/%.4f/%.4f)' % (
+                    np.min(diff_x), np.max(diff_x), np.mean(diff_x), np.std(diff_x),
+                    np.min(diff_y), np.max(diff_y), np.mean(diff_y), np.std(diff_z),
+                    np.min(diff_z), np.max(diff_z), np.mean(diff_z), np.std(diff_z)))
         except Exception:
             raise
 
