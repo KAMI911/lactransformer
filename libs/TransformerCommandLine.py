@@ -44,7 +44,7 @@ class TransformerCommandLine:
                                       '  EOVc (EPSG:23700) projection with grid correction 2014: http://epsg.io/23700/\n'
                                       '  EOV2009 (EPSG:23700) projection with grid correction 2009: http://epsg.io/23700/\n'
                                       '  EOV2014 (EPSG:23700) projection with grid correction 2014 (2x2 km grid points): http://epsg.io/23700/\n'
-                                      '  EOV2014fine (EPSG:23700) projection with grid correction 2014 (1x1 km geoid grid points): http://epsg.io/23700/\n'
+                                      '  (experimental) EOV2014fine (EPSG:23700) projection with grid correction 2014 (1x1 km geoid grid points): http://epsg.io/23700/\n'
                                       '  SVY21 (EPSG:3414) projection: http://epsg.io/3414/\n'
                                       '  SVY21c (EPSG:3414) projection with correction: http://epsg.io/3414/\n'
                                       '  ETRS89 (EPSG:4258) projection: http://epsg.io/4258/\n'

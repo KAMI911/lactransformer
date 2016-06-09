@@ -48,7 +48,7 @@ If you find this useful, please consider a donation:
 
 http://www.agt.bme.hu/~bence/proj_poszter_3d.pdf
 
-* EOV2014fine - EOV2014 (EPSG:23700) projection with grid correction 2014 (1x1 km geoid grid points)
+* (experimental) EOV2014fine - EOV2014 (EPSG:23700) projection with grid correction 2014 (1x1 km geoid grid points)
 * EOV2009 - EOV2009 (EPSG:23700) projection with grid correction 2014 (2x2 km grid points)
 ** More information:
 
