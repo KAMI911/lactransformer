@@ -1,5 +1,6 @@
 try:
     import os
+    import fnmatch
     import logging
     import glob
 except ImportError as err:
