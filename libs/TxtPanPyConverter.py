@@ -95,7 +95,6 @@ class TxtPanPyConverter:
                 self.__SourceOpenedFile.OpenRO()
                 self.__DestinationOpenedFile = PefFile.PefFile(self.__DestinationFileName)
                 self.__DestinationOpenedFile.OpenOW()
-            print ( self.__SourceData)
         except Exception as err:
             raise
 

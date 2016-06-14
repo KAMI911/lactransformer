@@ -61,7 +61,7 @@ class TransformerCommandLine:
                                  help='optional:  Full header update - makes closing file slow (-full_header_update=on, nothing=off)',
                                  action='store_true')
         self.parser.add_argument('-separator', type=str, dest='separator', required=False,
-                                 choices=[',', ' '],
+                                 choices=[',', ' ', ';', '\t'],
                                  help='optional:  text separator for text based coordiante files (default=,)')
         self.parser.add_argument('-v', dest='verbose', required=False,
                                  help='optional:  verbose toggle (-v=on, nothing=off)', action='store_true')
