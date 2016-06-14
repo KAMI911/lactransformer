@@ -31,7 +31,7 @@ class TxtPanPyConverter:
         elif self.__Type == 'lastxt':
             self.__HeaderRow = None
             self.__Fields = [0, 1, 2]
-        elif self.__Type == 'strtxt':
+        elif self.__Type in ['strtxt', 'listtxt']:
             self.__HeaderRow = None
             self.__Fields = [1, 2, 3]
         elif self.__Type == 'iml':
@@ -68,7 +68,7 @@ class TxtPanPyConverter:
                     self.__projection_replace_header()
                     self.__Header = ','.join(self.__HeaderList)
                 self.__Format = []
-                if self.__Type != 'strtxt':
+                if self.__Type not in [ 'strtxt', 'listtxt']:
                     for h in range(0, len(self.__Columns)):
                         self.__Format.append('%1.12f')
                 else:
@@ -78,6 +78,8 @@ class TxtPanPyConverter:
                     self.__Format[0] = '%1.6f'
                 elif self.__Type == 'csv':
                     self.__Format[0] = '%1.6f'
+                if self.__Type == 'listtxt':
+                    self.__Format[0] = '%06d'
                 if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
                     for f in self.__Fields:
                         self.__Format[f] = '%1.15f'
@@ -93,6 +95,7 @@ class TxtPanPyConverter:
                 self.__SourceOpenedFile.OpenRO()
                 self.__DestinationOpenedFile = PefFile.PefFile(self.__DestinationFileName)
                 self.__DestinationOpenedFile.OpenOW()
+            print ( self.__SourceData)
         except Exception as err:
             raise
 

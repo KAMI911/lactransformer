@@ -23,7 +23,7 @@ class TransformerCommandLine:
 
         # optional parameters
         self.parser.add_argument('-input_format', type=str, dest='input_format', required=False,
-                                 choices=['las', 'laz', 'txt', 'lastxt', 'csv', 'iml', 'pef', 'strtxt'],
+                                 choices=['las', 'laz', 'txt', 'lastxt', 'csv', 'iml', 'pef', 'strtxt', 'listtxt'],
                                  help='optional:  input format (default=las, laz is not implemented (yet))'
                                       '  las = LAS PointCloud\n'
                                       '  laz = LAZ (compressed) PointCloud\n'
@@ -32,7 +32,8 @@ class TransformerCommandLine:
                                       '  csv = Riegl Camera CSV file\n'
                                       '  iml = TerraPhoto Image List file\n'
                                       '  pef = PEF file\n'
-                                      '  strtxt = String PointText\n')
+                                      '  strtxt = String PointText\n'
+                                      '  listtxt = List PointText\n')
         self.parser.add_argument('-input_projection', type=str, dest='input_projection', required=False,
                                  choices=['WGS84', 'WGS84geo', 'WGS84PM', 'EOV', 'EOVc', 'EOV2009', 'EOV2014', 'EOV2014fine', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
                                           'ETRS89geo'],

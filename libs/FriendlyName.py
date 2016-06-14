@@ -23,3 +23,5 @@ def FriendlyName(input_format):
         return 'PEF'
     elif input_format == 'strtxt':
         return 'String PointText'
+    elif input_format == 'listtxt':
+        return 'List PointText'
