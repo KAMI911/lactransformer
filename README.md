@@ -79,31 +79,18 @@ pandas - https://pypi.python.org/pypi/pandas/
 
 ### Linux (Debian/Ubuntu/Linux Mint)
 
-**Install Python 2.7, Numpy, Pandas, pyproj, laspy**
+**Install Python 2.7**
 
 ```
 sudo apt-get install python2.7 python-numpy python-pandas
 ```
 
-**Install pyproj**
+**Install numpy, pandas, pyproj, lapy**
 
 ```
-wget https://github.com/jswhit/pyproj/archive/v1.9.5rel.zip
-unzip v1.9.5rel.zip
-cd pyproj-v1.9.5rel
-python setup.py build
-sudo python setup.py install
+pip install -r requirements.txt
 ```
 
-**Install laspy**
-
-```
-wget https://github.com/grantbrown/laspy/archive/master.zip
-unzip master.zip
-cd laspy-master
-python setup.py build
-sudo python setup.py install
-```
 
 ### Windows
 
