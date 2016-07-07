@@ -4,7 +4,7 @@ try:
     import multiprocessing
     from libs import LasPyConverter, TxtPanPyConverter, FriendlyName, AssignProjection
 except ImportError as err:
-    print("Error import module: " + str(err))
+    print('Error import module: {0}'.format(err))
     exit(128)
 
 

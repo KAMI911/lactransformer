@@ -9,7 +9,7 @@ try:
     import laspy.file
     from libs import AssignProjection
 except ImportError as err:
-    print("Error import module: " + str(err))
+    print('Error import module: {0}'.format(err))
     exit(128)
 
 

@@ -7,7 +7,7 @@ try:
     import multiprocessing
     from libs import Logging, TransformerCommandLine, TransformerWorkflow, FileListWithProjection
 except ImportError as err:
-    print("Error import module: " + str(err))
+    print('Error import module: {0}'.format(err))
     exit(128)
 
 script_path = __file__

@@ -9,7 +9,7 @@ try:
     import multiprocessing
     from libs import LasPyConverter
 except Exception as err:
-    traceback.print_exc()
+    print('Error import module: {0}'.format(err))
     exit(128)
 
 script_path = __file__

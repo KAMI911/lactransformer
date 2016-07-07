@@ -1,9 +1,12 @@
-import filecmp
-import os
-import unittest
+try:
+    import filecmp
+    import os
+    import unittest
 
-from libs import FriendlyName, AssignProjection, TxtPanPyConverter
-
+    from libs import FriendlyName, AssignProjection, TxtPanPyConverter
+except ImportError as err:
+    print('Error import module: {0}'.format(err))
+    exit(128)
 
 def grid_path(filename):
     return os.path.abspath(os.path.join(os.path.dirname(__file__), 'grid', filename))

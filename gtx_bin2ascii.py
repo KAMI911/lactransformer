@@ -1,7 +1,11 @@
-from __future__ import print_function
-import os
-import struct
-from libs import FileConverterCommandLine
+try:
+    from __future__ import print_function
+    import os
+    import struct
+    from libs import FileConverterCommandLine
+except ImportError as err:
+    print('Error import module: {0}'.format(err))
+    exit(128)
 
 # It is big endian
 # Documentation: http://vdatum.noaa.gov/docs/gtx_info.html
