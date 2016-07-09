@@ -67,18 +67,18 @@ class LasPyConverter:
     def DumpHeaderFormat(self):
         for spec in self.__SourceOpenedFile.header.header_format:
             in_spec = self.__SourceOpenedFile.header.get_schema()
-            logging.info('Source setting: %s: %s' % (spec.name, in_spec))
+            logging.info('Source setting: {0}: {1}'.format(spec.name, in_spec))
         for spec in self.__DestinationOpenedFile.header.header_format:
             in_spec = self.__DestinationOpenedFile.header.get_schema()
-            logging.info('Destination setting: %s: %s' % (spec.name, in_spec))
+            logging.info('Destination setting: {0}: {1}'.format(spec.name, in_spec))
 
     def DumpPointFormat(self):
         for spec in self.__SourceOpenedFile.point_format:
             in_spec = self.__SourceOpenedFile.reader.get_dimension(spec.name)
-            logging.info('Source setting: %s: %s' % (spec.name, in_spec))
+            logging.info('Source setting: {0}: {1}'.format(spec.name, in_spec))
         for spec in self.__DestinationOpenedFile.point_format:
             in_spec = self.__DestinationOpenedFile.reader.get_dimension(spec.name)
-            logging.info('Destination setting: %s: %s' % (spec.name, in_spec))
+            logging.info('Destination setting: {0}: {1}'.format(spec.name, in_spec))
 
     def GetSourcePointFormat(self):
         for spec in self.__SourceOpenedFile.reader.point_format:

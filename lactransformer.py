@@ -16,7 +16,7 @@ header = textwrap.dedent('''LAS & Co Transformer''')
 
 
 def main():
-    logfilename = 'lactransformer_' + datetime.datetime.today().strftime('%Y%m%d_%H%M%S') + '.log'
+    logfilename = 'lactransformer_{0}.log'.format(datetime.datetime.today().strftime('%Y%m%d_%H%M%S'))
     Logging.SetLogging(logfilename)
     logging.info(header)
 
