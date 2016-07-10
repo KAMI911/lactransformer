@@ -177,12 +177,14 @@ class LasPyConverter:
     def CloseSourceFile(self):
         try:
             self.__SourceOpenedFile.close()
+            del self.__SourceOpenedFile
         except Exception:
             raise
 
     def CloseDestinationFile(self, full_header_update=False):
         try:
             self.__DestinationOpenedFile.close(ignore_header_changes=not (full_header_update))
+            del self.__DestinationOpenedFile
         except Exception:
             raise
 
@@ -211,23 +213,30 @@ class LasPyCompare:
 
     def ComparePointCloud(self):
         try:
-            diff_x = self.__SourceOpenedFile.x - self.__DestinationOpenedFile.x
-            diff_y = self.__SourceOpenedFile.y - self.__DestinationOpenedFile.y
-            diff_z = self.__SourceOpenedFile.z - self.__DestinationOpenedFile.z
-
-            logging.info('%s file differences:)' % (
+            diff = [self.__SourceOpenedFile.x - self.__DestinationOpenedFile.x,
+                    self.__SourceOpenedFile.y - self.__DestinationOpenedFile.y,
+                    self.__SourceOpenedFile.z - self.__DestinationOpenedFile.z]
+            diff_min, diff_max, diff_avg, diff_std = [], [], [], []
+            for i in range(0, 3):
+                diff_min.append(np.min(diff[i]))
+                diff_max.append(np.max(diff[i]))
+                diff_avg.append(np.mean(diff[i]))
+                diff_std.append(np.std(diff[i]))
+            logging.info('{0} file differences:'.format(
                 os.path.basename(self.__SourceFileName)))
             logging.info(
-                'Xmin/max/avg/std: %.4f/%.4f/%.4f/%.4f, Ymin/max/avg/std: %.4f/%.4f/%.4f/%.4f, Zmin/max/avg/std: %.4f/%.4f/%.4f/%.4f)' % (
-                    np.min(diff_x), np.max(diff_x), np.mean(diff_x), np.std(diff_x),
-                    np.min(diff_y), np.max(diff_y), np.mean(diff_y), np.std(diff_z),
-                    np.min(diff_z), np.max(diff_z), np.mean(diff_z), np.std(diff_z)))
-        except Exception:
+                'Xmin/max/avg/std: {0[0]:.4f}/{1[0]:.4f}/{2[0]:.4f}/{3[0]:.4f}, Ymin/max/avg/std: {0[1]:.4f}/{1[1]:.4f}/{2[1]:.4f}/{3[1]:.4f}, Zmin/max/avg/std: {0[2]:.4f}/{1[2]:.4f}/{2[2]:.4f}/{3[2]:.4f}'.format(
+                    diff_min, diff_max, diff_avg, diff_std))
+
+        except Exception as err:
+            print(err)
             raise
 
     def Close(self):
         try:
             self.__SourceOpenedFile.close()
+            del self.__SourceOpenedFile
             self.__DestinationOpenedFile.close()
+            del self.__DestinationOpenedFile
         except Exception:
             raise
