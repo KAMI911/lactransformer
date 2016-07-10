@@ -34,6 +34,7 @@ def main():
                          lasconverterworkflow.get_output_projection(),
                          lasconverterworkflow.get_input_format(),
                          lasconverterworkflow.get_full_header_update(), lasconverterworkflow.get_separator())
+    del lasconverterworkflow
     file_queue = filelist.get_filelist()
 
     # If we got one file, start only one process
@@ -47,9 +48,8 @@ def main():
     else:
         for d in file_queue:
             TransformerWorkflow.Transformer(d)
-
+    del file_queue
     logging.info('Finished, exiting and go home ...')
-
 
 if __name__ == '__main__':
     main()
