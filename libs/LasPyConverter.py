@@ -227,6 +227,7 @@ class LasPyCompare:
             logging.info(
                 'Xmin/max/avg/std: {0[0]:.4f}/{1[0]:.4f}/{2[0]:.4f}/{3[0]:.4f}, Ymin/max/avg/std: {0[1]:.4f}/{1[1]:.4f}/{2[1]:.4f}/{3[1]:.4f}, Zmin/max/avg/std: {0[2]:.4f}/{1[2]:.4f}/{2[2]:.4f}/{3[2]:.4f}'.format(
                     diff_min, diff_max, diff_avg, diff_std))
+            return diff_min, diff_max, diff_avg, diff_std
 
         except Exception as err:
             print(err)
