@@ -93,39 +93,31 @@ class LasPyConverter:
     def GetSourceScale(self):
         # Use scale as is as
         try:
-            self.__SourceScale = [self.__SourceOpenedFile.header.scale[0], self.__SourceOpenedFile.header.scale[1],
-                                  self.__SourceOpenedFile.header.scale[2]]
+            self.__SourceScale = self.__SourceOpenedFile.header.scale
             # Use offset as is as
-            self.__SourceOffset = [self.__SourceOpenedFile.header.offset[0], self.__SourceOpenedFile.header.offset[1],
-                                   self.__SourceOpenedFile.header.offset[2]]
+            self.__SourceOffset = self.__SourceOpenedFile.header.offset
         except Exception:
             raise
 
     def SetDestinationScale(self):
         # Use scale as is as
         try:
-            self.__DestinationScale = [self.__SourceOpenedFile.header.scale[0],
-                                       self.__SourceOpenedFile.header.scale[1],
-                                       self.__SourceOpenedFile.header.scale[2]]
+            self.__DestinationScale = self.__SourceScale
             # Use offset as is as
             self.__DestinationOffset = np.array([0, 0, 0])
             if self.__DestinationFallbackProjection:
                 self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2] = transform(
                     self.__SourceProj, self.__DestinationFallbackProj,
-                    self.__SourceOffset[0], self.__SourceOffset[1],
-                    self.__SourceOffset[2])
+                    self.__SourceOffset[0], self.__SourceOffset[1], self.__SourceOffset[2])
             else:
                 self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2] = transform(
                     self.__SourceProj, self.__DestinationProj,
-                    self.__SourceOffset[0], self.__SourceOffset[1],
-                    self.__SourceOffset[2])
+                    self.__SourceOffset[0], self.__SourceOffset[1], self.__SourceOffset[2])
             self.__DestinationOffset = [math.floor(self.__DestinationOffset[0]),
                                         math.floor(self.__DestinationOffset[1]),
                                         math.floor(self.__DestinationOffset[2])]
-            self.__DestinationOpenedFile.header.set_scale((
-                self.__DestinationScale[0], self.__DestinationScale[1], self.__DestinationScale[2]))
-            self.__DestinationOpenedFile.header.set_offset((
-                self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2]))
+            self.__DestinationOpenedFile.header.set_scale(self.__DestinationScale)
+            self.__DestinationOpenedFile.header.set_offset(self.__DestinationOffset)
         except Exception:
             raise
         else:
@@ -137,8 +129,7 @@ class LasPyConverter:
             self.__DestinationOpenedFile.points = self.__SourceOpenedFile.points
             self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z = transform(
                 self.__SourceProj, self.__DestinationProj,
-                self.__SourceOpenedFile.x, self.__SourceOpenedFile.y,
-                self.__SourceOpenedFile.z)
+                self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
             self.UpdateDestinationMinMax()
         except Exception:
             raise
@@ -146,10 +137,8 @@ class LasPyConverter:
     def TransformPointCloudCoordsOnly(self):
         try:
             self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z = transform(
-                self.__SourceProj,
-                self.__DestinationProj,
-                self.__SourceOpenedFile.x, self.__SourceOpenedFile.y,
-                self.__SourceOpenedFile.z)
+                self.__SourceProj, self.__DestinationProj,
+                self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
             self.UpdateDestinationMinMax()
         except Exception:
             raise
@@ -230,8 +219,10 @@ class LasPyCompare:
             return diff_min, diff_max, diff_avg, diff_std
 
         except Exception as err:
-            print(err)
             raise
+
+    def is_equal(self):
+        return np.array_equal(self.__SourceOpenedFile.points, self.__DestinationOpenedFile.points)
 
     def Close(self):
         try:
