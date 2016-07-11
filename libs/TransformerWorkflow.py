@@ -43,7 +43,7 @@ def Transformer(parameters):
             traceback.print_exc()
             exit(10)
         except Exception as err:
-            logging.error('Cannot open files: %s and %s, error: %s.' % (source_file, destination_file, str(err)))
+            logging.error('Cannot open files: {0} and {1}, error: {2}.'.format(source_file, destination_file, str(err)))
             traceback.print_exc()
             exit(10)
         try:
@@ -99,19 +99,19 @@ def Transformer(parameters):
             txtFiles.Transform()
         except Exception as err:
             logging.error(
-                'Cannot transform files form %s to %s, error: %s.' % (source_file, destination_file, str(err)))
+                'Cannot transform files form {0} to {1}, error: {2}.'.format(source_file, destination_file, str(err)))
             exit(11)
         else:
             logging.info(
-                '[%s] Successfully transformed %s for file: %s.' % (proc_name, input_format_name, destination_file))
+                '[{0}] Successfully transformed {1} for file: {2}.'.format(proc_name, input_format_name, destination_file))
         try:
-            logging.info('[%s] Closing transformed %s %s file.' % (proc_name, destination_file, input_format_name))
+            logging.info('[{0}] Closing transformed {1} {2} file.'.format(proc_name, destination_file, input_format_name))
             txtFiles.Close()
         except Exception as err:
-            logging.error('Cannot close files: %s and %s, error: %s.' % (source_file, destination_file, str(err)))
+            logging.error('Cannot close files: {0} and {1}, error: {2}.'.format(source_file, destination_file, str(err)))
             exit(12)
         else:
-            logging.info('[%s] Transformed %s %s file has created.' % (proc_name, destination_file, input_format_name))
+            logging.info('[{0}] Transformed {1} {2} file has created.'.format(proc_name, destination_file, input_format_name))
             return 0
     else:
         logging.critical('Unknown -input_format parameter is specified: "{0}".'.format(input_format))
