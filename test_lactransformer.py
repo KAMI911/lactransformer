@@ -3,10 +3,11 @@ try:
     import os
     import unittest
 
-    from libs import FriendlyName, AssignProjection, TxtPanPyConverter
+    from libs import FriendlyName, AssignProjection, TxtPanPyConverter, LasPyConverter
 except ImportError as err:
     print('Error import module: {0}'.format(err))
     exit(128)
+
 
 def grid_path(filename):
     return os.path.abspath(os.path.join(os.path.dirname(__file__), 'grid', filename))
@@ -327,6 +328,54 @@ class TestLasTxtTransformation_from_Javad_EOV2009(unittest.TestCase):
             os.remove(self.temp_file)
 
 
+class TestLasTransformation_from_WGS84geo(unittest.TestCase):
+    def setUp(self):
+        input_filename = 'las_wgs84geo.las'
+        self.input_file = input_file_path(input_filename)
+
+    def test_las_transformation_las_to_EOV2014(self):
+        output_filename = 'las_eov2014.las'
+        self.compare_file = compare_file_path(output_filename)
+        self.temp_file = temp_file_path(output_filename)
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
+        self.las_data = LasPyConverter.LasPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOVc')
+        self.las_data.Open()
+        self.las_data.GetSourceScale()
+        self.las_data.SetDestinationScale()
+        self.las_data.TransformPointCloud()
+        self.las_data.Close()
+        self.las_compare = LasPyConverter.LasPyCompare(self.temp_file, self.compare_file)
+        self.las_compare.OpenReanOnly()
+        if not self.las_compare.is_equal():
+            print (self.las_compare.ComparePointCloud())
+        self.assertTrue(self.las_compare.is_equal())
+        self.las_compare.Close()
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
+
+    def test_las_transformation_las_to_EOV2009(self):
+        output_filename = 'las_eov2009.las'
+        self.compare_file = compare_file_path(output_filename)
+        self.temp_file = temp_file_path(output_filename)
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
+        self.las_data = LasPyConverter.LasPyConverter(self.input_file, 'WGS84geo', self.temp_file, 'EOV2009')
+        self.las_data.Open()
+        self.las_data.GetSourceScale()
+        self.las_data.SetDestinationScale()
+        self.las_data.TransformPointCloud()
+        self.las_data.Close()
+        self.las_compare = LasPyConverter.LasPyCompare(self.temp_file, self.compare_file)
+        self.las_compare.OpenReanOnly()
+        if not self.las_compare.is_equal():
+            print (self.las_compare.ComparePointCloud())
+        self.assertTrue(self.las_compare.is_equal())
+        self.las_compare.Close()
+        if os.path.exists(self.temp_file):
+            os.remove(self.temp_file)
+
+
 def testing_lactransformer():
     friendly_name = unittest.TestLoader().loadTestsFromTestCase(TestFriendlyName)
     assign_projection = unittest.TestLoader().loadTestsFromTestCase(TestAssignProjection)
@@ -336,9 +385,11 @@ def testing_lactransformer():
     lastxt_transformation_javad_eov2009 = unittest.TestLoader().loadTestsFromTestCase(
         TestLasTxtTransformation_from_Javad_EOV2009)
     lastxt_transformation_wgs84geo = unittest.TestLoader().loadTestsFromTestCase(TestLasTxtTransformation_from_WGS84geo)
+    las_transformation_wgs84geo = unittest.TestLoader().loadTestsFromTestCase(TestLasTransformation_from_WGS84geo)
     suite = unittest.TestSuite(
         [friendly_name, assign_projection, txt_transformation_wgs84geo, pef_transformation_wgs84geo,
-         lastxt_transformation_eov2009, lastxt_transformation_javad_eov2009, lastxt_transformation_wgs84geo])
+         lastxt_transformation_eov2009, lastxt_transformation_javad_eov2009, lastxt_transformation_wgs84geo,
+         las_transformation_wgs84geo])
     return unittest.TextTestRunner(verbosity=2).run(suite)
 
 
