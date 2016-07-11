@@ -1,2 +1,4 @@
+test/compare/*.las -crlf -diff -merge
+test/input/*.las -crlf -diff -merge
 test/compare/*	eol=crlf
 test/input/*	eol=crlf
