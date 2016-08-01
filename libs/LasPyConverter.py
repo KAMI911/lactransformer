@@ -106,11 +106,11 @@ class LasPyConverter:
             # Use offset as is as
             self.__DestinationOffset = np.array([0, 0, 0])
             if self.__DestinationFallbackProjection:
-                self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2] = transform(
+                self.__DestinationOffset = transform(
                     self.__SourceProj, self.__DestinationFallbackProj,
                     self.__SourceOffset[0], self.__SourceOffset[1], self.__SourceOffset[2])
             else:
-                self.__DestinationOffset[0], self.__DestinationOffset[1], self.__DestinationOffset[2] = transform(
+                self.__DestinationOffset = transform(
                     self.__SourceProj, self.__DestinationProj,
                     self.__SourceOffset[0], self.__SourceOffset[1], self.__SourceOffset[2])
             self.__DestinationOffset = [math.floor(self.__DestinationOffset[0]),
