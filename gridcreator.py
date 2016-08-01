@@ -1,7 +1,7 @@
 try:
     from pyproj import Proj, transform
 except ImportError as err:
-    print('Error import module: {0}'.format(err))
+    print('Error {0} import module: {1}'.format(__name__, err))
     exit(128)
 
 WGS84 = Proj('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')

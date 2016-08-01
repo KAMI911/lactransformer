@@ -2,7 +2,7 @@ try:
     import os
     import logging
 except ImportError as err:
-    print('Error import module: {0}'.format(err))
+    print('Error {0} import module: {1}'.format(__name__, err))
     exit(128)
 
 
