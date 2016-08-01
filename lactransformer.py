@@ -34,20 +34,26 @@ def main():
                          lasconverterworkflow.get_output_projection(),
                          lasconverterworkflow.get_input_format(),
                          lasconverterworkflow.get_full_header_update(), lasconverterworkflow.get_separator())
+    no_threads = lasconverterworkflow.get_no_threads()
     del lasconverterworkflow
     file_queue = filelist.get_filelist()
 
     # If we got one file, start only one process
     if filelist.get_isdir() is False:
         cores = 1
-    if cores != 1:
+    # Do not use threads when only use one core and disable threads
+    # Probably this is related to https://github.com/grantbrown/laspy/issues/32
+    if cores == 1 and no_threads == True:
+        logging.info('Do not use threads.')
+        for d in file_queue:
+            TransformerWorkflow.Transformer(d)
+    # Generally we use this to process transfromration
+    else:
+        logging.info('Using threads on {0} cores.'.format(cores))
         pool = multiprocessing.Pool(processes=cores)
         results.append(pool.map_async(TransformerWorkflow.Transformer, file_queue))
         pool.close()
         pool.join()
-    else:
-        for d in file_queue:
-            TransformerWorkflow.Transformer(d)
     del file_queue
     logging.info('Finished, exiting and go home ...')
 

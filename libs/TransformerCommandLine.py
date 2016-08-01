@@ -57,6 +57,8 @@ class TransformerCommandLine:
                                       '  same as input_projection')
         self.parser.add_argument('-cores', type=int, dest='cores', required=False, default=1,
                                  help='optional:  cores (default=1)')
+        self.parser.add_argument('-no_threads', dest='no_threads', required=False, default=False,
+                                 help='optional:  do not use threads when cores = 1 (default=False)', action='store_true')
         self.parser.add_argument('-full_header_update', dest='full_header_update', required=False,
                                  help='optional:  Full header update - makes closing file slow (-full_header_update=on, nothing=off)',
                                  action='store_true')
@@ -107,6 +109,9 @@ class TransformerCommandLine:
 
     def get_cores(self):
         return self.args.cores
+
+    def get_no_threads(self):
+        return self.args.no_threads
 
     def get_full_header_update(self):
         return self.args.full_header_update
