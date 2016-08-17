@@ -39,9 +39,6 @@ class FileListWithProjection:
                     matches.append([root, filename])
                 if not os.path.exists(root):
                     os.makedirs(root)
-                '''
-                inputfiles = glob.glob(os.path.join(self.__input_file_or_dir, '*' + self.__file_format))
-                '''
             for i in matches:
                 in_folder = i[0]
                 in_filename = i[1]
