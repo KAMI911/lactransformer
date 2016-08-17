@@ -45,10 +45,10 @@ class FileListWithProjection:
             for i in matches:
                 in_folder = i[0]
                 in_filename = i[1]
-                in_path = os.path.join(in_folder, in_filename)
+                in_file = os.path.join(in_folder, in_filename)
                 in_folder_diff = os.path.relpath(in_folder, self.__input_file_or_dir)
                 out_file = os.path.join(self.__output_path, in_folder_diff, in_filename)
-                logging.info('Adding {0} to the queue to create {1} file. '.format(in_path,out_file))
+                logging.info('Adding {0} to the queue to create {1} file. '.format(in_file, out_file))
                 self.__file_and_projection.append(
                     [in_file, out_file, self.__input_projection, self.__output_projection, self.__file_format,
                      self.__full_header_update, self.__txt_separator])
