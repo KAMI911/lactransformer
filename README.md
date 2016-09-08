@@ -1,6 +1,7 @@
 # lactransformer - LAS & Co Transformer
 
-Travis status: [![Build Status](https://travis-ci.org/KAMI911/lactransformer.svg?branch=master)](https://travis-ci.org/KAMI911/lactransformer)
+Travis status:   [![Build Status](https://travis-ci.org/KAMI911/lactransformer.svg?branch=master)](https://travis-ci.org/KAMI911/lactransformer)
+Coverity status: [![Coverity Scan Build Status](https://scan.coverity.com/projects/10121/badge.svg)](https://scan.coverity.com/projects/kami911-lactransformer)
 
 LAS & Co Transformer is an utility to convert
 
