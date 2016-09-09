@@ -11,6 +11,8 @@ install:
 # command to run test
 script: python test_lactransformer.py
 
+sudo: true
+
 env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
