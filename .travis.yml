@@ -3,13 +3,22 @@ language: python
 python:
   - "2.7"
 
+# command to install dependencies
+install:
+  - "pip install --upgrade pip"
+  - "pip install --pre -r requirements.txt"
+
+# command to run test
+script: python test_lactransformer.py
+
 env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
-    - secure: "m1JTVQ2felTHOW0qAmOpIwW/sz9zu2yru0kk3HQXmgOVhEPJOomafeJ97iJifjFn6I8gW49mHTAz0JmXHdKWR2Yzr5RN+tesq8ap+QAEIDBHIr9rPrhtChYBnw6y1KI8O8GoDHmngpkPNVnCPlZJ7R0FkZqTVNM4QllFpggjH3KO0b4O4mSyJtk1+AgmdPDTbSXvb622D4LeXBzG1FyCYetufrBvdKVdr1vsUMNjQwVEUK3qmSICI/BU4FRHzqEJiTIt84O0SCbqeHSI1ZxFG2CWXb6RvayeR7n7ZTrv9sCyBOB06aWywCaX1ZPdT7xcdqG/PXTVMDrjGI+GXUh4KhIGcr/pLQCV2zmCBLMylU1KKzxk/XMklp/NQRVDQ9PbSF4tnNtS6TnHrKHo2KGh6Z1M/LZMPen0ZRzJdGpxSbbjt9FVnnnYsCzaCL25HEufa0y+dzf1DNHWw1XA06LfJoDeBdYNsSHvEvdyVw0JhOBYnR+xZuB2Cn3ETc1z+cZL/Fj/q4HKjApaQ32/oN+av4ntebzhESiUMlzj/RONxwYKocz1hrwZd+43pdC/U/VdJSWSgiBH8gX+ke/mt5C8wfMt5I4aU4zeoKFRB1CoA6oW093gpncxJmzgWPYW4NiXT/rFRenl+AhEoGiZAyUdjuRzXgiIYUGGwT/X9HKkNhA="
+   - secure: "m1JTVQ2felTHOW0qAmOpIwW/sz9zu2yru0kk3HQXmgOVhEPJOomafeJ97iJifjFn6I8gW49mHTAz0JmXHdKWR2Yzr5RN+tesq8ap+QAEIDBHIr9rPrhtChYBnw6y1KI8O8GoDHmngpkPNVnCPlZJ7R0FkZqTVNM4QllFpggjH3KO0b4O4mSyJtk1+AgmdPDTbSXvb622D4LeXBzG1FyCYetufrBvdKVdr1vsUMNjQwVEUK3qmSICI/BU4FRHzqEJiTIt84O0SCbqeHSI1ZxFG2CWXb6RvayeR7n7ZTrv9sCyBOB06aWywCaX1ZPdT7xcdqG/PXTVMDrjGI+GXUh4KhIGcr/pLQCV2zmCBLMylU1KKzxk/XMklp/NQRVDQ9PbSF4tnNtS6TnHrKHo2KGh6Z1M/LZMPen0ZRzJdGpxSbbjt9FVnnnYsCzaCL25HEufa0y+dzf1DNHWw1XA06LfJoDeBdYNsSHvEvdyVw0JhOBYnR+xZuB2Cn3ETc1z+cZL/Fj/q4HKjApaQ32/oN+av4ntebzhESiUMlzj/RONxwYKocz1hrwZd+43pdC/U/VdJSWSgiBH8gX+ke/mt5C8wfMt5I4aU4zeoKFRB1CoA6oW093gpncxJmzgWPYW4NiXT/rFRenl+AhEoGiZAyUdjuRzXgiIYUGGwT/X9HKkNhA="
 
-sudo: false
+before_install:
+      - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
 addons:
   coverity_scan:
@@ -20,14 +29,3 @@ addons:
     build_command_prepend: ""
     build_command:   "./setup.py build"
     branch_pattern: coverity_scan
-
-before_install:
-  - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
-
-# command to install dependencies
-install:
-  - "pip install --upgrade pip"
-  - "pip install --pre -r requirements.txt"
-
-# command to run test
-script: python test_lactransformer.py
