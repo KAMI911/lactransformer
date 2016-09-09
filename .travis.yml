@@ -31,4 +31,3 @@ addons:
     build_command_prepend: ""
     build_command:   "./setup.py build"
     branch_pattern: coverity_scan
-
