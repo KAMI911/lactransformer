@@ -12,16 +12,6 @@ env:
 before_install:
   - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
-# command to install dependencies
-install:
-  - "pip install --upgrade pip"
-  - "pip install --pre -r requirements.txt"
-
-# command to run test
-script: python test_lactransformer.py
-
-sudo: false
-
 addons:
   coverity_scan:
     project:
@@ -31,3 +21,13 @@ addons:
     build_command_prepend: ""
     build_command:   "./setup.py build"
     branch_pattern: coverity_scan
+
+# command to install dependencies
+install:
+  - "pip install --upgrade pip"
+  - "pip install --pre -r requirements.txt"
+
+# command to run test
+script: python test_lactransformer.py
+
+sudo: false
