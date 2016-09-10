@@ -2,15 +2,14 @@ try:
     import filecmp
     import os
     import unittest
-
-    from libs import FriendlyName, AssignProjection, TxtPanPyConverter, LasPyConverter
+    from lactransformer.libs import FriendlyName, AssignProjection, TxtPanPyConverter, LasPyConverter
 except ImportError as err:
     print('Error {0} import module: {1}'.format(__name__, err))
     exit(128)
 
 
 def grid_path(filename):
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), 'grid', filename))
+    return (os.path.abspath(os.path.join(os.path.dirname(__file__), 'lactransformer', 'grid', filename)))
 
 
 def input_file_path(filename):
