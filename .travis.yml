@@ -32,9 +32,10 @@ install:
   - "pip install --pre -r requirements.txt"
   - "pip install codeclimate-test-reporter"
 
-before_script:
+# command to run test
+script: python test_lactransformer.py
+
+after_script:
   - "coverage run test_lactransformer.py"
   - "CODECLIMATE_REPO_TOKEN=b71434e7963902b53547f446ed0174dde0b450b878febab00936c6b74daf9cca codeclimate-test-reporter"
 
-# command to run test
-script: python test_lactransformer.py
