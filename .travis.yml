@@ -5,6 +5,18 @@ python:
 
 sudo: true
 
+addons:
+  code_climate:
+    repo_token: b71434e7963902b53547f446ed0174dde0b450b878febab00936c6b74daf9cca
+  coverity_scan:
+    project:
+      name: "KAMI911/lactransformer"
+      description: "Build submitted via Travis CI"
+    notification_email: kami911@gmail.com
+    build_command_prepend: ""
+    build_command:   "./setup.py build"
+    branch_pattern: coverity_scan
+
 env:
   global:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
@@ -21,15 +33,3 @@ install:
 
 # command to run test
 script: python test_lactransformer.py
-
-addons:
-  coverity_scan:
-    project:
-      name: "KAMI911/lactransformer"
-      description: "Build submitted via Travis CI"
-    notification_email: kami911@gmail.com
-    build_command_prepend: ""
-    build_command:   "./setup.py build"
-    branch_pattern: coverity_scan
-  code_climate:
-    repo_token: b71434e7963902b53547f446ed0174dde0b450b878febab00936c6b74daf9cca
