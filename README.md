@@ -88,7 +88,7 @@ pandas - https://pypi.python.org/pypi/pandas/
 sudo apt-get install python2.7 python-numpy python-pandas
 ```
 
-**Install numpy, pandas, pyproj, lapy**
+**Install numpy, pandas, pyproj, laspy**
 
 ```
 pip install -r requirements.txt
