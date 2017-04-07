@@ -6,7 +6,7 @@ try:
     import sys
     import os
     from pyproj import Proj, transform
-    import PefFile, AssignProjection
+    from . import PefFile, AssignProjection
 except ImportError as err:
     print('Error {0} import module: {1}'.format(__name__, err))
     exit(128)
@@ -129,7 +129,7 @@ class TxtPanPyConverter:
                                                                                self.__DestinationProj,
                                                                                coordinates[0], coordinates[1],
                                                                                coordinates[2])
-                    Content[i][1] = '%s %s %s' % (coordinates[0], coordinates[1], coordinates[2])
+                    Content[i][1] = '%.10f %.10f %.10f' % (coordinates[0], coordinates[1], coordinates[2])
             self.__DestinationOpenedFile.WriteNextItem(Content)
 
     def Close(self, type='txt'):

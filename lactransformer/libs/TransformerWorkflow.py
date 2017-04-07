@@ -2,7 +2,7 @@ try:
     import traceback
     import logging
     import multiprocessing
-    from libs import LasPyConverter, TxtPanPyConverter, FriendlyName, AssignProjection
+    from . import LasPyConverter, TxtPanPyConverter, FriendlyName, AssignProjection
 except ImportError as err:
     print('Error {0} import module: {1}'.format(__name__, err))
     exit(128)

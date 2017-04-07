@@ -7,7 +7,7 @@ try:
     import laspy
     import sys
     import laspy.file
-    import AssignProjection
+    from . import AssignProjection
 except ImportError as err:
     print('Error {0} import module: {1}'.format(__name__, err))
     exit(128)
