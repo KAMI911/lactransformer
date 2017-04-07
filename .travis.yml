@@ -2,6 +2,7 @@ language: python
 
 python:
   - "2.7"
+  - "3.5"
 
 sudo: true
 
@@ -31,9 +32,14 @@ install:
   - "pip install --upgrade pip"
   - "pip install --pre -r requirements.txt"
   - "pip install codeclimate-test-reporter"
+  - "pip3.5 install --upgrade pip"
+  - "pip3.5 install --pre -r requirements.txt"
+  - "pip3.5 install codeclimate-test-reporter"
 
 # command to run test
-script: python test_lactransformer.py
+script:
+  - python test_lactransformer.py
+  - python3.5 test_lactransformer.py
 
 after_script:
   - "coverage run test_lactransformer.py"
