@@ -71,24 +71,16 @@ class TxtPanPyConverter:
                     self.__Format = [ '%1.12f'.format(h) for h in range(0, len(self.__Columns)) ]
                 else:
                     self.__Format = [ '%s'.format(h) for h in range(0, len(self.__Columns)) ]
-                if self.__Type == 'txt':
-                    self.__Format[0] = '%1.6f'
-                elif self.__Type == 'csv':
-                    self.__Format[0] = '%1.6f'
-                if self.__Type == 'listtxt':
-                    self.__Format[0] = '%06d'
+                if self.__Type in  [ 'txt', 'csv' ]: self.__Format[0] = '%1.6f'
+                if self.__Type == 'listtxt': self.__Format[0] = '%06d'
                 if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
                     for f in self.__Fields:
                         self.__Format[f] = '%1.15f'
                 elif self.__DestinationProjection not in ['WGS84'] and self.__Type != 'pef':
                     for f in self.__Fields:
                         self.__Format[f] = '%1.4f'
-
             elif self.__Type == 'pef':
-                if self.__SourceFileName != 'stdin':
-                    self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName)
-                else:
-                    self.__SourceOpenedFile = PefFile.PefFile(sys.stdin)
+                self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName) if self.__SourceFileName != 'stdin' else PefFile.PefFile(sys.stdin)
                 self.__SourceOpenedFile.OpenRO()
                 self.__DestinationOpenedFile = PefFile.PefFile(self.__DestinationFileName)
                 self.__DestinationOpenedFile.OpenOW()
@@ -96,10 +88,7 @@ class TxtPanPyConverter:
             raise
 
     def Transform(self):
-        if self.__Type != 'pef':
-            self.TransformTxt()
-        else:
-            self.TransformPEF()
+        self.TransformTxt() if self.__Type != 'pef' else  self.TransformPEF()
 
     def TransformTxt(self):
         self.__SourceData[:, self.__Fields[0]], self.__SourceData[:, self.__Fields[1]], self.__SourceData[:,
