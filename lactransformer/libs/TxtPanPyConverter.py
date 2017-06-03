@@ -67,13 +67,10 @@ class TxtPanPyConverter:
                     self.__HeaderList = list(df.columns.values)
                     self.__projection_replace_header()
                     self.__Header = ','.join(self.__HeaderList)
-                self.__Format = []
                 if self.__Type not in [ 'strtxt', 'listtxt']:
-                    for h in range(0, len(self.__Columns)):
-                        self.__Format.append('%1.12f')
+                    self.__Format = [ '%1.12f'.format(h) for h in range(0, len(self.__Columns)) ]
                 else:
-                    for h in range(0, len(self.__Columns)):
-                        self.__Format.append('%s')
+                    self.__Format = [ '%s'.format(h) for h in range(0, len(self.__Columns)) ]
                 if self.__Type == 'txt':
                     self.__Format[0] = '%1.6f'
                 elif self.__Type == 'csv':
