@@ -39,7 +39,8 @@ def main():
     file_queue = filelist.get_filelist()
 
     # If we got one file, start only one process
-    cores = 1 if filelist.get_isdir() is False
+    if filelist.get_isdir() is False:
+        cores = 1
     # Do not use threads when only use one core and disable threads
     # Probably this is related to https://github.com/grantbrown/laspy/issues/32
     if cores == 1 and no_threads == True:

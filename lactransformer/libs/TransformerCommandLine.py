@@ -73,10 +73,7 @@ class TransformerCommandLine:
         self.args = self.parser.parse_args()
 
         ##defaults
-        if self.args.verbose:
-            self.args.verbose = ' -v'
-        else:
-            self.args.verbose = ''
+        self.args.verbose = ' -v' if self.args.verbose else ''
         if self.args.input_format == None:
             self.args.input_format = 'las'
         if self.args.cores == None:

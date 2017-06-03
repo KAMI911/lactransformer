@@ -25,12 +25,9 @@ def Transformer(parameters):
     logging.info('[{0}] Starting ...'.format(proc_name))
     if input_format in ['las', 'laz']:
         logging.info(
-            '[{0}] Opening {1} {2} file for converting to {3} {4} file ...'.format(
-                proc_name, source_file, input_format_name, destination_file, input_format_name))
-        logging.info(
-            '[{0}] Source projections is: "{1}", destination projection is: "{2}".'.format(
-                proc_name, AssignProjection.AssignProjectionName(source_projection),
-                AssignProjection.AssignProjectionName(destination_projection)))
+            '[{0}] Opening {1} {2} ({3}) file for converting to {4} {5} ({6}) file ...'.format(
+                proc_name, source_file, input_format_name, AssignProjection.AssignProjectionName(source_projection),
+                destination_file, input_format_name, AssignProjection.AssignProjectionName(destination_projection)))
         # Opening source LAS files for read and write
         try:
             lasFiles = LasPyConverter.LasPyConverter(
@@ -74,18 +71,21 @@ def Transformer(parameters):
                 '[{0}] Bounding box of transformed PointCloud min: [{1[0]:.3f}, {1[1]:.3f}, {1[2]:.3f}] max: [{2[0]:.3f}, {2[1]:.3f}, {2[2]:.3f}].'.format(
                     proc_name, transformed_min, transformed_max))
         try:
-            logging.info('[{0}] Closing transformed {1} {2} file.'.format(proc_name, destination_file, input_format_name))
+            logging.info(
+                '[{0}] Closing transformed {1} {2} file.'.format(proc_name, destination_file, input_format_name))
             lasFiles.Close(full_header_update)
         except Exception as err:
-            logging.error('Cannot close files: {0} and {1}, error: {2}.'.format(source_file, destination_file, str(err)))
+            logging.error(
+                'Cannot close files: {0} and {1}, error: {2}.'.format(source_file, destination_file, str(err)))
             exit(12)
         else:
-            logging.info('[{0}] Transformed {1} {2} file has created.'.format(proc_name, destination_file, input_format_name))
+            logging.info(
+                '[{0}] Transformed {1} {2} file has created.'.format(proc_name, destination_file, input_format_name))
             return 0
     elif input_format in ['txt', 'lastxt', 'iml', 'csv', 'pef', 'strtxt', 'listtxt']:
         logging.info(
-            '[{0}] Opening {1} {2} file for converting to {3} {4} file ... Source projections is: "{5}", destination projection is: "{6}".'.format(
-                proc_name, source_file, input_format_name, destination_file, input_format_name, source_projection,
+            '[{0}] Opening {1} {2} ({3}) file for converting to {4} {5} ({6}) file ...".'.format(
+                proc_name, source_file, input_format_name, source_projection, destination_file, input_format_name,
                 destination_projection))
         # Opening source Text pointcloud files for read and write
         try:
@@ -103,15 +103,19 @@ def Transformer(parameters):
             exit(11)
         else:
             logging.info(
-                '[{0}] Successfully transformed {1} for file: {2}.'.format(proc_name, input_format_name, destination_file))
+                '[{0}] Successfully transformed {1} for file: {2}.'.format(proc_name, input_format_name,
+                                                                           destination_file))
         try:
-            logging.info('[{0}] Closing transformed {1} {2} file.'.format(proc_name, destination_file, input_format_name))
+            logging.info(
+                '[{0}] Closing transformed {1} {2} file.'.format(proc_name, destination_file, input_format_name))
             txtFiles.Close()
         except Exception as err:
-            logging.error('Cannot close files: {0} and {1}, error: {2}.'.format(source_file, destination_file, str(err)))
+            logging.error(
+                'Cannot close files: {0} and {1}, error: {2}.'.format(source_file, destination_file, str(err)))
             exit(12)
         else:
-            logging.info('[{0}] Transformed {1} {2} file has created.'.format(proc_name, destination_file, input_format_name))
+            logging.info(
+                '[{0}] Transformed {1} {2} file has created.'.format(proc_name, destination_file, input_format_name))
             return 0
     else:
         logging.critical('Unknown -input_format parameter is specified: "{0}".'.format(input_format))
