@@ -68,8 +68,10 @@ class FileListWithProjection:
             logging.error('Cannot found input LAS PointCloud file: %s' % (self.__input_file_or_dir))
             exit(1)
 
-    def get_filelist(self):
+    @property
+    def filelist(self):
         return self.__file_and_projection
 
-    def get_isdir(self):
+    @property
+    def isdir(self):
         return self.__input_isdir

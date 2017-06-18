@@ -36,10 +36,10 @@ def main():
                          lasconverterworkflow.full_header_update, lasconverterworkflow.separator)
     no_threads = lasconverterworkflow.no_threads
     del lasconverterworkflow
-    file_queue = filelist.get_filelist()
+    file_queue = filelist.filelist
 
     # If we got one file, start only one process
-    if filelist.get_isdir() is False:
+    if filelist.isdir is False:
         cores = 1
     # Do not use threads when only use one core and disable threads
     # Probably this is related to https://github.com/grantbrown/laspy/issues/32

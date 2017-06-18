@@ -35,34 +35,34 @@ def AssignProjectionString(projection):
                    'ETRS89geo': '+proj=geocent +ellps=GRS80 +units=m +no_defs'}
 
     if projection in ['EOVc', 'EOV2014']:
-        if os.path.isfile(nadgrids_EOV2009) and os.path.isfile(geoidgrids_EOV2009):
+        if os.path.isfile(nadgrids_EOV2014) and os.path.isfile(geoidgrids_EOV2014):
             logging.info('Found all required grids ...')
         else:
-            logging.error('Cannot found %s and/or %s grids.' % (nadgrids_EOV2009, geoidgrids_EOV2009))
+            logging.error('Cannot found %s and/or %s grids.' % (nadgrids_EOV2014, geoidgrids_EOV2014))
             exit(2)
-    elif projection in ['EOV2014fine']:
-        if os.path.isfile(nadgrids_EOV2009) and os.path.isfile(geoidgrids_EOV2014fine):
+    elif projection == 'EOV2014fine':
+        if os.path.isfile(nadgrids_EOV2014) and os.path.isfile(geoidgrids_EOV2014fine):
             logging.info('Found all required grids ...')
         else:
-            logging.error('Cannot found %s and/or %s grids.' % (nadgrids_EOV2009, geoidgrids_EOV2014fine))
+            logging.error('Cannot found %s and/or %s grids.' % (nadgrids_EOV2014, geoidgrids_EOV2014fine))
             exit(2)
     elif projection == 'EOV2009':
         if os.path.isfile(nadgrids_EOV2009) and os.path.isfile(geoidgrids_EOV2009):
             logging.info('Found all required grids ...')
         else:
-            logging.error('Cannot found %s and/or %s grids.' % (nadgrids, geoidgrids))
+            logging.error('Cannot found %s and/or %s grids.' % (nadgrids_EOV2009, geoidgrids_EOV2009))
             exit(2)
     elif projection == 'EOVp':  # do not use
         if os.path.isfile(nadgrids_EOV2009):
             logging.info('Found all required grids ...')
         else:
-            logging.error('Cannot found %s grid.' % (nadgrids))
+            logging.error('Cannot found %s grid.' % (nadgrids_EOV2009))
             exit(2)
     elif projection == 'SVY21c':
         if os.path.isfile(geoidgrids_SVY21c):
             logging.info('Found all required grids ...')
         else:
-            logging.error('Cannot found %s grid.' % (geoidgrids))
+            logging.error('Cannot found %s grid.' % (geoidgrids_SVY21c))
             exit(2)
     if projection in projections:
         return projections[projection]
@@ -80,6 +80,7 @@ def AssignFallbackProjectionString(projection):
                             'EOV': '',
                             'EOVc': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
                             'EOV2014': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
+                            'EOV2014fine': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
                             'EOV2009': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
                             'SVY21': '',
                             'SVY21c': '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +units=m +no_defs',
@@ -92,11 +93,11 @@ def AssignFallbackProjectionString(projection):
 
 
 def AssignProjectionName(projection):
-    fallback_projectionstring = {'WGS84': 'WGS84', 'WGS84geo': 'WGS84geo', 'WGS84PM': 'WGS84PM', 'EOV': 'EOV',
-                                 'EOVc': 'EOV2014', 'EOV2014': 'EOV2014', 'EOV2014fine': 'EOV2014fine',
-                                 'EOV2009': 'EOV2009', 'EOVp': 'EOVp', 'SVY21': 'SVY21', 'SVY21c': 'SVY21',
-                                 'ETRS89': 'ETRS89', 'ETRS89geo': 'ETRS89geo'}
-    if projection in fallback_projectionstring:
-        return fallback_projectionstring[projection]
+    projectionnames = {'WGS84': 'WGS84', 'WGS84geo': 'WGS84geo', 'WGS84PM': 'WGS84PM', 'EOV': 'EOV',
+                       'EOVc': 'EOV2014', 'EOV2014': 'EOV2014', 'EOV2014fine': 'EOV2014fine',
+                       'EOV2009': 'EOV2009', 'EOVp': 'EOVp', 'SVY21': 'SVY21', 'SVY21c': 'SVY21',
+                       'ETRS89': 'ETRS89', 'ETRS89geo': 'ETRS89geo'}
+    if projection in projectionnames:
+        return projectionnames[projection]
     else:
         return False

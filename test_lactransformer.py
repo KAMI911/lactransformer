@@ -69,6 +69,11 @@ class TestAssignProjection(unittest.TestCase):
                                      'ETRS89': '',
                                      'ETRS89geo': ''}
 
+        self.projectionnames = {'WGS84': 'WGS84', 'WGS84geo': 'WGS84geo', 'WGS84PM': 'WGS84PM', 'EOV': 'EOV',
+                                'EOVc': 'EOV2014', 'EOV2014': 'EOV2014', 'EOV2014fine': 'EOV2014fine',
+                                'EOV2009': 'EOV2009', 'EOVp': 'EOVp', 'SVY21': 'SVY21', 'SVY21c': 'SVY21',
+                                'ETRS89': 'ETRS89', 'ETRS89geo': 'ETRS89geo'}
+
     def test_assign_projection_all(self):
         for projection, projection_string in self.projections.items():
             self.assertEqual(AssignProjection.AssignProjectionString(projection), projection_string)
@@ -77,12 +82,16 @@ class TestAssignProjection(unittest.TestCase):
         self.assertEqual(AssignProjection.AssignProjectionString('EOVcMISSING'), False)
 
     def test_assign_fallback_projection_all(self):
-        for projection, projection_string in self.fallback_projections.items():
+        for projection, fallback_projection_string in self.fallback_projections.items():
             self.assertEqual(AssignProjection.AssignFallbackProjectionString(projection),
-                             projection_string)
+                             fallback_projection_string)
 
     def test_assign_fallback_projection_missing(self):
         self.assertEqual(AssignProjection.AssignProjectionString('EOVcMISSING'), False)
+
+    def test_assign_projection_name_all(self):
+        for projection, projection_name in self.projectionnames.items():
+            self.assertEqual(AssignProjection.AssignProjectionName(projection), projection_name)
 
 
 class TestTxtTransformation_from_WGS84geo(unittest.TestCase):
