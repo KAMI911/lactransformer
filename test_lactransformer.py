@@ -43,6 +43,7 @@ class TestAssignProjection(unittest.TestCase):
         geoidgrids_EOV2009 = grid_path('geoid_eht.gtx')
         nadgrids_EOV2014 = grid_path('etrs2eov_notowgs.gsb')
         geoidgrids_EOV2014 = grid_path('geoid_eht2014.gtx')
+        geoidgrids_EOV2014fine = grid_path('geoid_eht2014_fine.gtx')
         geoidgrids_SVY21c = grid_path('geoid_svy21_2009.gtx')
 
         self.projections = {'WGS84': '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
@@ -50,6 +51,7 @@ class TestAssignProjection(unittest.TestCase):
                             'EOV': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
                             'EOVc': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids_EOV2014 + ' +geoidgrids=' + geoidgrids_EOV2014 + ' +units=m +no_defs',
                             'EOV2014': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids_EOV2014 + ' +geoidgrids=' + geoidgrids_EOV2014 + ' +units=m +no_defs',
+                            'EOV2014fine': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids_EOV2014 + ' +geoidgrids=' + geoidgrids_EOV2014fine + ' +units=m +no_defs',
                             'EOV2009': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids_EOV2009 + ' +geoidgrids=' + geoidgrids_EOV2009 + ' +units=m +no_defs',
                             'SVY21': '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +units=m +no_defs',
                             'SVY21c': '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +geoidgrids=' + geoidgrids_SVY21c + ' +units=m +no_defs',
@@ -347,7 +349,7 @@ class TestLasTransformation_from_WGS84geo(unittest.TestCase):
         self.las_compare = LasPyConverter.LasPyCompare(self.temp_file, self.compare_file)
         self.las_compare.OpenReanOnly()
         if not self.las_compare.is_equal():
-            print (self.las_compare.ComparePointCloud())
+            print(self.las_compare.ComparePointCloud())
         self.assertTrue(self.las_compare.is_equal())
         self.las_compare.Close()
         if os.path.exists(self.temp_file):
@@ -368,7 +370,7 @@ class TestLasTransformation_from_WGS84geo(unittest.TestCase):
         self.las_compare = LasPyConverter.LasPyCompare(self.temp_file, self.compare_file)
         self.las_compare.OpenReanOnly()
         if not self.las_compare.is_equal():
-            print (self.las_compare.ComparePointCloud())
+            print(self.las_compare.ComparePointCloud())
         self.assertTrue(self.las_compare.is_equal())
         self.las_compare.Close()
         if os.path.exists(self.temp_file):

@@ -15,64 +15,59 @@ def AssignProjectionString(projection):
     # WGS84 = Proj(init='EPSG:4326')
     # WGS84Geo = Proj(init='EPSG:4328')
 
-    if projection == 'WGS84':
-        projectionstring = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
-    elif projection == 'WGS84geo':
-        projectionstring = '+proj=geocent +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
-    elif projection == 'WGS84PM':
-        projectionstring = '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs'
-    elif projection == 'EOV':
-        projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
-    elif projection in ['EOVc', 'EOV2014']:
-        nadgrids = grid_path('etrs2eov_notowgs.gsb')
-        geoidgrids = grid_path('geoid_eht2014.gtx')
-        if os.path.isfile(nadgrids) and os.path.isfile(geoidgrids):
+    nadgrids_EOV2009 = grid_path('etrs2eov_notowgs.gsb')
+    geoidgrids_EOV2009 = grid_path('geoid_eht.gtx')
+    nadgrids_EOV2014 = grid_path('etrs2eov_notowgs.gsb')
+    geoidgrids_EOV2014 = grid_path('geoid_eht2014.gtx')
+    geoidgrids_EOV2014fine = grid_path('geoid_eht2014_fine.gtx')
+    geoidgrids_SVY21c = grid_path('geoid_svy21_2009.gtx')
+
+    projections = {'WGS84': '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
+                   'WGS84geo': '+proj=geocent +ellps=WGS84 +datum=WGS84 +units=m +no_defs',
+                   'EOV': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
+                   'EOVc': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids_EOV2014 + ' +geoidgrids=' + geoidgrids_EOV2014 + ' +units=m +no_defs',
+                   'EOV2014': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids_EOV2014 + ' +geoidgrids=' + geoidgrids_EOV2014 + ' +units=m +no_defs',
+                   'EOV2014fine': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids_EOV2014 + ' +geoidgrids=' + geoidgrids_EOV2014fine + ' +units=m +no_defs',
+                   'EOV2009': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids_EOV2009 + ' +geoidgrids=' + geoidgrids_EOV2009 + ' +units=m +no_defs',
+                   'SVY21': '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +units=m +no_defs',
+                   'SVY21c': '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +geoidgrids=' + geoidgrids_SVY21c + ' +units=m +no_defs',
+                   'ETRS89': '+proj=longlat +ellps=GRS80 +no_defs',
+                   'ETRS89geo': '+proj=geocent +ellps=GRS80 +units=m +no_defs'}
+
+    if projection in ['EOVc', 'EOV2014']:
+        if os.path.isfile(nadgrids_EOV2009) and os.path.isfile(geoidgrids_EOV2009):
             logging.info('Found all required grids ...')
-            projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids + ' +geoidgrids=' + geoidgrids + ' +units=m +no_defs'
         else:
-            logging.error('Cannot found %s and/or %s grids.' % (nadgrids, geoidgrids))
+            logging.error('Cannot found %s and/or %s grids.' % (nadgrids_EOV2009, geoidgrids_EOV2009))
             exit(2)
     elif projection in ['EOV2014fine']:
-        nadgrids = grid_path('etrs2eov_notowgs.gsb')
-        geoidgrids = grid_path('geoid_eht2014_fine.gtx')
-        if os.path.isfile(nadgrids) and os.path.isfile(geoidgrids):
+        if os.path.isfile(nadgrids_EOV2009) and os.path.isfile(geoidgrids_EOV2014fine):
             logging.info('Found all required grids ...')
-            projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids + ' +geoidgrids=' + geoidgrids + ' +units=m +no_defs'
         else:
-            logging.error('Cannot found %s and/or %s grids.' % (nadgrids, geoidgrids))
+            logging.error('Cannot found %s and/or %s grids.' % (nadgrids_EOV2009, geoidgrids_EOV2014fine))
             exit(2)
     elif projection == 'EOV2009':
-        nadgrids = grid_path('etrs2eov_notowgs.gsb')
-        geoidgrids = grid_path('geoid_eht.gtx')
-        if os.path.isfile(nadgrids) and os.path.isfile(geoidgrids):
+        if os.path.isfile(nadgrids_EOV2009) and os.path.isfile(geoidgrids_EOV2009):
             logging.info('Found all required grids ...')
-            projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids + ' +geoidgrids=' + geoidgrids + ' +units=m +no_defs'
         else:
             logging.error('Cannot found %s and/or %s grids.' % (nadgrids, geoidgrids))
             exit(2)
     elif projection == 'EOVp':  # do not use
-        nadgrids = grid_path('etrs2eov_notowgs.gsb')
-        if os.path.isfile(nadgrids):
+        if os.path.isfile(nadgrids_EOV2009):
             logging.info('Found all required grids ...')
-            projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids + ' +units=m +no_defs'
         else:
             logging.error('Cannot found %s grid.' % (nadgrids))
             exit(2)
-    elif projection == 'SVY21':
-        projectionstring = '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +units=m +no_defs'
     elif projection == 'SVY21c':
-        geoidgrids = grid_path('geoid_svy21_2009.gtx')
-        if os.path.isfile(geoidgrids):
+        if os.path.isfile(geoidgrids_SVY21c):
             logging.info('Found all required grids ...')
-            projectionstring = '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +geoidgrids=' + geoidgrids + ' +units=m +no_defs'
         else:
             logging.error('Cannot found %s grid.' % (geoidgrids))
             exit(2)
-    elif projection == 'ETRS89':
-        projectionstring = '+proj=longlat +ellps=GRS80 +no_defs'
-    elif projection == 'ETRS89geo':
-        projectionstring = '+proj=geocent +ellps=GRS80 +units=m +no_defs'
-    return projectionstring
+    if projection in projections:
+        return projections[projection]
+    else:
+        return False
 
 
 def AssignFallbackProjectionString(projection):
@@ -80,32 +75,20 @@ def AssignFallbackProjectionString(projection):
     # WGS84 = Proj(init='EPSG:4326')
     # WGS84Geo = Proj(init='EPSG:4328')
 
-    if projection == 'WGS84':
-        fallback_projectionstring = ''
-    elif projection == 'WGS84geo':
-        fallback_projectionstring = ''
-    elif projection == 'WGS84PM':
-        fallback_projectionstring = ''
-    elif projection == 'EOV':
-        fallback_projectionstring = ''
-    elif projection in ['EOVc', 'EOV2014']:
-        fallback_projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
-    elif projection in ['EOV2014fine']:
-        fallback_projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
-    elif projection == 'EOV2009':
-        fallback_projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
-    elif projection == 'EOVp':  # do not use
-        fallback_projectionstring = '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs'
-    elif projection == 'SVY21':
-        fallback_projectionstring = ''
-    elif projection == 'SVY21c':
-        fallback_projectionstring = '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +units=m +no_defs'
-    elif projection == 'ETRS89':
-        fallback_projectionstring = ''
-    elif projection == 'ETRS89geo':
-        fallback_projectionstring = ''
-    return fallback_projectionstring
-
+    fallback_projections = {'WGS84': '',
+                            'WGS84geo': '',
+                            'EOV': '',
+                            'EOVc': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
+                            'EOV2014': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
+                            'EOV2009': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
+                            'SVY21': '',
+                            'SVY21c': '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +units=m +no_defs',
+                            'ETRS89': '',
+                            'ETRS89geo': ''}
+    if projection in fallback_projections:
+        return fallback_projections[projection]
+    else:
+        return False
 
 def AssignProjectionName(projection):
     if projection == 'WGS84':
