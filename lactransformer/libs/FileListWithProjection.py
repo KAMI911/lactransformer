@@ -35,15 +35,15 @@ class FileListWithProjection:
             self.__input_isdir = True
             matches = []
             for root, dirnames, filenames in os.walk(input_file_or_dir):
-                for filename in fnmatch.filter(filenames, '*' + self.__file_format):
-                    matches.append([root, filename])
+                matches = [[root, filename] for filename in fnmatch.filter(filenames, '*' + self.__file_format)]
                 if not os.path.exists(root):
                     os.makedirs(root)
             for i in matches:
                 in_folder = i[0]
                 in_filename = i[1]
                 in_file = os.path.join(in_folder, in_filename)
-                in_folder_diff = "" if os.path.join(in_folder) == os.path.join(self.__input_file_or_dir) else os.path.relpath(in_folder, self.__input_file_or_dir)
+                in_folder_diff = "" if os.path.join(in_folder) == os.path.join(
+                    self.__input_file_or_dir) else os.path.relpath(in_folder, self.__input_file_or_dir)
                 out_file = os.path.join(self.__output_path, in_folder_diff, in_filename)
                 logging.info('Adding {0} to the queue to create {1} file. '.format(in_file, out_file))
                 self.__file_and_projection.append(
