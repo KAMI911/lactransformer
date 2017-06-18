@@ -90,29 +90,13 @@ def AssignFallbackProjectionString(projection):
     else:
         return False
 
+
 def AssignProjectionName(projection):
-    if projection == 'WGS84':
-        fallback_projectionstring = 'WGS84'
-    elif projection == 'WGS84geo':
-        fallback_projectionstring = 'WGS84geo'
-    elif projection == 'WGS84PM':
-        fallback_projectionstring = 'WGS84PM'
-    elif projection == 'EOV':
-        fallback_projectionstring = 'EOV'
-    elif projection in ['EOVc', 'EOV2014']:
-        fallback_projectionstring = 'EOV2014'
-    elif projection in ['EOV2014fine']:
-        fallback_projectionstring = 'EOV2014fine'
-    elif projection == 'EOV2009':
-        fallback_projectionstring = 'EOV2009'
-    elif projection == 'EOVp':  # do not use
-        fallback_projectionstring = 'EOVp'
-    elif projection == 'SVY21':
-        fallback_projectionstring = 'SVY21'
-    elif projection == 'SVY21c':
-        fallback_projectionstring = 'SVY21'
-    elif projection == 'ETRS89':
-        fallback_projectionstring = 'ETRS89'
-    elif projection == 'ETRS89geo':
-        fallback_projectionstring = 'ETRS89geo'
-    return fallback_projectionstring
+    fallback_projectionstring = {'WGS84': 'WGS84', 'WGS84geo': 'WGS84geo', 'WGS84PM': 'WGS84PM', 'EOV': 'EOV',
+                                 'EOVc': 'EOV2014', 'EOV2014': 'EOV2014', 'EOV2014fine': 'EOV2014fine',
+                                 'EOV2009': 'EOV2009', 'EOVp': 'EOVp', 'SVY21': 'SVY21', 'SVY21c': 'SVY21',
+                                 'ETRS89': 'ETRS89', 'ETRS89geo': 'ETRS89geo'}
+    if projection in fallback_projectionstring:
+        return fallback_projectionstring[projection]
+    else:
+        return False
