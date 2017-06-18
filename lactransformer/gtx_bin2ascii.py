@@ -17,8 +17,8 @@ fileconverterworkflow.parse()
 
 index = 0
 
-input_file = fileconverterworkflow.get_input()
-output_file = fileconverterworkflow.get_output()
+input_file = fileconverterworkflow.input
+output_file = fileconverterworkflow.output
 
 if output_file is None:
     output_file = input_file + '.txt'

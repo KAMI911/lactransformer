@@ -23,18 +23,18 @@ def main():
     lasconverterworkflow = TransformerCommandLine.TransformerCommandLine()
     lasconverterworkflow.parse()
     # File/Directory handler
-    cores = lasconverterworkflow.get_cores()
+    cores = lasconverterworkflow.cores
 
     file_queue = []
     results = []
     filelist = FileListWithProjection.FileListWithProjection()
-    filelist.create_list(lasconverterworkflow.get_input(),
-                         lasconverterworkflow.get_output(),
-                         lasconverterworkflow.get_input_projection(),
-                         lasconverterworkflow.get_output_projection(),
-                         lasconverterworkflow.get_input_format(),
-                         lasconverterworkflow.get_full_header_update(), lasconverterworkflow.get_separator())
-    no_threads = lasconverterworkflow.get_no_threads()
+    filelist.create_list(lasconverterworkflow.input,
+                         lasconverterworkflow.output,
+                         lasconverterworkflow.input_projection,
+                         lasconverterworkflow.output_projection,
+                         lasconverterworkflow.input_format,
+                         lasconverterworkflow.full_header_update, lasconverterworkflow.separator)
+    no_threads = lasconverterworkflow.no_threads
     del lasconverterworkflow
     file_queue = filelist.get_filelist()
 

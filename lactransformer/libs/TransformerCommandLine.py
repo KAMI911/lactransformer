@@ -86,32 +86,42 @@ class TransformerCommandLine:
             self.args.separator = ','
 
     # ---------PUBLIC METHODS--------------------
-    def get_output(self):
+    @property
+    def output(self):
         return self.args.output
 
-    def get_input(self):
+    @property
+    def input(self):
         return self.args.input
 
-    def get_input_format(self):
+    @property
+    def input_format(self):
         return self.args.input_format
 
-    def get_input_projection(self):
+    @property
+    def input_projection(self):
         return self.args.input_projection
 
-    def get_output_projection(self):
+    @property
+    def output_projection(self):
         return self.args.output_projection
 
-    def get_verbose(self):
+    @property
+    def verbose(self):
         return self.args.verbose
 
-    def get_cores(self):
+    @property
+    def cores(self):
         return self.args.cores
 
-    def get_no_threads(self):
+    @property
+    def no_threads(self):
         return self.args.no_threads
 
-    def get_full_header_update(self):
+    @property
+    def full_header_update(self):
         return self.args.full_header_update
 
-    def get_separator(self):
+    @property
+    def separator(self):
         return self.args.separator

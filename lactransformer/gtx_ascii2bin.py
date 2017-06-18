@@ -17,8 +17,8 @@ DATA_STRUCT = '>f'
 fileconverterworkflow = FileConverterCommandLine.FileConverterCommandLine()
 fileconverterworkflow.parse()
 
-input_file = fileconverterworkflow.get_input()
-output_file = fileconverterworkflow.get_output()
+input_file = fileconverterworkflow.input
+output_file = fileconverterworkflow.output
 
 index = 0
 
