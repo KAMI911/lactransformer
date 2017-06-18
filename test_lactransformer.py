@@ -73,10 +73,16 @@ class TestAssignProjection(unittest.TestCase):
         for projection, projection_string in self.projections.items():
             self.assertEqual(AssignProjection.AssignProjectionString(projection), projection_string)
 
+    def test_assign_projection_missing(self):
+        self.assertEqual(AssignProjection.AssignProjectionString('EOVcMISSING'), False)
+
     def test_assign_fallback_projection_all(self):
         for projection, projection_string in self.fallback_projections.items():
             self.assertEqual(AssignProjection.AssignFallbackProjectionString(projection),
                              projection_string)
+
+    def test_assign_fallback_projection_missing(self):
+        self.assertEqual(AssignProjection.AssignProjectionString('EOVcMISSING'), False)
 
 
 class TestTxtTransformation_from_WGS84geo(unittest.TestCase):
