@@ -31,7 +31,7 @@ def Transformer(parameters):
         # Opening source LAS files for read and write
         try:
             lasFiles = LasPyConverter.LasPyConverter(
-                source_file, source_projection, destination_file, destination_projection)
+                source_file, source_projection, destination_file, destination_projection, proc_name)
             lasFiles.Open()
         except ValueError as err:
             logging.error(
@@ -90,7 +90,7 @@ def Transformer(parameters):
         # Opening source Text pointcloud files for read and write
         try:
             txtFiles = TxtPanPyConverter.TxtPanPyConverter(source_file, source_projection, destination_file,
-                                                           destination_projection, input_format, txt_separator)
+                                                           destination_projection, input_format, txt_separator, proc_name)
             txtFiles.Open()
         except Exception as err:
             logging.error('Cannot open file: {0}.'.format(str(err)))

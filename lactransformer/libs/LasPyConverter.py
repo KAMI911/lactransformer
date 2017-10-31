@@ -15,11 +15,11 @@ except ImportError as err:
 
 class LasPyConverter:
     def __init__(self, source_filename, source_projection, destination_filename,
-                 destination_projection):
+                 destination_projection, proc_name = 'Unknown'):
         self.__SourceFileName = source_filename
         self.__DestinationFileName = destination_filename
         self.__SourceProjection = source_projection
-        self.__SourceProjectionString = AssignProjection.AssignProjectionString(self.__SourceProjection)
+        self.__SourceProjectionString = AssignProjection.AssignProjectionString(self.__SourceProjection, proc_name )
         self.__SourceProj = Proj(self.__SourceProjectionString)
 
         self.__SourceFallbackProjectionString = AssignProjection.AssignFallbackProjectionString(self.__SourceProjection)
@@ -31,7 +31,7 @@ class LasPyConverter:
             self.__SourceFallbackProj = ''
 
         self.__DestinationProjection = destination_projection
-        self.__DestinationProjectionString = AssignProjection.AssignProjectionString(self.__DestinationProjection)
+        self.__DestinationProjectionString = AssignProjection.AssignProjectionString(self.__DestinationProjection, proc_name)
         self.__DestinationProj = Proj(self.__DestinationProjectionString)
 
         self.__DestinationFallbackProjectionString = AssignProjection.AssignFallbackProjectionString(
