@@ -91,7 +91,7 @@ sudo apt-get install python2.7 python-numpy python-pandas
 **Install numpy, pandas, pyproj, laspy**
 
 ```
-pip install -r requirements.txt
+sudo pip install -r requirements.txt
 ```
 
 
