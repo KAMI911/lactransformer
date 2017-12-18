@@ -3,7 +3,7 @@
 Travis status:   [![Build Status](https://travis-ci.org/KAMI911/lactransformer.svg?branch=master)](https://travis-ci.org/KAMI911/lactransformer)
 Coverity status: [![Coverity Scan Build Status](https://scan.coverity.com/projects/10121/badge.svg)](https://scan.coverity.com/projects/kami911-lactransformer)
 Code Climate status: [![Code Climate](https://codeclimate.com/github/KAMI911/lactransformer/badges/gpa.svg)](https://codeclimate.com/github/KAMI911/lactransformer)
-Test Coverage status: [![Test Coverage](https://codeclimate.com/github/KAMI911/lactransformer/badges/coverage.svg)](https://codeclimate.com/github/KAMI911/lactransformer/coverage)
+Test Coverage status: [![Test Coverage](https://api.codeclimate.com/v1/badges/92b91190008930d6513e/test_coverage)](https://codeclimate.com/github/KAMI911/lactransformer/test_coverage)
 
 LAS & Co Transformer is an utility to convert
 
