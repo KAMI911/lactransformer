@@ -121,18 +121,18 @@ http://www.lfd.uci.edu/~gohlke/pythonlibs/#numpy
 
 One of these files:
 
-numpy-1.9.2+mkl-cp27-none-win_amd64.whl for 64 bit version
+numpy-1.13.3+mkl-cp27-cp27m-win_amd64.whl for 64 bit version
 
-http://www.lfd.uci.edu/~gohlke/pythonlibs/3i673h27/numpy-1.9.2+mkl-cp27-none-win_amd64.whl
+https://download.lfd.uci.edu/pythonlibs/yjwkc9i2/numpy-1.13.3+mkl-cp27-cp27m-win_amd64.whl
 
-numpy-1.9.2+mkl-cp27-none-win32.whl for 32 bit version
+numpy-1.13.3+mkl-cp27-cp27m-win32.whl for 32 bit version
 
-http://www.lfd.uci.edu/~gohlke/pythonlibs/3i673h27/numpy-1.9.2+mkl-cp27-none-win32.whl
+https://download.lfd.uci.edu/pythonlibs/yjwkc9i2/numpy-1.13.3+mkl-cp27-cp27m-win32.whl
 
 And install it:
 
 ```
-C:\Python27\Scripts\pip.exe install "numpy-1.9.2+mkl-cp27-none-win_amd64.whl"
+C:\Python27\Scripts\pip.exe install "numpy-1.13.3+mkl-cp27-cp27m-win32.whl"
 ```
 
 **Install Pandas**
@@ -143,18 +143,18 @@ http://www.lfd.uci.edu/~gohlke/pythonlibs/#pandas
 
 One of these files:
 
-pandas-0.17.1-cp27-none-win_amd64.whl for 64 bit version
+pandas-0.21.1-cp27-cp27m-win_amd64.whl for 64 bit version
 
-http://www.lfd.uci.edu/~gohlke/pythonlibs/2y3mcodk/pandas-0.17.1-cp27-none-win_amd64.whl
+https://download.lfd.uci.edu/pythonlibs/yjwkc9i2/pandas-0.21.1-cp27-cp27m-win_amd64.whl
 
-pandas-0.17.1-cp27-none-win32.whl for 32 bit version
+pandas-0.21.1-cp27-cp27m-win32.whl for 32 bit version
 
-http://www.lfd.uci.edu/~gohlke/pythonlibs/2y3mcodk/pandas-0.17.1-cp27-none-win32.whl
+https://download.lfd.uci.edu/pythonlibs/yjwkc9i2/pandas-0.21.1-cp27-cp27m-win32.whl
 
 And install it:
 
 ```
-C:\Python27\Scripts\pip.exe install "pandas-0.17.1-cp27-none-win_amd64.whl"
+C:\Python27\Scripts\pip.exe install "pandas-0.21.1-cp27-cp27m-win32.whl"
 ```
 
 **Install pyproj**
@@ -176,16 +176,16 @@ http://www.lfd.uci.edu/%7Egohlke/pythonlibs/6kbpejrn/pyproj-1.9.5.1-cp27-cp27m-w
 And install it:
 
 ```
-C:\Python27\Scripts\pip.exe install "pyproj-1.9.5-cp27-none-win_amd64.whl"
+C:\Python27\Scripts\pip.exe install "pyproj-1.9.5.1-cp27-none-win_amd64.whl"
 ```
 
 **Install laspy**
 
-Download: https://github.com/grantbrown/laspy/archive/master.zip
+Download: https://github.com/laspy/laspy/archive/1.5.1.zip
 
-Unzip master.zip file
+Unzip 1.5.1.zip file
 
-Enter to the folder of laspy-master
+Enter to the folder of laspy-1.5.1
 
 And build it:
 
