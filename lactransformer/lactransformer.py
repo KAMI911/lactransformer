@@ -1,7 +1,8 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 try:
     import textwrap
-    import glob
-    import os
     import logging
     import datetime
     import multiprocessing

@@ -1,10 +1,12 @@
 try:
+    import traceback
     import os
     import fnmatch
     import logging
     import glob
 except ImportError as err:
     print('Error {0} import module: {1}'.format(__name__, err))
+    traceback.print_exc()
     exit(128)
 
 

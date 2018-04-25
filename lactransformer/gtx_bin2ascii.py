@@ -1,10 +1,15 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 try:
+    import traceback
     from __future__ import print_function
     import os
     import struct
     from libs import FileConverterCommandLine
 except ImportError as err:
     print('Error {0} import module: {1}'.format(__name__, err))
+    traceback.print_exc()
     exit(128)
 
 # It is big endian
