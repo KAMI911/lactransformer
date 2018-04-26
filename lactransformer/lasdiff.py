@@ -8,10 +8,10 @@ try:
     import datetime
     import multiprocessing
     from libs import LasPyConverter
-except Exception as err:
+except ImportError as err:
     print('Error {0} import module: {1}'.format(__name__, err))
+    traceback.print_exc()
     exit(128)
-
 script_path = __file__
 
 header = textwrap.dedent('''LAS Diff''')

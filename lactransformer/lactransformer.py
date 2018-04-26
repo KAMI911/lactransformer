@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 try:
+    import traceback
     import textwrap
     import logging
     import datetime
@@ -9,6 +10,7 @@ try:
     from libs import Logging, TransformerCommandLine, TransformerWorkflow, FileListWithProjection
 except ImportError as err:
     print('Error {0} import module: {1}'.format(__name__, err))
+    traceback.print_exc()
     exit(128)
 
 script_path = __file__
