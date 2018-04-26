@@ -132,7 +132,6 @@ def main():
     inputisdir = False
 
     doing = []
-    results = []
 
     if os.path.isdir(inputfiles):
         inputisdir = True
