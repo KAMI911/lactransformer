@@ -38,8 +38,8 @@ class TestFriendlyName(unittest.TestCase):
                         'lastxt': 'PointText',
                         'iml': 'TerraPhoto Image List', 'csv': 'Riegl Camera CSV', 'pef': 'PEF',
                         'strtxt': 'String PointText'}
-        for type, type_name in file_formats.items():
-            self.assertEqual(FriendlyName.FriendlyName(type), type_name)
+        for type_ext, type_name in file_formats.items():
+            self.assertEqual(FriendlyName.FriendlyName(type_ext), type_name)
 
 
 class TestAssignProjection(unittest.TestCase):

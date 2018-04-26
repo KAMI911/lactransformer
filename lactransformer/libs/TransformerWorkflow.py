@@ -20,7 +20,7 @@ def Transformer(parameters):
     full_header_update = parameters[5]
     txt_separator = parameters[6]
     # Get name for this process
-    current = multiprocessing.current_process()
+    current = multiprocessing.current_process().name
     proc_name = current.name
     # Define friendly name of input formats
     input_format_name = FriendlyName.FriendlyName(input_format)

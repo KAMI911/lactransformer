@@ -76,7 +76,7 @@ def DiffLas(parameters):
     source_file = parameters[0]
     destination_file = parameters[1]
     # Get name for this process
-    current = multiprocessing.current_process()
+    current = multiprocessing.current_proces().name
     proc_name = current.name
 
     logging.info('[%s] Starting ...' % (proc_name))
