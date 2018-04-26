@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 try:
-    import traceback
     from __future__ import print_function
+    import traceback
     import os
     import struct
     from libs import FileConverterCommandLine
