@@ -1,6 +1,6 @@
 # lactransformer - LAS & Co Transformer
 
-Travis status:   [![Build Status](https://travis-ci.org/KAMI911/lactransformer.svg?branch=master)](https://travis-ci.org/KAMI911/lactransformer)Coverity status: [![Coverity Scan Build Status](https://scan.coverity.com/projects/10121/badge.svg)](https://scan.coverity.com/projects/kami911-lactransformer)[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a93bdab4fc7f4a42a426d9dc3735239d)](https://www.codacy.com/project/KAMI911/lactransformer/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KAMI911/lactransformer&amp;utm_campaign=Badge_Grade_Dashboard)[![Maintainability](https://api.codeclimate.com/v1/badges/92b91190008930d6513e/maintainability)](https://codeclimate.com/github/KAMI911/lactransformer/maintainability)
+[![Build Status](https://travis-ci.org/KAMI911/lactransformer.svg?branch=master)](https://travis-ci.org/KAMI911/lactransformer)[![Coverity Scan Build Status](https://scan.coverity.com/projects/10121/badge.svg)](https://scan.coverity.com/projects/kami911-lactransformer)[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a93bdab4fc7f4a42a426d9dc3735239d)](https://www.codacy.com/project/KAMI911/lactransformer/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KAMI911/lactransformer&amp;utm_campaign=Badge_Grade_Dashboard)[![Maintainability](https://api.codeclimate.com/v1/badges/92b91190008930d6513e/maintainability)](https://codeclimate.com/github/KAMI911/lactransformer/maintainability)
 
 LAS & Co Transformer is an utility to convert
 
