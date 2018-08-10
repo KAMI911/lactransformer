@@ -77,6 +77,10 @@ numpy - https://pypi.python.org/pypi/numpy/
 
 pandas - https://pypi.python.org/pypi/pandas/
 
+The lactransformer application and documantations are licensed under the terms of
+the Mozilla Public License 2.0, you will find a copy of this license in the
+[LICENSE](LICENSE) file included in the source package.
+
 ## Installation
 
 ### Linux (Debian/Ubuntu/Linux Mint)
@@ -239,7 +243,7 @@ lactransformer.py -i wgs84dir_trj/ -o eovdir_trj/ -cores 2 -input_format=txt
 If you have any question, do not hesitate and drop me a line.
 If you found a bug, or have a feature request, you can [fill an issue](https://github.com/KAMI911/lactransformer/issues).
 
-## Contribution
+## Contributing
 
 There are many ways to contribute to lactransformer -- whether it be sending patches,
 testing, reporting bugs, or reviewing and updating the documentation. Every
