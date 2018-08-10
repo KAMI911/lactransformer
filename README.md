@@ -2,6 +2,18 @@
 
 [![Build Status](https://travis-ci.org/KAMI911/lactransformer.svg?branch=master)](https://travis-ci.org/KAMI911/lactransformer)[![Coverity Scan Build Status](https://scan.coverity.com/projects/10121/badge.svg)](https://scan.coverity.com/projects/kami911-lactransformer)[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a93bdab4fc7f4a42a426d9dc3735239d)](https://www.codacy.com/project/KAMI911/lactransformer/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KAMI911/lactransformer&amp;utm_campaign=Badge_Grade_Dashboard)[![Maintainability](https://api.codeclimate.com/v1/badges/92b91190008930d6513e/maintainability)](https://codeclimate.com/github/KAMI911/lactransformer/maintainability)
 
+## Table of Contents
+
+1. [About][About]
+2. [Licensing][Licensing]
+3. [Installation][Installation]
+4. [Documentation][Documentation]
+5. [Support][Support]
+6. [Contributing][Contributing]
+7. [Donation][Donation]
+
+## About
+
 LAS & Co Transformer is an utility to convert
 
 * WGS84 (World Geodetic System 1984) Geocentric coordinate system
@@ -22,17 +34,7 @@ in following formats:
 * PEF file
 * RTK CSV format (strtxt)
 
-## Fork me on Github
-
-https://github.com/KAMI911/lactransformer
-
-## Donation
-
-If you find this useful, please consider a donation:
-
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RLQZ58B26XSLA)
-
-## Supported projections
+### Supported projections
 
 **WGS84**     (EPSG:4326) projection : http://epsg.io/4326/
 
@@ -57,7 +59,7 @@ http://www.agt.bme.hu/~bence/proj_poszter_3d.pdf
 
 **SVY21**     (EPSG:3414) projection: http://epsg.io/3414
 
-## EOV correction grid
+### EOV correction grid
 
 Original download: http://www.agt.bme.hu/on_line/etrs2eov/etrs2eov_doc.html
 
@@ -65,7 +67,7 @@ Created by: Zoltán Siki <siki@agt.bme.hu> and Bence Takács <bence@agt.bme.hu>
 
 Github page: https://github.com/OSGeoLabBp/eov2etrs
 
-## Modules
+### Modules
 
 pyproj - https://pypi.python.org/pypi/pyproj/
 
@@ -196,7 +198,7 @@ Then install it:
 python setup.py install
 ```
 
-## Usage
+## Documentation
 
 ### One LAS file
 
@@ -231,4 +233,36 @@ Convert all Trajectory (CSV) text files in a directory from WGS84 to EOV using 2
 ```
 lactransformer.py -i wgs84dir_trj/ -o eovdir_trj/ -cores 2 -input_format=txt
 ```
+
+## Support
+
+If you have any question, do not hesitate and drop me a line.
+If you found a bug, or have a feature request, you can [fill an issue](https://github.com/KAMI911/lactransformer/issues).
+
+## Contribution
+
+There are many ways to contribute to lactransformer -- whether it be sending patches,
+testing, reporting bugs, or reviewing and updating the documentation. Every
+contribution is appreciated!
+
+Please continue reading in the [contributing chapter](CONTRIBUTING.md).
+
+### Fork me on Github
+
+https://github.com/KAMI911/lactransformer
+
+## Donation
+
+If you find this useful, please consider a donation:
+
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=RLQZ58B26XSLA)
+
+<!-- TOC URLs -->
+[About]: #about
+[Licensing]: #licensing
+[Installation]: #installation
+[Documentation]: #documentation
+[Support]: #support
+[Contributing]: #contributing
+[Donation]: #donation
 
