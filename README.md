@@ -77,6 +77,8 @@ numpy - https://pypi.python.org/pypi/numpy/
 
 pandas - https://pypi.python.org/pypi/pandas/
 
+## Licensing
+
 The lactransformer application and documantations are licensed under the terms of
 the Mozilla Public License 2.0, you will find a copy of this license in the
 [LICENSE](LICENSE) file included in the source package.
