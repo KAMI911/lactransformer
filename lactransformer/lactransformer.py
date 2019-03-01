@@ -17,6 +17,7 @@ script_path = __file__
 
 script_header = textwrap.dedent('''LAS & Co Transformer''')
 
+__version__ = '0.1.0.1'
 
 def main():
     logfilename = 'lactransformer_{0}.log'.format(datetime.datetime.today().strftime('%Y%m%d_%H%M%S'))
