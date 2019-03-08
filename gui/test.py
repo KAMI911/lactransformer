@@ -17,30 +17,40 @@ class PageOne(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         panel = wx.Panel(self)
+
         fileMainMngSizer = wx.BoxSizer(wx.HORIZONTAL)
         fileMngSizer = wx.BoxSizer(wx.HORIZONTAL)
         fileMngButtonSizer = wx.BoxSizer(wx.VERTICAL)
-        fileListBox = wx.ListBox(panel, 5, style=wx.LB_NEEDED_SB|wx.LB_EXTENDED|wx.LB_SORT, size=(800,500))
-        fileMngSizer.Add(fileListBox, 0, wx.ALIGN_LEFT|wx.EXPAND)
-        addFileButton = wx.Button(panel, 11, "Add a file", style=wx.BU_EXACTFIT, size=(100, -1))
-        fileMngButtonSizer.Add(addFileButton, 0, wx.ALIGN_RIGHT)
-        addDirectoryButton = wx.Button(panel, 12, "Add a directory", style=wx.BU_EXACTFIT, size=(100, -1))
-        fileMngButtonSizer.Add(addDirectoryButton, 0, wx.ALIGN_RIGHT)
-        removeSelectedButton = wx.Button(panel, 13, "Remove selected", style=wx.BU_EXACTFIT, size=(100, -1))
-        fileMngButtonSizer.Add(removeSelectedButton, 0, wx.ALIGN_RIGHT)
-        removeAllButton = wx.Button(panel, 14, "Remove all", style=wx.BU_EXACTFIT, size=(100, -1))
-        fileMngButtonSizer.Add(removeAllButton, 0, wx.ALIGN_RIGHT)
+
+        addFileButton = wx.Button(panel, 11, "Add a file", style=wx.BU_EXACTFIT, size=(120, 30))
+        fileMngButtonSizer.Add(addFileButton, 0, wx.ALIGN_LEFT|wx.ALL,2)
+        addDirectoryButton = wx.Button(panel, 12, "Add a directory", style=wx.BU_EXACTFIT, size=(120, 30))
+        fileMngButtonSizer.Add(addDirectoryButton, 0, wx.ALIGN_LEFT|wx.ALL,2)
+        removeSelectedButton = wx.Button(panel, 13, "Remove selected", style=wx.BU_EXACTFIT, size=(120, 30))
+        fileMngButtonSizer.Add(removeSelectedButton, 0, wx.ALIGN_LEFT|wx.ALL,2)
+        removeAllButton = wx.Button(panel, 14, "Remove all", style=wx.BU_EXACTFIT, size=(120, 30))
+        fileMngButtonSizer.Add(removeAllButton, 0, wx.ALIGN_LEFT|wx.ALL,2)
+        #self.SetSizer(fileMngButtonSizer)
+        fileMngButtonSizer.Fit(self)
+
+        #fileListBox = wx.ListBox(panel, 5, style=wx.LB_NEEDED_SB|wx.LB_EXTENDED|wx.LB_SORT, size=(300, 300))
+        #fileMngSizer.Add(fileListBox, 0, wx.ALIGN_LEFT|wx.EXPAND)
+
+
         #self.dirPicker = wx.DirPickerCtrl (self, id=wx.ID_ANY, style=wx.DIRP_DIR_MUST_EXIST | wx.DIRP_USE_TEXTCTRL)
 
-        fileMainMngSizer.Add(fileMngSizer, 0, wx.ALL|wx.EXPAND, 5)
-        fileMainMngSizer.Add(fileMngButtonSizer, 0, wx.ALL|wx.EXPAND, 5)
 
+        fileMainMngSizer.Add(fileMngButtonSizer, 0, wx.ALIGN_LEFT, 0)
+        fileMainMngSizer.Add(fileMngSizer, 0, wx.ALIGN_LEFT|wx.EXPAND, 0)
+
+        #fileMngSizer.Fit(self)
+        fileMainMngSizer.SetSizeHints(self)
         self.SetSizer(fileMainMngSizer)
         fileMainMngSizer.Fit(self)
 
         files = ['filea','file1','fileb','file6','file4','filed','filec']
-        for i, file in enumerate(files):
-            fileListBox.Append(file)
+        #for i, file in enumerate(files):
+        #    fileListBox.Append(file)
         #Add(self.btn, 0, wx.ALIGN_CENTER)
         #self.btn.Bind(wx.EVT_BUTTON, self.OnClicked)
 
