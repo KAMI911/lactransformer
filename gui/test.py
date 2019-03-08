@@ -63,6 +63,8 @@ class HelloFrame(wx.Frame):
     def __init__(self, *args, **kw):
         # ensure the parent's __init__ is called
         super(HelloFrame, self).__init__(*args, **kw)
+        icon_path = 'res/eagle_small.png'
+        self.SetIcon(wx.Icon(icon_path))
 
         # create a panel in the frame
         pnl = wx.Panel(self)
