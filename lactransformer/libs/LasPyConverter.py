@@ -129,7 +129,6 @@ class LasPyConverter:
         # Transforming PointCloud
         try:
             self.__DestinationOpenedFile.points = self.__SourceOpenedFile.points
-            print(self.__SourceProj, self.__DestinationProj, self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
             self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z = transform(self.__SourceProj, self.__DestinationProj, self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
             self.UpdateDestinationMinMax()
         except Exception:
@@ -137,7 +136,6 @@ class LasPyConverter:
 
     def TransformPointCloudCoordsOnly(self):
         try:
-            print(self.__SourceProj, self.__DestinationProj, self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
             self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z = transform(self.__SourceProj, self.__DestinationProj, self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
             self.UpdateDestinationMinMax()
         except Exception:
