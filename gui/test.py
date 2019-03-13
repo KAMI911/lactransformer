@@ -4,6 +4,8 @@ Hello World, but with more meat.
 """
 
 import wx
+import glob
+import os
 
 SUPPORTED_FILETYPES = 'LAS Point Cloud files (*.las)|*.las|' \
                       'TXT Point Clod files (*.txt)|*.txt|' \
@@ -13,57 +15,127 @@ SUPPORTED_FILETYPES = 'LAS Point Cloud files (*.las)|*.las|' \
 
 app_name = 'LAC Transformer'
 
-class PageOne(wx.Panel):
+class PageFiles(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
         panel = wx.Panel(self)
 
-        fileMainMngSizer = wx.BoxSizer(wx.HORIZONTAL)
-        fileMngSizer = wx.BoxSizer(wx.HORIZONTAL)
-        fileMngButtonSizer = wx.BoxSizer(wx.VERTICAL)
+        self.list_ctrl = wx.ListCtrl(self,
+                                     style=wx.LC_REPORT
+                                     |wx.BORDER_SUNKEN
+                                     )
+        self.list_ctrl.InsertColumn(0, 'Filename')
 
-        addFileButton = wx.Button(panel, 11, "Add a file", style=wx.BU_EXACTFIT, size=(120, 30))
-        fileMngButtonSizer.Add(addFileButton, 0, wx.ALIGN_LEFT|wx.ALL,2)
-        addDirectoryButton = wx.Button(panel, 12, "Add a directory", style=wx.BU_EXACTFIT, size=(120, 30))
-        fileMngButtonSizer.Add(addDirectoryButton, 0, wx.ALIGN_LEFT|wx.ALL,2)
-        removeSelectedButton = wx.Button(panel, 13, "Remove selected", style=wx.BU_EXACTFIT, size=(120, 30))
-        fileMngButtonSizer.Add(removeSelectedButton, 0, wx.ALIGN_LEFT|wx.ALL,2)
-        removeAllButton = wx.Button(panel, 14, "Remove all", style=wx.BU_EXACTFIT, size=(120, 30))
-        fileMngButtonSizer.Add(removeAllButton, 0, wx.ALIGN_LEFT|wx.ALL,2)
-        #self.SetSizer(fileMngButtonSizer)
-        fileMngButtonSizer.Fit(self)
+        addFileButton = wx.Button(self, label="Add a file")
+        addFileButton.Bind(wx.EVT_BUTTON, self.onOpenFile)
+        addDirectoryButton = wx.Button(self, label="Add a Folder")
+        addDirectoryButton.Bind(wx.EVT_BUTTON, self.onOpenDirectory)
+        removeSelectedButton = wx.Button(self, label="Remove selected")
+        removeSelectedButton.Bind(wx.EVT_BUTTON, self.onRemoveSelected)
+        removeAllButton = wx.Button(self, label="Remove all")
+        removeAllButton.Bind(wx.EVT_BUTTON, self.onRemoveAll)
 
-        #fileListBox = wx.ListBox(panel, 5, style=wx.LB_NEEDED_SB|wx.LB_EXTENDED|wx.LB_SORT, size=(300, 300))
-        #fileMngSizer.Add(fileListBox, 0, wx.ALIGN_LEFT|wx.EXPAND)
+        button_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer = wx.BoxSizer(wx.VERTICAL)
 
+        button_sizer.Add(addFileButton, 0, wx.ALL|wx.CENTER, 2)
+        button_sizer.Add(addDirectoryButton, 0, wx.ALL|wx.CENTER, 2)
+        button_sizer.Add(removeSelectedButton, 0, wx.ALL|wx.CENTER, 2)
+        button_sizer.Add(removeAllButton, 0, wx.ALL|wx.CENTER, 2)
 
-        #self.dirPicker = wx.DirPickerCtrl (self, id=wx.ID_ANY, style=wx.DIRP_DIR_MUST_EXIST | wx.DIRP_USE_TEXTCTRL)
-
-
-        fileMainMngSizer.Add(fileMngButtonSizer, 0, wx.ALIGN_LEFT, 0)
-        fileMainMngSizer.Add(fileMngSizer, 0, wx.ALIGN_LEFT|wx.EXPAND, 0)
-
-        #fileMngSizer.Fit(self)
-        fileMainMngSizer.SetSizeHints(self)
-        self.SetSizer(fileMainMngSizer)
-        fileMainMngSizer.Fit(self)
-
-        files = ['filea','file1','fileb','file6','file4','filed','filec']
-        #for i, file in enumerate(files):
-        #    fileListBox.Append(file)
-        #Add(self.btn, 0, wx.ALIGN_CENTER)
-        #self.btn.Bind(wx.EVT_BUTTON, self.OnClicked)
+        sizer.Add(button_sizer, 0, wx.ALL|wx.EXPAND, 2)
+        sizer.Add(self.list_ctrl, 1, wx.ALL|wx.EXPAND, 2)
+        self.SetSizer(sizer)
 
 
-class PageTwo(wx.Panel):
+    def onOpenFile(self, event):
+        frame = wx.Frame(None, -1, 'win.py')
+        frame.SetDimensions(0, 0, 200, 50)
+
+        dlg = wx.FileDialog(frame, "Open an supported file", "", "",
+                                       SUPPORTED_FILETYPES,
+                                       wx.FD_OPEN | wx.FD_FILE_MUST_EXIST)
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+            self.updateDisplay(path)
+        dlg.Destroy()
+
+
+    def onOpenDirectory(self, event):
+        frame = wx.Frame(None, -1, 'win.py')
+        frame.SetDimensions(0, 0, 200, 50)
+
+        dlg = wx.DirDialog(frame, "Open a dircetory with supportted files", "",
+                    wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+            self.updateDisplay(path)
+        dlg.Destroy()
+
+
+    def updateDisplay(self, folder_path):
+        """
+        Update the listctrl with the file names in the passed in folder
+        """
+        paths = glob.glob(folder_path + "/*.*")
+        for index, path in enumerate(paths):
+            self.list_ctrl.InsertStringItem(index, os.path.basename(path))
+
+
+    def onRemoveSelected(self, event):
+        pass
+
+
+    def onRemoveAll(self, event):
+        self.list_ctrl.DeleteAllItems()
+
+
+class PageSettings(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
-        t = wx.StaticText(self, -1, "This is a PageTwo object", (40,40))
 
-class PageThree(wx.Panel):
+        button_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self, 'Projection')
+        process_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self, 'Process')
+        sizer = wx.BoxSizer(wx.VERTICAL)
+
+        for i in range(5):
+            process_sizer.Add(wx.Button(self, label='Button ' + str(i)), 0, wx.ALL | wx.CENTER, 5)
+        button_sizer.Add(wx.StaticText(self, -1, 'Input projection', (40,40)), 0, wx.LEFT | wx.RIGHT | wx.ALIGN_LEFT, 10)
+        button_sizer.Add(wx.Choice(self, choices=['EOV', 'WGS84'], name='Input projection'), 0, wx.ALL | wx.ALIGN_LEFT, 5)
+        button_sizer.Add(wx.StaticText(self, -1, 'Output projection', (40,40)), 0, wx.LEFT | wx.RIGHT | wx.ALIGN_LEFT, 10)
+        button_sizer.Add(wx.Choice(self, choices=['EOV', 'WGS84'], name='Output projection'), 0, wx.ALL | wx.ALIGN_LEFT, 5)
+        sizer.Add(button_sizer, 0, wx.ALL|wx.EXPAND, 5)
+        sizer.Add(process_sizer, 0, wx.ALL|wx.EXPAND, 5)
+        sizer.Add(wx.StaticText(self, -1, 'Is there any settings?', (40,40)))
+        self.SetSizer(sizer)
+
+
+class PageProcess(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
-        t = wx.StaticText(self, -1, "This is a PageThree object", (60,60))
+
+        process_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self, 'Process controll')
+        progress_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self, 'Progress')
+        sizer = wx.BoxSizer(wx.VERTICAL)
+
+        startProcess = wx.Button(self, label='Start process')
+        stopProcess = wx.Button(self, label='Stop process')
+
+        process_sizer.Add(startProcess, 0, wx.ALL|wx.CENTER, 5)
+        process_sizer.Add(stopProcess, 0, wx.ALL|wx.CENTER, 5)
+
+        progressBar = wx.Gauge(self, id=0, size=(400, 50), style=wx.GA_HORIZONTAL, range=100, name='Progress')
+        progress_sizer.Add(progressBar, 1, wx.ALL|wx.EXPAND, 5)
+
+        sizer.Add(process_sizer, 0, wx.ALL|wx.EXPAND, 5)
+        sizer.Add(progress_sizer, 0, wx.ALL|wx.EXPAND, 5)
+
+        self.SetSizer(sizer)
+        print(progressBar.GetValue())
+        print(progressBar.GetRange())
+        progressBar.SetValue(60)
+        print(progressBar.GetValue())
+
 
 class HelloFrame(wx.Frame):
     """
@@ -82,12 +154,14 @@ class HelloFrame(wx.Frame):
         nb = wx.Notebook(pnl)
 
         # create the page windows as children of the notebook
-        page1 = PageOne(nb)
-        page2 = PageTwo(nb)
+        pageFiles = PageFiles(nb)
+        pageSettings = PageSettings(nb)
+        pageProcess = PageProcess(nb)
 
         # add the pages to the notebook with the label to show on the tab
-        nb.AddPage(page1, "Files")
-        nb.AddPage(page2, "Settings")
+        nb.AddPage(pageSettings, 'Settings')
+        nb.AddPage(pageFiles, 'Files')
+        nb.AddPage(pageProcess, 'Process')
 
         # finally, put the notebook in a sizer for the panel to manage
         # the layout
@@ -176,16 +250,26 @@ class HelloFrame(wx.Frame):
 
         openFileDialog.ShowModal()
         print(openFileDialog.GetPath())
+
     def OnOpenDirectory(self, event):
         frame = wx.Frame(None, -1, 'win.py')
         frame.SetDimensions(0, 0, 200, 50)
 
-        openFileDialog = wx.DirDialog(frame, "Open a dircetory with supportted files", "",
+        dlg = wx.DirDialog(frame, "Open a dircetory with supportted files", "",
                     wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+            self.updateDisplay(path)
+        dlg.Destroy()
 
-        openFileDialog.ShowModal()
-        print(openFileDialog.GetPath())
 
+    def updateDisplay(self, folder_path):
+        """
+        Update the listctrl with the file names in the passed in folder
+        """
+        paths = glob.glob(folder_path + "/*.*")
+        for index, path in enumerate(paths):
+            self.list_ctrl.InsertStringItem(index, os.path.basename(path))
     def OnHello(self, event):
         """Say hello to the user."""
         wx.MessageBox("Hello again from wxPython")
