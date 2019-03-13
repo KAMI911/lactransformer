@@ -130,6 +130,7 @@ class LasPyConverter:
         try:
             self.__DestinationOpenedFile.points = self.__SourceOpenedFile.points
             self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z = transform(self.__SourceProj, self.__DestinationProj, self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
+            print(self.__SourceProj, self.__DestinationProj, self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
             self.UpdateDestinationMinMax()
         except Exception:
             raise
