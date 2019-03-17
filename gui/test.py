@@ -100,12 +100,19 @@ class PageSettings(wx.Panel):
         button_sizer.Add(wx.StaticText(self, -1, 'Output projection'), 0, wx.ALL|wx.CENTER|wx.ALIGN_LEFT, 5)
         button_sizer.Add(wx.Choice(self, choices=['EOV', 'WGS84'], name='Output projection'), 0, wx.ALL | wx.ALIGN_LEFT, 5)
         process_sizer.Add(wx.StaticText(self, -1, 'Cores'), 0, wx.ALL|wx.CENTER, 5)
-        process_sizer.Add(wx.Slider(self, minValue=1, maxValue=16, style=wx.SL_HORIZONTAL|wx.SL_AUTOTICKS|wx.SL_LABELS|wx.SL_BOTTOM, size=(200,50), name='Cores'), 0, wx.ALL|wx.EXPAND, 2)
+        process_number = wx.Slider(self, minValue=1, maxValue=16, style=wx.SL_HORIZONTAL|wx.SL_AUTOTICKS|wx.SL_LABELS|wx.SL_BOTTOM, size=(200,50), name='Cores')
+        # Using EVT_SCROLL_CHANGED instead of EVT_SLIDER. It is running on Linux (as doc says it is Windows only), and emit only the last change.
+        process_number.Bind(wx.EVT_SCROLL_CHANGED, self.sliderProcessEvent)
+        process_sizer.Add(process_number, 0, wx.ALL|wx.EXPAND, 2)
 
         sizer.Add(button_sizer, 0, wx.ALL|wx.EXPAND, 5)
         sizer.Add(process_sizer, 0, wx.ALL|wx.EXPAND, 5)
 
         self.SetSizer(sizer)
+
+    def sliderProcessEvent(self, event):
+        value = event.GetEventObject().GetValue()
+        print ('Label of pressed button = {}'.format(value))
 
 
 class PageProcess(wx.Panel):
@@ -118,7 +125,9 @@ class PageProcess(wx.Panel):
         sizer = wx.BoxSizer(wx.VERTICAL)
 
         startProcess = wx.Button(self, label='Start process')
+        startProcess.Bind(wx.EVT_BUTTON, self.startProcessEvent)
         stopProcess = wx.Button(self, label='Stop process')
+        stopProcess.Bind(wx.EVT_BUTTON, self.stopProcessEvent)
         process_sizer.Add(startProcess, 0, wx.ALL|wx.CENTER, 5)
         process_sizer.Add(stopProcess, 0, wx.ALL|wx.CENTER, 5)
 
@@ -140,6 +149,13 @@ class PageProcess(wx.Panel):
 
         log_control.LoadFile(os.path.join('/', 'common', 'git', 'lactransformer', 'lactransformer_20190312_205956.log'))
 
+    def startProcessEvent(self, event):
+        btn = event.GetEventObject().GetLabel()
+        print ('Label of pressed button = {}'.format(btn))
+
+    def stopProcessEvent(self, event):
+        btn = event.GetEventObject().GetLabel()
+        print ('Label of pressed button = {}'.format(btn))
 
 class HelloFrame(wx.Frame):
     """
