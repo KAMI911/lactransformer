@@ -23,7 +23,6 @@ class LasPyConverter:
         self.__SourceProjection = source_projection
         self.__SourceProjectionString = AssignProjection.AssignProjectionString(self.__SourceProjection, proc_name )
         self.__SourceProj = Proj(self.__SourceProjectionString)
-
         self.__SourceFallbackProjectionString = AssignProjection.AssignFallbackProjectionString(self.__SourceProjection)
         if self.__SourceFallbackProjectionString:
             self.__SourceFallbackProjection = AssignProjection.AssignProjectionName(self.__SourceProjection)
@@ -211,6 +210,8 @@ class LasPyCompare:
                 diff_std.append(np.std(diff[i]))
             logging.info('{0} file differences:'.format(
                 os.path.basename(self.__SourceFileName)))
+            print('Xmin/max/avg/std: {0[0]:.4f}/{1[0]:.4f}/{2[0]:.4f}/{3[0]:.4f}, Ymin/max/avg/std: {0[1]:.4f}/{1[1]:.4f}/{2[1]:.4f}/{3[1]:.4f}, Zmin/max/avg/std: {0[2]:.4f}/{1[2]:.4f}/{2[2]:.4f}/{3[2]:.4f}'.format(
+                diff_min, diff_max, diff_avg, diff_std))
             logging.info(
                 'Xmin/max/avg/std: {0[0]:.4f}/{1[0]:.4f}/{2[0]:.4f}/{3[0]:.4f}, Ymin/max/avg/std: {0[1]:.4f}/{1[1]:.4f}/{2[1]:.4f}/{3[1]:.4f}, Zmin/max/avg/std: {0[2]:.4f}/{1[2]:.4f}/{2[2]:.4f}/{3[2]:.4f}'.format(
                     diff_min, diff_max, diff_avg, diff_std))
