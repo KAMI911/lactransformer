@@ -344,6 +344,8 @@ class TestLasTxtTransformation_from_Javad_EOV2009(unittest.TestCase):
         #        )
         #        for line in diff:
         #            sys.stdout.write(line)
+        if not filecmp.cmp(self.temp_file, self.compare_file):
+            print(self.text_data)
         self.assertTrue(filecmp.cmp(self.temp_file, self.compare_file))
         if os.path.exists(self.temp_file):
             os.remove(self.temp_file)
