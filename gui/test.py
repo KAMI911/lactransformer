@@ -1,8 +1,9 @@
 #!/bin/python
 
-import wx
 import glob
 import os
+
+import wx
 
 SUPPORTED_FILETYPES = 'LAS Point Cloud files (*.las)|*.las|' \
                       'TXT Point Clod files (*.txt)|*.txt|' \
