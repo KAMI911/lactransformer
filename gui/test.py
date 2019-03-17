@@ -1,7 +1,4 @@
 #!/bin/python
-"""
-Hello World, but with more meat.
-"""
 
 import wx
 import glob
@@ -98,15 +95,16 @@ class PageSettings(wx.Panel):
         process_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self, 'Process')
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        for i in range(5):
-            process_sizer.Add(wx.Button(self, label='Button ' + str(i)), 0, wx.ALL | wx.CENTER, 5)
-        button_sizer.Add(wx.StaticText(self, -1, 'Input projection', (40,40)), 0, wx.LEFT | wx.RIGHT | wx.ALIGN_LEFT, 10)
+        button_sizer.Add(wx.StaticText(self, -1, 'Input projection'), 0, wx.ALL|wx.CENTER|wx.ALIGN_LEFT, 5)
         button_sizer.Add(wx.Choice(self, choices=['EOV', 'WGS84'], name='Input projection'), 0, wx.ALL | wx.ALIGN_LEFT, 5)
-        button_sizer.Add(wx.StaticText(self, -1, 'Output projection', (40,40)), 0, wx.LEFT | wx.RIGHT | wx.ALIGN_LEFT, 10)
+        button_sizer.Add(wx.StaticText(self, -1, 'Output projection'), 0, wx.ALL|wx.CENTER|wx.ALIGN_LEFT, 5)
         button_sizer.Add(wx.Choice(self, choices=['EOV', 'WGS84'], name='Output projection'), 0, wx.ALL | wx.ALIGN_LEFT, 5)
+        process_sizer.Add(wx.StaticText(self, -1, 'Cores'), 0, wx.ALL|wx.CENTER, 5)
+        process_sizer.Add(wx.Slider(self, minValue=1, maxValue=16, style=wx.SL_HORIZONTAL|wx.SL_AUTOTICKS|wx.SL_LABELS|wx.SL_BOTTOM, size=(200,50), name='Cores'), 0, wx.ALL|wx.EXPAND, 2)
+
         sizer.Add(button_sizer, 0, wx.ALL|wx.EXPAND, 5)
         sizer.Add(process_sizer, 0, wx.ALL|wx.EXPAND, 5)
-        sizer.Add(wx.StaticText(self, -1, 'Is there any settings?', (40,40)))
+
         self.SetSizer(sizer)
 
 
@@ -116,25 +114,31 @@ class PageProcess(wx.Panel):
 
         process_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self, 'Process controll')
         progress_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self, 'Progress')
+        logger_sizer = wx.StaticBoxSizer(wx.VERTICAL, self, 'Console output')
         sizer = wx.BoxSizer(wx.VERTICAL)
 
         startProcess = wx.Button(self, label='Start process')
         stopProcess = wx.Button(self, label='Stop process')
-
         process_sizer.Add(startProcess, 0, wx.ALL|wx.CENTER, 5)
         process_sizer.Add(stopProcess, 0, wx.ALL|wx.CENTER, 5)
 
         progressBar = wx.Gauge(self, id=0, size=(400, 50), style=wx.GA_HORIZONTAL, range=100, name='Progress')
         progress_sizer.Add(progressBar, 1, wx.ALL|wx.EXPAND, 5)
 
+        log_control = wx.TextCtrl(self, wx.NewId(), size=(4000,4000), style=wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_RICH2|wx.TE_AUTO_URL|wx.TE_LEFT|wx.TE_BESTWRAP)
+        logger_sizer.Add(log_control, 1, wx.ALL|wx.EXPAND, 5)
+
         sizer.Add(process_sizer, 0, wx.ALL|wx.EXPAND, 5)
         sizer.Add(progress_sizer, 0, wx.ALL|wx.EXPAND, 5)
+        sizer.Add(logger_sizer, 0, wx.ALL|wx.EXPAND, 5)
 
         self.SetSizer(sizer)
         print(progressBar.GetValue())
         print(progressBar.GetRange())
         progressBar.SetValue(60)
         print(progressBar.GetValue())
+
+        log_control.LoadFile(os.path.join('/', 'common', 'git', 'lactransformer', 'lactransformer_20190312_205956.log'))
 
 
 class HelloFrame(wx.Frame):
