@@ -2,8 +2,10 @@
 
 import glob
 import os
-
 import wx
+import logging
+import multiprocessing
+from lactransformer.libs import FileListWithProjection, TransformerWorkflow
 
 SUPPORTED_FILETYPES = 'LAS Point Cloud files (*.las)|*.las|' \
                       'TXT Point Clod files (*.txt)|*.txt|' \
@@ -150,9 +152,37 @@ class PageProcess(wx.Panel):
 
         log_control.LoadFile(os.path.join('/', 'common', 'git', 'lactransformer', 'lactransformer_20190312_205956.log'))
 
+
     def startProcessEvent(self, event):
+        results = []
         btn = event.GetEventObject().GetLabel()
         print ('Label of pressed button = {}'.format(btn))
+        filelist = FileListWithProjection.FileListWithProjection()
+        filelist.create_list('/common/las/', '/common/lasout/', 'WGS84geo', 'EOV2014fine')
+        print(filelist.filelist)
+        no_threads = False
+        file_queue = filelist.filelist
+
+        # If we got one file, start only one process
+        cores = 1
+        if filelist.isdir is False:
+            cores = 1
+        # Do not use threads when only use one core and disable threads
+        # Probably this is related to https://github.com/grantbrown/laspy/issues/32
+        if no_threads is True:
+            logging.info('Do not use threads.')
+            for lst in file_queue:
+                TransformerWorkflow.Transformer(lst)
+        # Generally we use this to process transfromration
+        else:
+            logging.info('Using threads on {0} cores.'.format(cores))
+            pool = multiprocessing.Pool(processes=cores)
+            results.append(pool.map_async(TransformerWorkflow.Transformer, file_queue))
+            pool.close()
+            pool.join()
+        del file_queue
+        logging.info('Finished, exiting and go home ...')
+
 
     def stopProcessEvent(self, event):
         btn = event.GetEventObject().GetLabel()
