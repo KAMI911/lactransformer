@@ -5,6 +5,7 @@ import os
 import wx
 import logging
 import multiprocessing
+import _thread
 from lactransformer.libs import FileListWithProjection, TransformerWorkflow
 
 SUPPORTED_FILETYPES = 'LAS Point Cloud files (*.las)|*.las|' \
@@ -81,10 +82,8 @@ class PageFiles(wx.Panel):
         for index, path in enumerate(paths):
             self.list_ctrl.InsertStringItem(index, os.path.basename(path))
 
-
     def onRemoveSelected(self, event):
         pass
-
 
     def onRemoveAll(self, event):
         self.list_ctrl.DeleteAllItems()
@@ -127,12 +126,16 @@ class PageProcess(wx.Panel):
         logger_sizer = wx.StaticBoxSizer(wx.VERTICAL, self, 'Console output')
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        startProcess = wx.Button(self, label='Start process')
-        startProcess.Bind(wx.EVT_BUTTON, self.startProcessEvent)
-        stopProcess = wx.Button(self, label='Stop process')
-        stopProcess.Bind(wx.EVT_BUTTON, self.stopProcessEvent)
-        process_sizer.Add(startProcess, 0, wx.ALL|wx.CENTER, 5)
-        process_sizer.Add(stopProcess, 0, wx.ALL|wx.CENTER, 5)
+        self.startProcess = wx.Button(self, label='Start process')
+        self.startProcess.Bind(wx.EVT_BUTTON, self.startProcessEvent)
+        self.stopProcess = wx.Button(self, label='Stop process')
+        self.stopProcess.Enable(False)
+        self.stopProcess.Bind(wx.EVT_BUTTON, self.stopProcessEvent)
+        self.exitProgram = wx.Button(self, label='Exit')
+        self.exitProgram.Bind(wx.EVT_BUTTON, self.exitProgramEvent)
+        process_sizer.Add(self.startProcess, 0, wx.ALL|wx.CENTER, 5)
+        process_sizer.Add(self.stopProcess, 0, wx.ALL|wx.CENTER, 5)
+        process_sizer.Add(self.exitProgram, 0, wx.ALL|wx.CENTER, 5)
 
         progressBar = wx.Gauge(self, id=0, size=(400, 50), style=wx.GA_HORIZONTAL, range=100, name='Progress')
         progress_sizer.Add(progressBar, 1, wx.ALL|wx.EXPAND, 5)
@@ -152,21 +155,24 @@ class PageProcess(wx.Panel):
 
         log_control.LoadFile(os.path.join('/', 'common', 'git', 'lactransformer', 'lactransformer_20190312_205956.log'))
 
-
     def startProcessEvent(self, event):
-        results = []
         btn = event.GetEventObject().GetLabel()
+        self.startProcess.Enable(False)
+        self.stopProcess.Enable(True)
         print ('Label of pressed button = {}'.format(btn))
         filelist = FileListWithProjection.FileListWithProjection()
         filelist.create_list('/common/las/', '/common/lasout/', 'WGS84geo', 'EOV2014fine')
         print(filelist.filelist)
+        _thread.start_new_thread(self.longrunTransform, (), {'filelist':filelist.filelist})
+
+    def longrunTransform(self, filelist):
+        file_queue = filelist
+        print(file_queue)
+        results = []
         no_threads = False
-        file_queue = filelist.filelist
 
         # If we got one file, start only one process
-        cores = 1
-        if filelist.isdir is False:
-            cores = 1
+        cores = 2
         # Do not use threads when only use one core and disable threads
         # Probably this is related to https://github.com/grantbrown/laspy/issues/32
         if no_threads is True:
@@ -182,11 +188,16 @@ class PageProcess(wx.Panel):
             pool.join()
         del file_queue
         logging.info('Finished, exiting and go home ...')
-
+        self.startProcess.Enable(True)
+        self.stopProcess.Enable(False)
 
     def stopProcessEvent(self, event):
         btn = event.GetEventObject().GetLabel()
         print ('Label of pressed button = {}'.format(btn))
+
+    def exitProgramEvent(self,event):
+        print('Exit')
+
 
 class HelloFrame(wx.Frame):
     """
@@ -321,6 +332,8 @@ class HelloFrame(wx.Frame):
         paths = glob.glob(folder_path + "/*.*")
         for index, path in enumerate(paths):
             self.list_ctrl.InsertStringItem(index, os.path.basename(path))
+
+
     def OnHello(self, event):
         """Say hello to the user."""
         wx.MessageBox("Hello again from wxPython")
