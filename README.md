@@ -255,7 +255,26 @@ Please continue reading in the [contributing chapter](CONTRIBUTING.md).
 
 ### Fork me on Github
 
-https://github.com/KAMI911/lactransformer
+SSH:
+
+    git@github.com:KAMI911/lactransformer.git
+
+HTTPS:
+
+    https://github.com/KAMI911/lactransformer.git
+
+Add a new remote `upstream` with this repository as value.
+
+```
+git remote add upstream https://github.com/KAMI911/lactransformer.git
+```
+
+You can pull updates to your fork's master branch:
+
+```
+git fetch --all
+git pull upstream HEAD
+```
 
 ## Donation
 
@@ -271,4 +290,3 @@ If you find this useful, please consider a donation:
 [Support]: #support
 [Contributing]: #contributing
 [Donation]: #donation
-
