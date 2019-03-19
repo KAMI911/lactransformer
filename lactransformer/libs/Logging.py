@@ -8,14 +8,13 @@ except ImportError as err:
 
 class WxTextCtrlHandler(logging.Handler):
 
-
     def __init__(self, ctrl):
         logging.Handler.__init__(self)
         self.ctrl = ctrl
-        import wx
 
     def emit(self, record):
         s = self.format(record) + '\n'
+        import wx
         wx.CallAfter(self.ctrl.WriteText, s)
 
 
@@ -38,7 +37,6 @@ def SetLogging(logfilename):
 
 def SetGuiLogging(gui_log_control):
     gui_logger = WxTextCtrlHandler(gui_log_control)
-    logging.addHandler(gui_logger)
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s', datefmt='%Y.%m.%d. %H:%M:%S')
     gui_logger.setFormatter(formatter)
     logging.getLogger('').addHandler(gui_logger)

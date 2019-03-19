@@ -154,7 +154,7 @@ class PageProcess(wx.Panel):
         progress_sizer.Add(progressBar, 1, wx.ALL|wx.EXPAND, 5)
 
         self.log_control = wx.TextCtrl(self, wx.NewId(), size=(4000,4000), style=wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_RICH2|wx.TE_AUTO_URL|wx.TE_LEFT|wx.TE_BESTWRAP)
-        # Logging.SetGuiLogging(self.log_control)
+        Logging.SetGuiLogging(self.log_control)
         logger_sizer.Add(self.log_control, 1, wx.ALL|wx.EXPAND, 5)
 
         sizer.Add(process_sizer, 0, wx.ALL|wx.EXPAND, 5)
@@ -210,7 +210,7 @@ class PageProcess(wx.Panel):
         print ('Label of pressed button = {}'.format(btn))
 
     def exitProgramEvent(self,event):
-        logging.log(logging.DEBUG, "More? click again!")
+        logging.warning('More? click again!')
         print('Exit')
 
 
