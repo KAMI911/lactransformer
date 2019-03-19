@@ -216,14 +216,14 @@ class HelloFrame(wx.Frame):
         nb = wx.Notebook(pnl)
 
         # create the page windows as children of the notebook
-        pageFiles = PageFiles(nb)
-        pageSettings = PageSettings(nb)
-        pageProcess = PageProcess(nb)
+        self.pageFiles = PageFiles(nb)
+        self.pageSettings = PageSettings(nb)
+        self.pageProcess = PageProcess(nb)
 
         # add the pages to the notebook with the label to show on the tab
-        nb.AddPage(pageSettings, 'Settings')
-        nb.AddPage(pageFiles, 'Files')
-        nb.AddPage(pageProcess, 'Process')
+        nb.AddPage(self.pageSettings, 'Settings')
+        nb.AddPage(self.pageFiles, 'Files')
+        nb.AddPage(self.pageProcess, 'Process')
 
         # finally, put the notebook in a sizer for the panel to manage
         # the layout
