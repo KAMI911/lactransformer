@@ -3,10 +3,13 @@
 import glob
 import os
 import wx
+import textwrap
 import logging
+import datetime
 import multiprocessing
 import _thread
-from lactransformer.libs import FileListWithProjection, TransformerWorkflow
+
+from lactransformer.libs import Logging, FileListWithProjection, TransformerWorkflow
 
 SUPPORTED_FILETYPES = 'LAS Point Cloud files (*.las)|*.las|' \
                       'TXT Point Clod files (*.txt)|*.txt|' \
@@ -15,6 +18,16 @@ SUPPORTED_FILETYPES = 'LAS Point Cloud files (*.las)|*.las|' \
                       'Riegl PEF files (*.pef)|*.pef'
 
 app_name = 'LAC Transformer'
+script_path = __file__
+
+# Logging related global settings
+logfile_path = os.path.join(os.path.dirname(os.path.dirname(script_path)), 'log')
+logfilename = 'lactransformer_{0}.log'.format(datetime.datetime.today().strftime('%Y%m%d_%H%M%S'))
+Logging.SetLogging(os.path.join(logfile_path, logfilename))
+
+script_header = textwrap.dedent('''LAS & Co Transformer''')
+__version__ = '0.0.0.6'
+
 
 class PageFiles(wx.Panel):
     def __init__(self, parent):
@@ -140,8 +153,9 @@ class PageProcess(wx.Panel):
         progressBar = wx.Gauge(self, id=0, size=(400, 50), style=wx.GA_HORIZONTAL, range=100, name='Progress')
         progress_sizer.Add(progressBar, 1, wx.ALL|wx.EXPAND, 5)
 
-        log_control = wx.TextCtrl(self, wx.NewId(), size=(4000,4000), style=wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_RICH2|wx.TE_AUTO_URL|wx.TE_LEFT|wx.TE_BESTWRAP)
-        logger_sizer.Add(log_control, 1, wx.ALL|wx.EXPAND, 5)
+        self.log_control = wx.TextCtrl(self, wx.NewId(), size=(4000,4000), style=wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_RICH2|wx.TE_AUTO_URL|wx.TE_LEFT|wx.TE_BESTWRAP)
+        # Logging.SetGuiLogging(self.log_control)
+        logger_sizer.Add(self.log_control, 1, wx.ALL|wx.EXPAND, 5)
 
         sizer.Add(process_sizer, 0, wx.ALL|wx.EXPAND, 5)
         sizer.Add(progress_sizer, 0, wx.ALL|wx.EXPAND, 5)
@@ -153,21 +167,21 @@ class PageProcess(wx.Panel):
         progressBar.SetValue(60)
         print(progressBar.GetValue())
 
-        log_control.LoadFile(os.path.join('/', 'common', 'git', 'lactransformer', 'lactransformer_20190312_205956.log'))
+        # self.log_control.LoadFile(os.path.join(logfile_path, logfilename))
+
 
     def startProcessEvent(self, event):
         btn = event.GetEventObject().GetLabel()
         self.startProcess.Enable(False)
         self.stopProcess.Enable(True)
-        print ('Label of pressed button = {}'.format(btn))
+        logging.debug('Label of pressed button = {}'.format(btn))
         filelist = FileListWithProjection.FileListWithProjection()
         filelist.create_list('/common/las/', '/common/lasout/', 'WGS84geo', 'EOV2014fine')
-        print(filelist.filelist)
         _thread.start_new_thread(self.longrunTransform, (), {'filelist':filelist.filelist})
 
     def longrunTransform(self, filelist):
         file_queue = filelist
-        print(file_queue)
+        logging.debug(file_queue)
         results = []
         no_threads = False
 
@@ -196,6 +210,7 @@ class PageProcess(wx.Panel):
         print ('Label of pressed button = {}'.format(btn))
 
     def exitProgramEvent(self,event):
+        logging.log(logging.DEBUG, "More? click again!")
         print('Exit')
 
 
@@ -205,6 +220,12 @@ class HelloFrame(wx.Frame):
     """
 
     def __init__(self, *args, **kw):
+        try:
+            os.mkdir(os.path.join(logfile_path))
+        except FileExistsError:
+            pass
+        logging.info(script_header)
+
         # ensure the parent's __init__ is called
         super(HelloFrame, self).__init__(*args, **kw)
         icon_path = 'res/eagle_small.png'
