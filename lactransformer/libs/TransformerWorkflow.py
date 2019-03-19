@@ -83,7 +83,7 @@ def Transformer(parameters):
         else:
             logging.info(
                 '[{0}] Transformed {1} {2} file has created.'.format(proc_name, destination_file, input_format_name))
-            return 0
+            return destination_file
     elif input_format in ['txt', 'lastxt', 'iml', 'csv', 'pef', 'strtxt', 'listtxt']:
         logging.info(
             '[{0}] Opening {1} {2} ({3}) file for converting to {4} {5} ({6}) file ...".'.format(
@@ -118,6 +118,6 @@ def Transformer(parameters):
         else:
             logging.info(
                 '[{0}] Transformed {1} {2} file has created.'.format(proc_name, destination_file, input_format_name))
-            return 0
+            return destination_file
     else:
         logging.critical('Unknown -input_format parameter is specified: "{0}".'.format(input_format))

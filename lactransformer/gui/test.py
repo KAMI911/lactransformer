@@ -6,6 +6,7 @@ import wx
 import textwrap
 import logging
 import datetime
+import math
 import multiprocessing
 import _thread
 
@@ -132,6 +133,8 @@ class PageSettings(wx.Panel):
 
 class PageProcess(wx.Panel):
     def __init__(self, parent):
+        self.max_filenumber = 0
+        self.current_filenumber = 0
         wx.Panel.__init__(self, parent)
 
         process_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self, 'Process controll')
@@ -150,8 +153,8 @@ class PageProcess(wx.Panel):
         process_sizer.Add(self.stopProcess, 0, wx.ALL|wx.CENTER, 5)
         process_sizer.Add(self.exitProgram, 0, wx.ALL|wx.CENTER, 5)
 
-        progressBar = wx.Gauge(self, id=0, size=(400, 50), style=wx.GA_HORIZONTAL, range=100, name='Progress')
-        progress_sizer.Add(progressBar, 1, wx.ALL|wx.EXPAND, 5)
+        self.progressBar = wx.Gauge(self, id=0, size=(400, 50), style=wx.GA_HORIZONTAL, range=100, name='Progress')
+        progress_sizer.Add(self.progressBar, 1, wx.ALL|wx.EXPAND, 5)
 
         self.log_control = wx.TextCtrl(self, wx.NewId(), size=(4000,4000), style=wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_RICH2|wx.TE_AUTO_URL|wx.TE_LEFT|wx.TE_BESTWRAP)
         Logging.SetGuiLogging(self.log_control)
@@ -162,18 +165,16 @@ class PageProcess(wx.Panel):
         sizer.Add(logger_sizer, 0, wx.ALL|wx.EXPAND, 5)
 
         self.SetSizer(sizer)
-        print(progressBar.GetValue())
-        print(progressBar.GetRange())
-        progressBar.SetValue(60)
-        print(progressBar.GetValue())
-
         # self.log_control.LoadFile(os.path.join(logfile_path, logfilename))
 
 
     def startProcessEvent(self, event):
+        self.max_filenumber = 0
+        self.current_filenumber = 0
         btn = event.GetEventObject().GetLabel()
         self.startProcess.Enable(False)
         self.stopProcess.Enable(True)
+        self.progressBar.SetValue(1)
         logging.debug('Label of pressed button = {}'.format(btn))
         filelist = FileListWithProjection.FileListWithProjection()
         filelist.create_list('/common/las/', '/common/lasout/', 'WGS84geo', 'EOV2014fine')
@@ -181,6 +182,7 @@ class PageProcess(wx.Panel):
 
     def longrunTransform(self, filelist):
         file_queue = filelist
+        self.max_filenumber = len(file_queue)
         logging.debug(file_queue)
         results = []
         no_threads = False
@@ -197,13 +199,21 @@ class PageProcess(wx.Panel):
         else:
             logging.info('Using threads on {0} cores.'.format(cores))
             pool = multiprocessing.Pool(processes=cores)
-            results.append(pool.map_async(TransformerWorkflow.Transformer, file_queue))
+            for f in file_queue:
+                results.append(pool.map_async(TransformerWorkflow.Transformer, (f,), callback=self.callbackTransformEvent))
             pool.close()
             pool.join()
         del file_queue
+        self.progressBar.SetValue(100)
         logging.info('Finished, exiting and go home ...')
         self.startProcess.Enable(True)
         self.stopProcess.Enable(False)
+
+    def callbackTransformEvent(self, filename):
+        pcnt = math.floor((self.current_filenumber + 1) / (self.max_filenumber + 1) * self.progressBar.GetRange())
+        self.current_filenumber += 1
+        logging.info('{} file(s) of {} file(s) ({} %) already transformed'.format(self.current_filenumber, self.max_filenumber, pcnt))
+        self.progressBar.SetValue(pcnt)
 
     def stopProcessEvent(self, event):
         btn = event.GetEventObject().GetLabel()
