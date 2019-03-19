@@ -207,11 +207,12 @@ class PageProcess(wx.Panel):
 
     def stopProcessEvent(self, event):
         btn = event.GetEventObject().GetLabel()
-        print ('Label of pressed button = {}'.format(btn))
+        logging.debug('Label of pressed button = {}'.format(btn))
 
     def exitProgramEvent(self,event):
-        logging.warning('More? click again!')
-        print('Exit')
+        btn = event.GetEventObject().GetLabel()
+        logging.debug('Label of pressed button = {}'.format(btn))
+        logging.info ('You can not exit here!')
 
 
 class HelloFrame(wx.Frame):
