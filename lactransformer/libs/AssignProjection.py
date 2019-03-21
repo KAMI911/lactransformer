@@ -2,6 +2,8 @@ try:
     import traceback
     import os
     import logging
+
+    from . import supported_projections
 except ImportError as err:
     print('Error {0} import module: {1}'.format(__name__, err))
     traceback.print_exc()
@@ -23,18 +25,6 @@ def AssignProjectionString(projection, proc_name = 'Unknown'):
     geoidgrids_EOV2014 = grid_path('geoid_eht2014.gtx')
     geoidgrids_EOV2014fine = grid_path('geoid_eht2014_fine.gtx')
     geoidgrids_SVY21c = grid_path('geoid_svy21_2009.gtx')
-
-    projections = {'WGS84': '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',
-                   'WGS84geo': '+proj=geocent +ellps=WGS84 +datum=WGS84 +units=m +no_defs',
-                   'EOV': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
-                   'EOVc': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids_EOV2014 + ' +geoidgrids=' + geoidgrids_EOV2014 + ' +units=m +no_defs',
-                   'EOV2014': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids_EOV2014 + ' +geoidgrids=' + geoidgrids_EOV2014 + ' +units=m +no_defs',
-                   'EOV2014fine': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids_EOV2014 + ' +geoidgrids=' + geoidgrids_EOV2014fine + ' +units=m +no_defs',
-                   'EOV2009': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +nadgrids=' + nadgrids_EOV2009 + ' +geoidgrids=' + geoidgrids_EOV2009 + ' +units=m +no_defs',
-                   'SVY21': '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +units=m +no_defs',
-                   'SVY21c': '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +geoidgrids=' + geoidgrids_SVY21c + ' +units=m +no_defs',
-                   'ETRS89': '+proj=longlat +ellps=GRS80 +no_defs',
-                   'ETRS89geo': '+proj=geocent +ellps=GRS80 +units=m +no_defs'}
 
     if projection in ['EOVc', 'EOV2014']:
         if os.path.isfile(nadgrids_EOV2014) and os.path.isfile(geoidgrids_EOV2014):
@@ -66,8 +56,8 @@ def AssignProjectionString(projection, proc_name = 'Unknown'):
         else:
             logging.error('Cannot found %s grid.' % (geoidgrids_SVY21c))
             exit(2)
-    if projection in projections:
-        return projections[projection]
+    if projection in supported_projections.projections:
+        return supported_projections.projections[projection]
     else:
         return False
 
@@ -77,29 +67,14 @@ def AssignFallbackProjectionString(projection):
     # WGS84 = Proj(init='EPSG:4326')
     # WGS84Geo = Proj(init='EPSG:4328')
 
-    fallback_projections = {'WGS84': '',
-                            'WGS84geo': '',
-                            'EOV': '',
-                            'EOVc': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
-                            'EOV2014': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
-                            'EOV2014fine': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
-                            'EOV2009': '+proj=somerc +lat_0=47.14439372222222 +lon_0=19.04857177777778 +k_0=0.99993 +x_0=650000 +y_0=200000 +ellps=GRS67 +units=m +no_defs',
-                            'SVY21': '',
-                            'SVY21c': '+proj=tmerc +lat_0=1.366666666666667 +lon_0=103.8333333333333 +k=1 +x_0=28001.642 +y_0=38744.572 +ellps=WGS84 +units=m +no_defs',
-                            'ETRS89': '',
-                            'ETRS89geo': ''}
-    if projection in fallback_projections:
-        return fallback_projections[projection]
+    if projection in supported_projections.fallback_projections:
+        return supported_projections.fallback_projections[projection]
     else:
         return False
 
 
 def AssignProjectionName(projection):
-    projectionnames = {'WGS84': 'WGS84', 'WGS84geo': 'WGS84geo', 'WGS84PM': 'WGS84PM', 'EOV': 'EOV',
-                       'EOVc': 'EOV2014', 'EOV2014': 'EOV2014', 'EOV2014fine': 'EOV2014fine',
-                       'EOV2009': 'EOV2009', 'EOVp': 'EOVp', 'SVY21': 'SVY21', 'SVY21c': 'SVY21',
-                       'ETRS89': 'ETRS89', 'ETRS89geo': 'ETRS89geo'}
-    if projection in projectionnames:
-        return projectionnames[projection]
+    if projection in supported_projections.projectionnames:
+        return supported_projections.projectionnames[projection]
     else:
         return False
