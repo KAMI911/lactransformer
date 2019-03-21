@@ -1,14 +1,15 @@
 #!/bin/python
 
-import glob
-import os
-import wx
-import textwrap
-import logging
+import _thread
 import datetime
+import glob
+import logging
 import math
 import multiprocessing
-import _thread
+import os
+import textwrap
+
+import wx
 
 from lactransformer.libs import Logging, FileListWithProjection, TransformerWorkflow
 
@@ -100,13 +101,16 @@ class PageFiles(wx.Panel):
         # If list control has elements we enable the remove buttons
         self.updateElemCountDependent()
 
+
     def onRemoveSelected(self, event):
         self.updateElemCountDependent()
         pass
 
+
     def onRemoveAll(self, event):
         self.list_ctrl.DeleteAllItems()
         self.updateElemCountDependent()
+
 
     def updateElemCountDependent(self):
         if self.list_ctrl.GetItemCount() > 0:
