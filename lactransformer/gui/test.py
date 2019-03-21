@@ -210,8 +210,8 @@ class PageProcess(wx.Panel):
         self.stopProcess.Enable(False)
 
     def callbackTransformEvent(self, filename):
-        pcnt = math.floor((self.current_filenumber + 1) / (self.max_filenumber + 1) * self.progressBar.GetRange())
         self.current_filenumber += 1
+        pcnt = math.floor((self.current_filenumber + 1) / (self.max_filenumber + 1) * self.progressBar.GetRange())
         logging.info('{} file(s) of {} file(s) ({} %) already transformed'.format(self.current_filenumber, self.max_filenumber, pcnt))
         self.progressBar.SetValue(pcnt)
 
