@@ -46,8 +46,10 @@ class PageFiles(wx.Panel):
         self.addDirectoryButton = wx.Button(self, label="Add a Folder")
         self.addDirectoryButton.Bind(wx.EVT_BUTTON, self.onOpenDirectory)
         self.removeSelectedButton = wx.Button(self, label="Remove selected")
+        self.removeSelectedButton.Enable(False)
         self.removeSelectedButton.Bind(wx.EVT_BUTTON, self.onRemoveSelected)
         self.removeAllButton = wx.Button(self, label="Remove all")
+        self.removeAllButton.Enable(False)
         self.removeAllButton.Bind(wx.EVT_BUTTON, self.onRemoveAll)
 
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -95,12 +97,24 @@ class PageFiles(wx.Panel):
         paths = glob.glob(folder_path + "/*.*")
         for index, path in enumerate(paths):
             self.list_ctrl.InsertStringItem(index, os.path.basename(path))
+        # If list control has elements we enable the remove buttons
+        self.updateElemCountDependent()
 
     def onRemoveSelected(self, event):
+        self.updateElemCountDependent()
         pass
 
     def onRemoveAll(self, event):
         self.list_ctrl.DeleteAllItems()
+        self.updateElemCountDependent()
+
+    def updateElemCountDependent(self):
+        if self.list_ctrl.GetItemCount() > 0:
+            self.removeSelectedButton.Enable(True)
+            self.removeAllButton.Enable(True)
+        else:
+            self.removeSelectedButton.Enable(False)
+            self.removeAllButton.Enable(False)
 
 
 class PageSettings(wx.Panel):
