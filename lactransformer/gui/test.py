@@ -257,25 +257,25 @@ class HelloFrame(wx.Frame):
         self.SetIcon(wx.Icon(icon_path))
 
         # create a panel in the frame
-        pnl = wx.Panel(self)
+        self.pnl = wx.Panel(self)
         # Here we create a panel and a notebook on the panel
-        nb = wx.Notebook(pnl)
+        self.nb = wx.Notebook(self.pnl)
 
         # create the page windows as children of the notebook
-        self.pageFiles = PageFiles(nb)
-        self.pageSettings = PageSettings(nb)
-        self.pageProcess = PageProcess(nb)
+        self.pageFiles = PageFiles(self.nb)
+        self.pageSettings = PageSettings(self.nb)
+        self.pageProcess = PageProcess(self.nb)
 
         # add the pages to the notebook with the label to show on the tab
-        nb.AddPage(self.pageSettings, 'Settings')
-        nb.AddPage(self.pageFiles, 'Files')
-        nb.AddPage(self.pageProcess, 'Process')
+        self.nb.AddPage(self.pageSettings, 'Settings')
+        self.nb.AddPage(self.pageFiles, 'Files')
+        self.nb.AddPage(self.pageProcess, 'Process')
 
         # finally, put the notebook in a sizer for the panel to manage
         # the layout
         sizer = wx.BoxSizer()
-        sizer.Add(nb, 1, wx.EXPAND)
-        pnl.SetSizer(sizer)
+        sizer.Add(self.nb, 1, wx.EXPAND)
+        self.pnl.SetSizer(sizer)
 
         # create a menu bar
         self.makeMenuBar()
