@@ -12,6 +12,7 @@ import textwrap
 import wx
 
 from lactransformer.libs import Logging, FileListWithProjection, TransformerWorkflow
+from lactransformer.libs import supported_projections
 
 SUPPORTED_FILETYPES = 'LAS Point Cloud files (*.las)|*.las|' \
                       'TXT Point Clod files (*.txt)|*.txt|' \
@@ -116,23 +117,25 @@ class PageFiles(wx.Panel):
         if self.list_ctrl.GetItemCount() > 0:
             self.removeSelectedButton.Enable(True)
             self.removeAllButton.Enable(True)
+            # HelloFrame.PageProcess.startProcess.Enable(True)
         else:
             self.removeSelectedButton.Enable(False)
             self.removeAllButton.Enable(False)
+            # HelloFrame.PageProcess.startProcess.Enable(False)
 
 
 class PageSettings(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent)
-
+        projection_choices = sorted(list(set([i for i in supported_projections.projectionnames.values()])))
         button_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self, 'Projection')
         process_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self, 'Process')
         sizer = wx.BoxSizer(wx.VERTICAL)
-
+        type(supported_projections.projectionnames.keys())
         button_sizer.Add(wx.StaticText(self, -1, 'Input projection'), 0, wx.ALL|wx.CENTER|wx.ALIGN_LEFT, 5)
-        button_sizer.Add(wx.Choice(self, choices=['EOV', 'WGS84'], name='Input projection'), 0, wx.ALL | wx.ALIGN_LEFT, 5)
+        button_sizer.Add(wx.Choice(self, choices=projection_choices, name='Input projection'), 0, wx.ALL | wx.ALIGN_LEFT, 5)
         button_sizer.Add(wx.StaticText(self, -1, 'Output projection'), 0, wx.ALL|wx.CENTER|wx.ALIGN_LEFT, 5)
-        button_sizer.Add(wx.Choice(self, choices=['EOV', 'WGS84'], name='Output projection'), 0, wx.ALL | wx.ALIGN_LEFT, 5)
+        button_sizer.Add(wx.Choice(self, choices=projection_choices, name='Output projection'), 0, wx.ALL | wx.ALIGN_LEFT, 5)
         process_sizer.Add(wx.StaticText(self, -1, 'Cores'), 0, wx.ALL|wx.CENTER, 5)
         process_number = wx.Slider(self, minValue=1, maxValue=16, style=wx.SL_HORIZONTAL|wx.SL_AUTOTICKS|wx.SL_LABELS|wx.SL_BOTTOM, size=(200,50), name='Cores')
         # Using EVT_SCROLL_CHANGED instead of EVT_SLIDER. It is running on Linux (as doc says it is Windows only), and emit only the last change.
