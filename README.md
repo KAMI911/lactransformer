@@ -34,6 +34,8 @@ in following formats:
 * PEF file
 * RTK CSV format (strtxt)
 
+Since version 0.3.0.0 LAS & Co Transformer uses at least Python version 3.5.
+
 ### Supported projections
 
 **WGS84**     (EPSG:4326) projection : http://epsg.io/4326/
