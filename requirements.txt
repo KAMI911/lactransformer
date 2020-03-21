@@ -1,4 +1,4 @@
 numpy == 1.17.2
 pandas == 0.25.1
-pyproj == 2.3.1
-laspy == 1.6.0
+pyproj == 2.6.0
+laspy == 1.7.0
