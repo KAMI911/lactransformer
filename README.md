@@ -50,7 +50,7 @@ Since version 0.3.0.0 LAS & Co Transformer uses at least Python version 3.5.
 * EOV2014 - EOV2014 (EPSG:23700) projection with grid correction 2014 (2x2 km grid points)
 http://www.agt.bme.hu/~bence/proj_poszter_3d.pdf
 
-* (experimental) EOV2014fine - EOV2014 (EPSG:23700) projection with grid correction 2014 (1x1 km geoid grid points)
+* EOV2014fine - EOV2014 (EPSG:23700) projection with grid correction 2014 (1x1 km geoid grid points)
 * EOV2009 - EOV2009 (EPSG:23700) projection with grid correction 2014 (2x2 km grid points)
 http://www.agt.bme.hu/gis/workshop3/eloadasok/transzformacio.pdf
 http://www.agt.bme.hu/~bence/proj_poszter_3d.pdf
