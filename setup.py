@@ -19,8 +19,7 @@ setup(
     test_suite='test_lactransformer.testing_lactransformer',
     install_requires=deps,
     entry_points={'console_scripts':['lactransformer = lactransformer:main',]},
-    data_files = [("lactransformer/grid", ["etrs2eov_notowgs.gsb", "geoid_eht2014_fine.gtx", "geoid_eht2014.gtx", "geoid_eht.gtx", "geoid_svy21_2009.gtx"])],
-    include_package_data = True,
+    data_files = [("grid", ["lactransformer/grid/etrs2eov_notowgs.gsb", "lactransformer/grid/geoid_eht2014_fine.gtx", "lactransformer/grid/geoid_eht2014.gtx", "lactransformer/grid/geoid_eht.gtx", "lactransformer/grid/geoid_svy21_2009.gtx"])],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
