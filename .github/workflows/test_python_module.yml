@@ -20,7 +20,7 @@ jobs:
         run: |
           python3 --version
           pip install --upgrade pip
-          pip install --pre -r requirements.txt
+          pip install -r requirements.txt
           pip install codeclimate-test-reporter
       - name: Run test
         run: python test_lactransformer.py
