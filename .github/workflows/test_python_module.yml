@@ -1,0 +1,30 @@
+name: Test Python Module
+
+on:
+  push:
+    branches: [ "old_version_2018" ]
+  workflow_dispatch:
+
+jobs:
+  test-python-module:
+    name: Test Python module
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.5", "3.6", "3.7", "3.8"]
+    steps:
+      - name: Configure Python version ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Install python modules for test
+        run: |
+          python3 --version
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+          python3 -m pip install codeclimate-test-reporter
+      - name: Run test
+        run: python test_lactransformer.py
