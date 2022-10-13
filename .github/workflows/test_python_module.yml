@@ -19,8 +19,8 @@ jobs:
       - name: Install python modules for test
         run: |
           python3 --version
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install codeclimate-test-reporter
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+          python3 -m pip install codeclimate-test-reporter
       - name: Run test
         run: python test_lactransformer.py
