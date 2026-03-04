@@ -9,7 +9,7 @@ try:
     import multiprocessing
     from libs import Logging, TransformerCommandLine, TransformerWorkflow, FileListWithProjection
 except ImportError as err:
-    print('Error {0} import module: {1}'.format(__name__, err))
+    print(f'Error {__name__} import module: {err}')
     traceback.print_exc()
     exit(128)
 
@@ -18,6 +18,7 @@ script_path = __file__
 script_header = textwrap.dedent('''LAS & Co Transformer''')
 
 __version__ = '0.1.0.1'
+
 
 def main():
     logfilename = 'lactransformer_{0}.log'.format(datetime.datetime.today().strftime('%Y%m%d_%H%M%S'))
@@ -50,15 +51,16 @@ def main():
         logging.info('Do not use threads.')
         for lst in file_queue:
             TransformerWorkflow.Transformer(lst)
-    # Generally we use this to process transfromration
+    # Generally we use this to process transformation
     else:
-        logging.info('Using threads on {0} cores.'.format(cores))
+        logging.info(f'Using threads on {cores} cores.')
         pool = multiprocessing.Pool(processes=cores)
         results.append(pool.map_async(TransformerWorkflow.Transformer, file_queue))
         pool.close()
         pool.join()
     del file_queue
     logging.info('Finished, exiting and go home ...')
+
 
 if __name__ == '__main__':
     main()

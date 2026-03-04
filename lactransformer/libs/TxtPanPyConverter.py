@@ -1,6 +1,5 @@
 try:
     import traceback
-    import csv
     import numpy as np
     import pandas
     import re
@@ -9,7 +8,7 @@ try:
     from pyproj import Transformer
     from . import PefFile, AssignProjection
 except ImportError as err:
-    print('Error {0} import module: {1}'.format(__name__, err))
+    print(f'Error {__name__} import module: {err}')
     traceback.print_exc()
     exit(128)
 
@@ -50,39 +49,38 @@ class TxtPanPyConverter:
             new_header_part = ['X[m]', 'Y[m]', 'Z[m]']
         elif self.__DestinationProjection in ['EOV', 'EOVc', 'EOV2009', 'EOV2014', 'SVY21', 'SVY21c']:
             new_header_part = ['Easting[m]', 'Northing[m]', 'Elevation[m]']
-        if new_header_part != []:
-            for i in range(0, 3):
+        if new_header_part:
+            for i in range(3):
                 self.__HeaderList[self.__Fields[i]] = new_header_part[i]
 
     def Open(self):
         try:
             if self.__Type != 'pef':
-                with open(self.__DestinationFileName, 'wb') as self.__DestinationOpenedFile:
-                    if self.__SourceFileName != 'stdin':
-                        df = pandas.read_csv(self.__SourceFileName, sep=self.__Separator, header=self.__HeaderRow)
-                    else:
-                        df = pandas.read_csv(sys.stdin, sep=self.__Separator, header=self.__HeaderRow)
-                    self.__SourceData = df.values
-                    self.__Columns = df.columns
-                    self.__Header = ''
-                    if self.__HeaderRow is not None:
-                        self.__HeaderList = list(df.columns.values)
-                        self.__projection_replace_header()
-                        self.__Header = ','.join(self.__HeaderList)
-                    if self.__Type not in ['strtxt', 'listtxt']:
-                        self.__Format = ['%1.12f'.format(h) for h in range(0, len(self.__Columns))]
-                    else:
-                        self.__Format = ['%s'.format(h) for h in range(0, len(self.__Columns))]
-                    if self.__Type in ['txt', 'csv']:
-                        self.__Format[0] = '%1.6f'
-                    if self.__Type == 'listtxt':
-                        self.__Format[0] = '%06d'
-                    if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
-                        for f in self.__Fields:
-                            self.__Format[f] = '%1.15f'
-                    elif self.__DestinationProjection not in ['WGS84'] and self.__Type != 'pef':
-                        for f in self.__Fields:
-                            self.__Format[f] = '%1.4f'
+                if self.__SourceFileName != 'stdin':
+                    df = pandas.read_csv(self.__SourceFileName, sep=self.__Separator, header=self.__HeaderRow)
+                else:
+                    df = pandas.read_csv(sys.stdin, sep=self.__Separator, header=self.__HeaderRow)
+                self.__SourceData = df.values
+                self.__Columns = df.columns
+                self.__Header = ''
+                if self.__HeaderRow is not None:
+                    self.__HeaderList = list(df.columns.values)
+                    self.__projection_replace_header()
+                    self.__Header = ','.join(self.__HeaderList)
+                if self.__Type not in ['strtxt', 'listtxt']:
+                    self.__Format = ['%1.12f'] * len(self.__Columns)
+                else:
+                    self.__Format = ['%s'] * len(self.__Columns)
+                if self.__Type in ['txt', 'csv']:
+                    self.__Format[0] = '%1.6f'
+                if self.__Type == 'listtxt':
+                    self.__Format[0] = '%06d'
+                if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
+                    for f in self.__Fields:
+                        self.__Format[f] = '%1.15f'
+                elif self.__DestinationProjection not in ['WGS84'] and self.__Type != 'pef':
+                    for f in self.__Fields:
+                        self.__Format[f] = '%1.4f'
             elif self.__Type == 'pef':
                 self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName) if self.__SourceFileName != 'stdin' else PefFile.PefFile(sys.stdin)
                 self.__SourceOpenedFile.OpenRO()

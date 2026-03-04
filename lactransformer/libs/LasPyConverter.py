@@ -47,7 +47,7 @@ class LasPyConverter:
         except Exception:
             raise
 
-    def OpenReanOnly(self):
+    def OpenReadOnly(self):
         try:
             if self.__SourceFileName != 'stdin':
                 self.__SourceOpenedFile = laspy.read(self.__SourceFileName)
@@ -167,7 +167,7 @@ class LasPyCompare:
         except Exception:
             raise
 
-    def OpenReanOnly(self):
+    def OpenReadOnly(self):
         try:
             self.__SourceOpenedFile = laspy.read(self.__SourceFileName)
             self.__DestinationOpenedFile = laspy.read(self.__DestinationFileName)

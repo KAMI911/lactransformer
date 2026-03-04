@@ -1,11 +1,10 @@
 try:
     import traceback
-    import traceback
     import logging
     import multiprocessing
     from . import LasPyConverter, TxtPanPyConverter, FriendlyName, AssignProjection
 except ImportError as err:
-    print('Error {0} import module: {1}'.format(__name__, err))
+    print(f'Error {__name__} import module: {err}')
     traceback.print_exc()
     exit(128)
 
@@ -24,12 +23,13 @@ def Transformer(parameters):
     proc_name = current.name
     # Define friendly name of input formats
     input_format_name = FriendlyName.FriendlyName(input_format)
-    logging.info('[{0}] Starting ...'.format(proc_name))
+    logging.info(f'[{proc_name}] Starting ...')
     if input_format in ['las', 'laz']:
         logging.info(
-            '[{0}] Opening {1} {2} ({3}) file for converting to {4} {5} ({6}) file ...'.format(
-                proc_name, source_file, input_format_name, AssignProjection.AssignProjectionName(source_projection),
-                destination_file, input_format_name, AssignProjection.AssignProjectionName(destination_projection)))
+            f'[{proc_name}] Opening {source_file} {input_format_name}'
+            f' ({AssignProjection.AssignProjectionName(source_projection)}) file'
+            f' for converting to {destination_file} {input_format_name}'
+            f' ({AssignProjection.AssignProjectionName(destination_projection)}) file ...')
         # Opening source LAS files for read and write
         try:
             lasFiles = LasPyConverter.LasPyConverter(
@@ -37,87 +37,89 @@ def Transformer(parameters):
             lasFiles.Open()
         except ValueError as err:
             logging.error(
-                'Cannot open files: {0} and {1}, error: {0}. Probably this type of errors (ValueError) caused by corrupt LAS PointCloud file.'.format(
-                    source_file, destination_file, str(err)))
+                f'Cannot open files: {source_file} and {destination_file}, error: {err}.'
+                ' Probably this type of errors (ValueError) caused by corrupt LAS PointCloud file.')
             traceback.print_exc()
             exit(10)
         except Exception as err:
-            logging.error('Cannot open files: {0} and {1}, error: {2}.'.format(source_file, destination_file, str(err)))
+            logging.error(f'Cannot open files: {source_file} and {destination_file}, error: {err}.')
             traceback.print_exc()
             exit(10)
         try:
-            logging.info('[{0}] Scaling {1}.'.format(proc_name, input_format_name))
+            logging.info(f'[{proc_name}] Scaling {input_format_name}.')
             lasFiles.GetSourceScale()
             original, transformed = lasFiles.SetDestinationScale()
             logging.info(
-                '[{0}] {1} file original/transformed offset: [{2[0]:.3f}, {2[1]:.3f}, {2[2]:.3f}]/[{3[0]:.3f}, {3[1]:.3f}, {3[2]:.3f}] coordinates.'.format(
-                    proc_name, input_format_name, original, transformed))
+                f'[{proc_name}] {input_format_name} file original/transformed offset:'
+                f' [{original[0]:.3f}, {original[1]:.3f}, {original[2]:.3f}]/'
+                f'[{transformed[0]:.3f}, {transformed[1]:.3f}, {transformed[2]:.3f}] coordinates.')
             original_min = lasFiles.ReturnOriginalMin()
             original_max = lasFiles.ReturnOriginalMax()
             logging.info(
-                '[{0}] Bounding box of original PointCloud min: [{1[0]:.3f}, {1[1]:.3f}, {1[2]:.3f}] max: [{2[0]:.3f}, {2[1]:.3f}, {2[2]:.3f}].'.format(
-                    proc_name, original_min, original_max))
-            logging.info('[{0}] Transforming {1}.'.format(proc_name, input_format_name))
+                f'[{proc_name}] Bounding box of original PointCloud'
+                f' min: [{original_min[0]:.3f}, {original_min[1]:.3f}, {original_min[2]:.3f}]'
+                f' max: [{original_max[0]:.3f}, {original_max[1]:.3f}, {original_max[2]:.3f}].')
+            logging.info(f'[{proc_name}] Transforming {input_format_name}.')
             lasFiles.TransformPointCloud()
         except Exception as err:
             logging.error(
-                'Cannot transform files form {0} to {1}, error: {2}.'.format(source_file, destination_file, str(err)))
+                f'Cannot transform files from {source_file} to {destination_file}, error: {err}.')
             traceback.print_exc()
             exit(11)
         else:
-            logging.info('[{0}] Successfully transformed {1} data for file: {2}.'.format(
-                proc_name, input_format_name, destination_file))
+            logging.info(
+                f'[{proc_name}] Successfully transformed {input_format_name} data for file: {destination_file}.')
             transformed_min = lasFiles.ReturnTransformedMin()
             transformed_max = lasFiles.ReturnTransformedMax()
             logging.info(
-                '[{0}] Bounding box of transformed PointCloud min: [{1[0]:.3f}, {1[1]:.3f}, {1[2]:.3f}] max: [{2[0]:.3f}, {2[1]:.3f}, {2[2]:.3f}].'.format(
-                    proc_name, transformed_min, transformed_max))
+                f'[{proc_name}] Bounding box of transformed PointCloud'
+                f' min: [{transformed_min[0]:.3f}, {transformed_min[1]:.3f}, {transformed_min[2]:.3f}]'
+                f' max: [{transformed_max[0]:.3f}, {transformed_max[1]:.3f}, {transformed_max[2]:.3f}].')
         try:
             logging.info(
-                '[{0}] Closing transformed {1} {2} file.'.format(proc_name, destination_file, input_format_name))
+                f'[{proc_name}] Closing transformed {destination_file} {input_format_name} file.')
             lasFiles.Close(full_header_update)
         except Exception as err:
             logging.error(
-                'Cannot close files: {0} and {1}, error: {2}.'.format(source_file, destination_file, str(err)))
+                f'Cannot close files: {source_file} and {destination_file}, error: {err}.')
             exit(12)
         else:
             logging.info(
-                '[{0}] Transformed {1} {2} file has created.'.format(proc_name, destination_file, input_format_name))
+                f'[{proc_name}] Transformed {destination_file} {input_format_name} file has been created.')
             return destination_file
     elif input_format in ['txt', 'lastxt', 'iml', 'csv', 'pef', 'strtxt', 'listtxt']:
         logging.info(
-            '[{0}] Opening {1} {2} ({3}) file for converting to {4} {5} ({6}) file ...".'.format(
-                proc_name, source_file, input_format_name, source_projection, destination_file, input_format_name,
-                destination_projection))
+            f'[{proc_name}] Opening {source_file} {input_format_name} ({source_projection})'
+            f' file for converting to {destination_file} {input_format_name}'
+            f' ({destination_projection}) file ...')
         # Opening source Text pointcloud files for read and write
         try:
             txtFiles = TxtPanPyConverter.TxtPanPyConverter(source_file, source_projection, destination_file,
                                                            destination_projection, input_format, txt_separator, proc_name)
             txtFiles.Open()
         except Exception as err:
-            logging.error('Cannot open file: {0}.'.format(str(err)))
+            logging.error(f'Cannot open file: {err}.')
             exit(10)
         try:
             txtFiles.Transform()
         except Exception as err:
             logging.error(
-                'Cannot transform files form {0} to {1}, error: {2}.'.format(source_file, destination_file, str(err)))
+                f'Cannot transform files from {source_file} to {destination_file}, error: {err}.')
             exit(11)
         else:
             logging.info(
-                '[{0}] Successfully transformed {1} for file: {2}.'.format(proc_name, input_format_name,
-                                                                           destination_file))
+                f'[{proc_name}] Successfully transformed {input_format_name} for file: {destination_file}.')
         try:
             logging.info(
-                '[{0}] Closing transformed {1} {2} file.'.format(proc_name, destination_file, input_format_name))
+                f'[{proc_name}] Closing transformed {destination_file} {input_format_name} file.')
             txtFiles.Close()
         except Exception as err:
             logging.error(
-                'Cannot close files: {0} and {1}, error: {2}.'.format(source_file, destination_file, str(err)))
+                f'Cannot close files: {source_file} and {destination_file}, error: {err}.')
             exit(12)
         else:
             logging.info(
-                '[{0}] Transformed {1} {2} file has created.'.format(proc_name, destination_file, input_format_name))
+                f'[{proc_name}] Transformed {destination_file} {input_format_name} file has been created.')
             return destination_file
     else:
-        logging.critical('Unknown -input_format parameter is specified: "{0}".'.format(input_format))
+        logging.critical(f'Unknown -input_format parameter is specified: "{input_format}".')

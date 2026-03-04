@@ -6,66 +6,58 @@ class PefFile:
         self.__FileName = filename
         self.__PefLines = 8
         self.__FileIndex = 0
+        self.__PefFileHandler = None
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.Close()
+        return False
 
     def OpenRO(self):
         try:
             self.__PefFileHandler = open(self.__FileName, 'r')
-        except IOError as ErrorText:
-            print ('Error: %s' % str(ErrorText))
+        except IOError as err:
+            raise IOError(f'Cannot open {self.__FileName} for reading: {err}') from err
 
     def Open(self):
         self.__PefFileHandler = open(self.__FileName, 'a')
 
     def OpenOW(self):
         self.__PefFileHandler = open(self.__FileName, 'w')
-        self.__PefFileHandler.truncate()
 
     def GotoStart(self):
         self.__FileIndex = 0
 
     def ReadNextItem(self, FileSeek=None):
-        if not FileSeek:
+        if FileSeek is None:
             FileSeek = self.__FileIndex
         PefContent = []
-        HasData = False
-        while True:
-            OneLine = (self.__PefFileHandler.readline().rstrip('\n\r'))
-            if OneLine != '':
-                HasData = True
-                TwoPairs = OneLine.split('=')
-                PefContent.append(TwoPairs)
-            elif OneLine == '' and HasData == True:
-                break
-            elif OneLine == '' and HasData == False:
-                break
+        for line in self.__PefFileHandler:
+            stripped = line.rstrip('\n\r')
+            if stripped == '':
+                if PefContent:
+                    break
+            else:
+                PefContent.append(stripped.split('='))
         self.__FileIndex = self.__PefFileHandler.tell()
         return PefContent
 
     def TestItem(self, PefContent):
         errors = 0
-        if PefContent[0][0] == 'TYPE' and PefContent[0][1] == 'PlaneObj':
-            print('PEF Type is okay...')
-        else:
+        if not (PefContent[0][0] == 'TYPE' and PefContent[0][1] == 'PlaneObj'):
             errors += 1
-        if PefContent[3][1] == '8':
-            print('Count is 8')
-        else:
+        if PefContent[3][1] != '8':
             errors += 1
-        print (errors)
         return errors
 
     def WriteNextItem(self, PefContent):
         for line in PefContent:
-            OneLine = '%s=%s\r\n' % (line[0], line[1])
-            self.__PefFileHandler.writelines(OneLine)
-        self.__PefFileHandler.writelines('\r\n')
-
-    def PrintNextItem(self):
-        print (self.__FileIndex)
-        Lines = self.ReadNextItem()
-        print (self.__FileIndex)
-        for l in Lines:
-            print (l)
+            self.__PefFileHandler.write(f'{line[0]}={line[1]}\r\n')
+        self.__PefFileHandler.write('\r\n')
 
     def Close(self):
-        self.__PefFileHandler.close()
+        if self.__PefFileHandler is not None:
+            self.__PefFileHandler.close()
+            self.__PefFileHandler = None
