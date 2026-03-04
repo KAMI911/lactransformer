@@ -76,7 +76,7 @@ def DiffLas(parameters):
     source_file = parameters[0]
     destination_file = parameters[1]
     # Get name for this process
-    current = multiprocessing.current_proces()
+    current = multiprocessing.current_process()
     proc_name = current.name
 
     logging.info('[%s] Starting ...' % (proc_name))
@@ -147,7 +147,7 @@ def main():
     elif os.path.isfile(inputfiles):
         inputisdir = False
         workfile = inputfiles
-        if os.path.basename(outputfiles) is not "":
+        if os.path.basename(outputfiles) != "":
             doing.append([workfile, outputfiles])
         else:
             doing.append([workfile, os.path.join(outputpath, os.path.basename(workfile))])

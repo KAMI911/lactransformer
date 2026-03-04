@@ -4,10 +4,9 @@ try:
     import os
     import numpy as np
     import math
-    from pyproj import Proj, transform
+    from pyproj import Transformer
     import laspy
     import sys
-    import laspy.file
     from . import AssignProjection
 except ImportError as err:
     print('Error {0} import module: {1}'.format(__name__, err))
@@ -17,125 +16,104 @@ except ImportError as err:
 
 class LasPyConverter:
     def __init__(self, source_filename, source_projection, destination_filename,
-                 destination_projection, proc_name = 'Unknown'):
+                 destination_projection, proc_name='Unknown'):
         self.__SourceFileName = source_filename
         self.__DestinationFileName = destination_filename
         self.__SourceProjection = source_projection
-        self.__SourceProjectionString = AssignProjection.AssignProjectionString(self.__SourceProjection, proc_name )
-        self.__SourceProj = Proj(self.__SourceProjectionString)
-        self.__SourceFallbackProjectionString = AssignProjection.AssignFallbackProjectionString(self.__SourceProjection)
-        if self.__SourceFallbackProjectionString:
-            self.__SourceFallbackProjection = AssignProjection.AssignProjectionName(self.__SourceProjection)
-            self.__SourceFallbackProj = Proj(self.__SourceFallbackProjectionString)
-        else:
-            self.__SourceFallbackProjection = AssignProjection.AssignProjectionName(self.__SourceProjection)
-            self.__SourceFallbackProj = ''
-
+        src_proj_str = AssignProjection.AssignProjectionString(source_projection, proc_name)
         self.__DestinationProjection = destination_projection
-        self.__DestinationProjectionString = AssignProjection.AssignProjectionString(self.__DestinationProjection, proc_name)
-        self.__DestinationProj = Proj(self.__DestinationProjectionString)
+        dst_proj_str = AssignProjection.AssignProjectionString(destination_projection, proc_name)
+        dst_fallback_str = AssignProjection.AssignFallbackProjectionString(destination_projection)
 
-        self.__DestinationFallbackProjectionString = AssignProjection.AssignFallbackProjectionString(
-            self.__DestinationProjection)
-        if self.__DestinationFallbackProjectionString:
-            self.__DestinationFallbackProjection = AssignProjection.AssignProjectionName(self.__DestinationProjection)
-            self.__DestinationFallbackProj = Proj(self.__DestinationFallbackProjectionString)
+        self.__DestinationFallbackProjection = AssignProjection.AssignProjectionName(destination_projection)
+
+        self.__Transformer = Transformer.from_crs(src_proj_str, dst_proj_str, always_xy=True)
+        if dst_fallback_str:
+            self.__OffsetTransformer = Transformer.from_crs(src_proj_str, dst_fallback_str, always_xy=True)
         else:
-            self.__DestinationFallbackProjection = AssignProjection.AssignProjectionName(self.__DestinationProjection)
-            self.__DestinationFallbackProj = ''
+            self.__OffsetTransformer = self.__Transformer
 
     def Open(self):
         try:
             if self.__SourceFileName != 'stdin':
-                self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
+                self.__SourceOpenedFile = laspy.read(self.__SourceFileName)
             else:
-                self.__SourceOpenedFile = laspy.file.File(sys.stdin, mode='r')
-            self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='w',
-                                                           header=self.__SourceOpenedFile.header)
-        except Exception as err:
+                self.__SourceOpenedFile = laspy.read(sys.stdin.buffer)
+            new_header = laspy.LasHeader(
+                point_format=self.__SourceOpenedFile.header.point_format,
+                version=self.__SourceOpenedFile.header.version
+            )
+            self.__DestinationOpenedFile = laspy.LasData(header=new_header)
+        except Exception:
             raise
 
     def OpenReanOnly(self):
         try:
             if self.__SourceFileName != 'stdin':
-                self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
+                self.__SourceOpenedFile = laspy.read(self.__SourceFileName)
             else:
-                self.__SourceOpenedFile = laspy.file.File(sys.stdin, mode='r')
-            self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='r')
-        except Exception as err:
+                self.__SourceOpenedFile = laspy.read(sys.stdin.buffer)
+            self.__DestinationOpenedFile = laspy.read(self.__DestinationFileName)
+        except Exception:
             raise
 
     def DumpHeaderFormat(self):
-        for spec in self.__SourceOpenedFile.header.header_format:
-            in_spec = self.__SourceOpenedFile.header.get_schema()
-            logging.info('Source setting: {0}: {1}'.format(spec.name, in_spec))
-        for spec in self.__DestinationOpenedFile.header.header_format:
-            in_spec = self.__DestinationOpenedFile.header.get_schema()
-            logging.info('Destination setting: {0}: {1}'.format(spec.name, in_spec))
+        logging.info('Source header: {0}'.format(self.__SourceOpenedFile.header))
+        logging.info('Destination header: {0}'.format(self.__DestinationOpenedFile.header))
 
     def DumpPointFormat(self):
         for spec in self.__SourceOpenedFile.point_format:
-            in_spec = self.__SourceOpenedFile.reader.get_dimension(spec.name)
-            logging.info('Source setting: {0}: {1}'.format(spec.name, in_spec))
+            logging.info('Source point format: {0}'.format(spec.name))
         for spec in self.__DestinationOpenedFile.point_format:
-            in_spec = self.__DestinationOpenedFile.reader.get_dimension(spec.name)
-            logging.info('Destination setting: {0}: {1}'.format(spec.name, in_spec))
+            logging.info('Destination point format: {0}'.format(spec.name))
 
     def GetSourcePointFormat(self):
-        for spec in self.__SourceOpenedFile.reader.point_format:
-            in_spec = self.__SourceOpenedFile.reader.get_dimension(spec.name)
-        return (spec.name, in_spec)
+        specs = list(self.__SourceOpenedFile.point_format)
+        return (specs[-1].name, None) if specs else (None, None)
 
     def GetDestinationPointFormat(self):
-        for spec in self.__DestinationOpenedFile.reader.point_format:
-            in_spec = self.__DestinationOpenedFile.reader.get_dimension(spec.name)
-        return (spec.name, in_spec)
+        specs = list(self.__DestinationOpenedFile.point_format)
+        return (specs[-1].name, None) if specs else (None, None)
 
     def GetSourceScale(self):
-        # Use scale as is as
         try:
-            self.__SourceScale = self.__SourceOpenedFile.header.scale
-            # Use offset as is as
-            self.__SourceOffset = self.__SourceOpenedFile.header.offset
+            self.__SourceScale = self.__SourceOpenedFile.header.scales
+            self.__SourceOffset = self.__SourceOpenedFile.header.offsets
         except Exception:
             raise
 
     def SetDestinationScale(self):
-        # Use scale as is as
         try:
             self.__DestinationScale = self.__SourceScale
-            # Use offset as is as
-            self.__DestinationOffset = np.array([0, 0, 0])
-            if self.__DestinationFallbackProjection:
-                self.__DestinationOffset = transform(
-                    self.__SourceProj, self.__DestinationFallbackProj,
-                    self.__SourceOffset[0], self.__SourceOffset[1], self.__SourceOffset[2])
-            else:
-                self.__DestinationOffset = transform(
-                    self.__SourceProj, self.__DestinationProj,
-                    self.__SourceOffset[0], self.__SourceOffset[1], self.__SourceOffset[2])
-            self.__DestinationOffset = [math.floor(self.__DestinationOffset[0]),
-                                        math.floor(self.__DestinationOffset[1]),
-                                        math.floor(self.__DestinationOffset[2])]
-            self.__DestinationOpenedFile.header.set_scale(self.__DestinationScale)
-            self.__DestinationOpenedFile.header.set_offset(self.__DestinationOffset)
+            x, y, z = self.__OffsetTransformer.transform(
+                self.__SourceOffset[0], self.__SourceOffset[1], self.__SourceOffset[2])
+            self.__DestinationOffset = [math.floor(x), math.floor(y), math.floor(z)]
+            self.__DestinationOpenedFile.header.scales = self.__DestinationScale
+            self.__DestinationOpenedFile.header.offsets = np.array(self.__DestinationOffset)
         except Exception:
             raise
         else:
             return self.__SourceOffset, self.__DestinationOffset
 
     def TransformPointCloud(self):
-        # Transforming PointCloud
         try:
-            self.__DestinationOpenedFile.points = self.__SourceOpenedFile.points
-            self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z = transform(self.__SourceProj, self.__DestinationProj, self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
+            self.__DestinationOpenedFile.points = self.__SourceOpenedFile.points.copy()
+            x, y, z = self.__Transformer.transform(
+                self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
+            self.__DestinationOpenedFile.x = x
+            self.__DestinationOpenedFile.y = y
+            self.__DestinationOpenedFile.z = z
             self.UpdateDestinationMinMax()
         except Exception:
             raise
 
     def TransformPointCloudCoordsOnly(self):
         try:
-            self.__DestinationOpenedFile.x, self.__DestinationOpenedFile.y, self.__DestinationOpenedFile.z = transform(self.__SourceProj, self.__DestinationProj, self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
+            x, y, z = self.__Transformer.transform(
+                self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
+            self.__DestinationOpenedFile.x = x
+            self.__DestinationOpenedFile.y = y
+            self.__DestinationOpenedFile.z = z
             self.UpdateDestinationMinMax()
         except Exception:
             raise
@@ -156,20 +134,19 @@ class LasPyConverter:
 
     def UpdateDestinationMinMax(self):
         try:
-            self.__DestinationOpenedFile.header.update_min_max()
+            self.__DestinationOpenedFile.update_header()
         except Exception:
             raise
 
     def CloseSourceFile(self):
         try:
-            self.__SourceOpenedFile.close()
             del self.__SourceOpenedFile
         except Exception:
             raise
 
     def CloseDestinationFile(self, full_header_update=False):
         try:
-            self.__DestinationOpenedFile.close(ignore_header_changes=not (full_header_update))
+            self.__DestinationOpenedFile.write(self.__DestinationFileName)
             del self.__DestinationOpenedFile
         except Exception:
             raise
@@ -192,8 +169,8 @@ class LasPyCompare:
 
     def OpenReanOnly(self):
         try:
-            self.__SourceOpenedFile = laspy.file.File(self.__SourceFileName, mode='r')
-            self.__DestinationOpenedFile = laspy.file.File(self.__DestinationFileName, mode='r')
+            self.__SourceOpenedFile = laspy.read(self.__SourceFileName)
+            self.__DestinationOpenedFile = laspy.read(self.__DestinationFileName)
         except Exception:
             raise
 
@@ -217,7 +194,7 @@ class LasPyCompare:
                     diff_min, diff_max, diff_avg, diff_std))
             return diff_min, diff_max, diff_avg, diff_std
 
-        except Exception as err:
+        except Exception:
             raise
 
     def is_equal(self):
@@ -225,9 +202,7 @@ class LasPyCompare:
 
     def Close(self):
         try:
-            self.__SourceOpenedFile.close()
             del self.__SourceOpenedFile
-            self.__DestinationOpenedFile.close()
             del self.__DestinationOpenedFile
         except Exception:
             raise

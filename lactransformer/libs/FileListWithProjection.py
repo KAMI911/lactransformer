@@ -54,7 +54,7 @@ class FileListWithProjection:
         elif os.path.isfile(self.__input_file_or_dir):
             self.__input_isdir = False
             in_file = self.__input_file_or_dir
-            if os.path.basename(self.__output_file_or_dir) is not "":
+            if os.path.basename(self.__output_file_or_dir) != "":
                 self.__file_and_projection.append(
                     [in_file, self.__output_file_or_dir, self.__input_projection, self.__output_projection,
                      self.__file_format,

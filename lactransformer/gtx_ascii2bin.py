@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 try:
-    from __future__ import print_function
     import traceback
     import struct
     import os
@@ -32,14 +31,13 @@ if not os.path.isfile(input_file):
     raise Exception('Cannot found input file: {0}'.format(input_file))
 else:
     try:
-        with open(output_file, 'w') as fw:
+        with open(output_file, 'wb') as fw:
             with open(input_file, 'r') as fr:
                 row = fr.readline()
                 row = row.strip().split(' ')
                 header = struct.pack(HEADER_STRUCT, float(row[0]), float(row[1]), float(row[2]), float(row[3]),
                                      int(row[4]), int(row[5]))
                 fw.write(header)
-                # print(header, end='')
                 while 1:
                     try:
                         height = fr.readline()
@@ -52,7 +50,7 @@ else:
                         fw.write(data)
                         index += 1
                     except ValueError as err:
-                        print (err)
+                        print(err)
                         print('Number of lines: {0} position {2} value: W{1}W'.format(index, height, fr.tell()))
                         break
 

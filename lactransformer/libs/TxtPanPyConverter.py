@@ -6,7 +6,7 @@ try:
     import re
     import sys
     import os
-    from pyproj import Proj, transform
+    from pyproj import Transformer
     from . import PefFile, AssignProjection
 except ImportError as err:
     print('Error {0} import module: {1}'.format(__name__, err))
@@ -16,15 +16,15 @@ except ImportError as err:
 
 class TxtPanPyConverter:
     def __init__(self, source_filename, source_projection, destination_filename, destination_projection, type='txt',
-                 separator=',', proc_name = 'Unknown'):
+                 separator=',', proc_name='Unknown'):
         self.__SourceFileName = source_filename
         self.__DestinationFileName = destination_filename
         self.__SourceProjection = source_projection
         self.__SourceProjectionString = AssignProjection.AssignProjectionString(source_projection, proc_name)
-        self.__SourceProj = Proj(self.__SourceProjectionString)
         self.__DestinationProjection = destination_projection
         self.__DestinationProjectionString = AssignProjection.AssignProjectionString(self.__DestinationProjection, proc_name)
-        self.__DestinationProj = Proj(self.__DestinationProjectionString)
+        self.__Transformer = Transformer.from_crs(
+            self.__SourceProjectionString, self.__DestinationProjectionString, always_xy=True)
         self.__Separator = separator
         self.__Type = type
         if self.__Type == 'txt':
@@ -65,16 +65,18 @@ class TxtPanPyConverter:
                     self.__SourceData = df.values
                     self.__Columns = df.columns
                     self.__Header = ''
-                    if self.__HeaderRow != None:
+                    if self.__HeaderRow is not None:
                         self.__HeaderList = list(df.columns.values)
                         self.__projection_replace_header()
                         self.__Header = ','.join(self.__HeaderList)
-                    if self.__Type not in [ 'strtxt', 'listtxt']:
-                        self.__Format = [ '%1.12f'.format(h) for h in range(0, len(self.__Columns)) ]
+                    if self.__Type not in ['strtxt', 'listtxt']:
+                        self.__Format = ['%1.12f'.format(h) for h in range(0, len(self.__Columns))]
                     else:
-                        self.__Format = [ '%s'.format(h) for h in range(0, len(self.__Columns)) ]
-                    if self.__Type in  [ 'txt', 'csv' ]: self.__Format[0] = '%1.6f'
-                    if self.__Type == 'listtxt': self.__Format[0] = '%06d'
+                        self.__Format = ['%s'.format(h) for h in range(0, len(self.__Columns))]
+                    if self.__Type in ['txt', 'csv']:
+                        self.__Format[0] = '%1.6f'
+                    if self.__Type == 'listtxt':
+                        self.__Format[0] = '%06d'
                     if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
                         for f in self.__Fields:
                             self.__Format[f] = '%1.15f'
@@ -86,38 +88,35 @@ class TxtPanPyConverter:
                 self.__SourceOpenedFile.OpenRO()
                 self.__DestinationOpenedFile = PefFile.PefFile(self.__DestinationFileName)
                 self.__DestinationOpenedFile.OpenOW()
-        except Exception as err:
+        except Exception:
             raise
 
     def Transform(self):
-        self.TransformTxt() if self.__Type != 'pef' else  self.TransformPEF()
+        self.TransformTxt() if self.__Type != 'pef' else self.TransformPEF()
 
     def TransformTxt(self):
-        self.__SourceData[:, self.__Fields[0]], self.__SourceData[:, self.__Fields[1]], self.__SourceData[:,
-                                                                                        self.__Fields[2]] = transform(
-            self.__SourceProj,
-            self.__DestinationProj,
+        x, y, z = self.__Transformer.transform(
             self.__SourceData[:, self.__Fields[0]],
             self.__SourceData[:, self.__Fields[1]],
             self.__SourceData[:, self.__Fields[2]])
+        self.__SourceData[:, self.__Fields[0]] = x
+        self.__SourceData[:, self.__Fields[1]] = y
+        self.__SourceData[:, self.__Fields[2]] = z
 
     def TransformPEF(self):
         # Transforming PEF, type pef
-        point_pattern = re.compile('P\d{1,3}')  # format is Pn or Pnn or Pnnn
+        point_pattern = re.compile(r'P\d{1,3}')  # format is Pn or Pnn or Pnnn
         while True:
             Content = self.__SourceOpenedFile.ReadNextItem()
             if not Content:
                 break
-            # self.__DestinationOpenedFile.
             for i, row in enumerate(Content):
                 point_number = point_pattern.search(row[0])
                 if point_number is not None:
                     coordinates = row[1].split(' ')
-                    coordinates[0], coordinates[1], coordinates[2] = transform(self.__SourceProj,
-                                                                               self.__DestinationProj,
-                                                                               coordinates[0], coordinates[1],
-                                                                               coordinates[2])
-                    Content[i][1] = '%.10f %.10f %.10f' % (coordinates[0], coordinates[1], coordinates[2])
+                    x, y, z = self.__Transformer.transform(
+                        float(coordinates[0]), float(coordinates[1]), float(coordinates[2]))
+                    Content[i][1] = '%.10f %.10f %.10f' % (x, y, z)
             self.__DestinationOpenedFile.WriteNextItem(Content)
 
     def Close(self, type='txt'):
