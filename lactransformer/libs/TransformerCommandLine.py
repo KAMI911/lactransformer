@@ -3,91 +3,82 @@ try:
     import argparse
     import textwrap
 except ImportError as err:
-    print('Error {0} import module: {1}'.format(__name__, err))
+    print(f'Error {__name__} import module: {err}')
     traceback.print_exc()
     exit(128)
 
 
 class TransformerCommandLine:
     def __init__(self):
-        # predefinied paths
-        self.parser = argparse.ArgumentParser(prog="lactransformer",
+        self.parser = argparse.ArgumentParser(prog='lactransformer',
                                               formatter_class=argparse.RawTextHelpFormatter,
                                               description='',
                                               epilog=textwrap.dedent('''
         example:
             '''))
-        # reguired parameters
+        # required parameters
         self.parser.add_argument('-i', type=str, dest='input', required=True,
                                  help='required:  input file or folder')
         self.parser.add_argument('-o', type=str, dest='output', required=True,
-                                 help='required:  output file or folder (d:\lasfiles\\tests\\results)')
+                                 help='required:  output file or folder')
 
         # optional parameters
         self.parser.add_argument('-input_format', type=str, dest='input_format', required=False,
+                                 default='las',
                                  choices=['las', 'laz', 'txt', 'lastxt', 'csv', 'iml', 'pef', 'strtxt', 'listtxt'],
-                                 help='optional:  input format (default=las, laz is not implemented (yet))'
-                                      '  las = LAS PointCloud\n'
-                                      '  laz = LAZ (compressed) PointCloud\n'
-                                      '  txt = Trajectory CSV file\n'
-                                      '  lastxt = PointText\n'
-                                      '  csv = Riegl Camera CSV file\n'
-                                      '  iml = TerraPhoto Image List file\n'
-                                      '  pef = PEF file\n'
-                                      '  strtxt = String PointText\n'
+                                 help='optional:  input format (default=las)\n'
+                                      '  las     = LAS PointCloud\n'
+                                      '  laz     = LAZ (compressed) PointCloud\n'
+                                      '  txt     = Trajectory CSV file\n'
+                                      '  lastxt  = PointText\n'
+                                      '  csv     = Riegl Camera CSV file\n'
+                                      '  iml     = TerraPhoto Image List file\n'
+                                      '  pef     = PEF file\n'
+                                      '  strtxt  = String PointText\n'
                                       '  listtxt = List PointText\n')
         self.parser.add_argument('-input_projection', type=str, dest='input_projection', required=False,
-                                 choices=['WGS84', 'WGS84geo', 'WGS84PM', 'EOV', 'EOVc', 'EOV2009', 'EOV2014', 'EOV2014fine', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
-                                          'ETRS89geo'],
-                                 help='optional:  input format (default=WGS84geo, EOVp is not implemented (yet))\n'
-                                      '  WGS84 (EPSG:4326) projection: http://epsg.io/4326/\n'
-                                      '  WGS84geo (EPSG:4978) geocentric projection: http://epsg.io/4978/\n'
-                                      '  WGS84PM (EPSG:3857) Pseudo-Mercator projection: http://epsg.io/3857/\n'
-                                      '  EOV (EPSG:23700) projection: http://epsg.io/23700/\n'
-                                      '  EOVc (EPSG:23700) projection with grid correction 2014: http://epsg.io/23700/\n'
-                                      '  EOV2009 (EPSG:23700) projection with grid correction 2009: http://epsg.io/23700/\n'
-                                      '  EOV2014 (EPSG:23700) projection with grid correction 2014 (2x2 km grid points): http://epsg.io/23700/\n'
-                                      '  (experimental) EOV2014fine (EPSG:23700) projection with grid correction 2014 (1x1 km geoid grid points): http://epsg.io/23700/\n'
-                                      '  SVY21 (EPSG:3414) projection: http://epsg.io/3414/\n'
-                                      '  SVY21c (EPSG:3414) projection with correction: http://epsg.io/3414/\n'
-                                      '  ETRS89 (EPSG:4258) projection: http://epsg.io/4258/\n'
-                                      '  ETRS89geo (EPSG:4936) projection: http://epsg.io/4936/\n')
+                                 default='WGS84geo',
+                                 choices=['WGS84', 'WGS84geo', 'WGS84PM', 'EOV', 'EOVc', 'EOV2009', 'EOV2014',
+                                          'EOV2014fine', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89', 'ETRS89geo'],
+                                 help='optional:  input projection (default=WGS84geo)\n'
+                                      '  WGS84        (EPSG:4326)  geographic\n'
+                                      '  WGS84geo     (EPSG:4978)  geocentric\n'
+                                      '  WGS84PM      (EPSG:3857)  Pseudo-Mercator\n'
+                                      '  EOV          (EPSG:23700) Hungarian national grid\n'
+                                      '  EOVc         (EPSG:23700) EOV with 2014 grid correction\n'
+                                      '  EOV2009      (EPSG:23700) EOV with 2009 grid correction\n'
+                                      '  EOV2014      (EPSG:23700) EOV with 2014 grid correction (2x2 km)\n'
+                                      '  EOV2014fine  (EPSG:23700) EOV with 2014 grid correction (1x1 km, experimental)\n'
+                                      '  SVY21        (EPSG:3414)  Singapore\n'
+                                      '  SVY21c       (EPSG:3414)  SVY21 with correction\n'
+                                      '  ETRS89       (EPSG:4258)  geographic\n'
+                                      '  ETRS89geo    (EPSG:4936)  geocentric\n')
         self.parser.add_argument('-output_projection', type=str, dest='output_projection', required=False,
-                                 choices=['WGS84', 'WGS84geo', 'WGS84PM', 'EOV', 'EOVc', 'EOV2009', 'EOV2014', 'EOV2014fine', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89',
-                                          'ETRS89geo'],
-                                 help='optional:  output format (default=EOVc, EOVp is not implemented (yet))\n'
-                                      '  same as input_projection')
+                                 default='EOVc',
+                                 choices=['WGS84', 'WGS84geo', 'WGS84PM', 'EOV', 'EOVc', 'EOV2009', 'EOV2014',
+                                          'EOV2014fine', 'EOVp', 'SVY21', 'SVY21c', 'ETRS89', 'ETRS89geo'],
+                                 help='optional:  output projection (default=EOVc, same choices as input_projection)')
         self.parser.add_argument('-cores', type=int, dest='cores', required=False, default=1,
-                                 help='optional:  cores (default=1)')
+                                 help='optional:  number of CPU cores to use (default=1)')
         self.parser.add_argument('-no_threads', dest='no_threads', required=False, default=False,
-                                 help='optional:  do not use threads when cores = 1 (default=False)', action='store_true')
+                                 help='optional:  disable threading when cores=1 (default=False)',
+                                 action='store_true')
         self.parser.add_argument('-full_header_update', dest='full_header_update', required=False,
-                                 help='optional:  Full header update - makes closing file slow (-full_header_update=on, nothing=off)',
+                                 help='optional:  full LAS header update on close (slower)',
                                  action='store_true')
         self.parser.add_argument('-separator', type=str, dest='separator', required=False,
+                                 default=',',
                                  choices=[',', ' ', ';', '\t'],
-                                 help='optional:  text separator for text based coordiante files (default=,)')
+                                 help='optional:  column separator for text files (default=,)')
         self.parser.add_argument('-v', dest='verbose', required=False,
-                                 help='optional:  verbose toggle (-v=on, nothing=off)', action='store_true')
+                                 help='optional:  verbose output',
+                                 action='store_true')
         self.parser.add_argument('-version', action='version', version=self.parser.prog)
 
     def parse(self):
         self.args = self.parser.parse_args()
-
-        ##defaults
         self.args.verbose = ' -v' if self.args.verbose else ''
-        if self.args.input_format == None:
-            self.args.input_format = 'las'
-        if self.args.cores == None:
-            self.args.cores = 1
-        if self.args.input_projection == None:
-            self.args.input_projection = 'WGS84geo'
-        if self.args.output_projection == None:
-            self.args.output_projection = 'EOVc'
-        if self.args.separator == None:
-            self.args.separator = ','
 
-    # ---------PUBLIC METHODS--------------------
     @property
     def output(self):
         return self.args.output

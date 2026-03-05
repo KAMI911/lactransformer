@@ -9,7 +9,7 @@ try:
     import sys
     from . import AssignProjection
 except ImportError as err:
-    print('Error {0} import module: {1}'.format(__name__, err))
+    print(f'Error {__name__} import module: {err}')
     traceback.print_exc()
     exit(128)
 
@@ -58,14 +58,14 @@ class LasPyConverter:
             raise
 
     def DumpHeaderFormat(self):
-        logging.info('Source header: {0}'.format(self.__SourceOpenedFile.header))
-        logging.info('Destination header: {0}'.format(self.__DestinationOpenedFile.header))
+        logging.info(f'Source header: {self.__SourceOpenedFile.header}')
+        logging.info(f'Destination header: {self.__DestinationOpenedFile.header}')
 
     def DumpPointFormat(self):
         for spec in self.__SourceOpenedFile.point_format:
-            logging.info('Source point format: {0}'.format(spec.name))
+            logging.info(f'Source point format: {spec.name}')
         for spec in self.__DestinationOpenedFile.point_format:
-            logging.info('Destination point format: {0}'.format(spec.name))
+            logging.info(f'Destination point format: {spec.name}')
 
     def GetSourcePointFormat(self):
         specs = list(self.__SourceOpenedFile.point_format)
@@ -185,13 +185,13 @@ class LasPyCompare:
                 diff_max.append(np.max(diff[i]))
                 diff_avg.append(np.mean(diff[i]))
                 diff_std.append(np.std(diff[i]))
-            logging.info('{0} file differences:'.format(
-                os.path.basename(self.__SourceFileName)))
-            print('Xmin/max/avg/std: {0[0]:.4f}/{1[0]:.4f}/{2[0]:.4f}/{3[0]:.4f}, Ymin/max/avg/std: {0[1]:.4f}/{1[1]:.4f}/{2[1]:.4f}/{3[1]:.4f}, Zmin/max/avg/std: {0[2]:.4f}/{1[2]:.4f}/{2[2]:.4f}/{3[2]:.4f}'.format(
-                diff_min, diff_max, diff_avg, diff_std))
-            logging.info(
-                'Xmin/max/avg/std: {0[0]:.4f}/{1[0]:.4f}/{2[0]:.4f}/{3[0]:.4f}, Ymin/max/avg/std: {0[1]:.4f}/{1[1]:.4f}/{2[1]:.4f}/{3[1]:.4f}, Zmin/max/avg/std: {0[2]:.4f}/{1[2]:.4f}/{2[2]:.4f}/{3[2]:.4f}'.format(
-                    diff_min, diff_max, diff_avg, diff_std))
+            logging.info(f'{os.path.basename(self.__SourceFileName)} file differences:')
+            diff_msg = (
+                f'Xmin/max/avg/std: {diff_min[0]:.4f}/{diff_max[0]:.4f}/{diff_avg[0]:.4f}/{diff_std[0]:.4f},'
+                f' Ymin/max/avg/std: {diff_min[1]:.4f}/{diff_max[1]:.4f}/{diff_avg[1]:.4f}/{diff_std[1]:.4f},'
+                f' Zmin/max/avg/std: {diff_min[2]:.4f}/{diff_max[2]:.4f}/{diff_avg[2]:.4f}/{diff_std[2]:.4f}')
+            print(diff_msg)
+            logging.info(diff_msg)
             return diff_min, diff_max, diff_avg, diff_std
 
         except Exception:
