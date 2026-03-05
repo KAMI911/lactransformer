@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "lactransformer"
+version = "1.0.0"
+description = "LAS & Co Transformer — convert WGS84, ETRS89, Hungarian EOV and SVY21 projections from/to LiDAR LAS, trajectory CSV, TerraPhoto Image List, Riegl Camera CSV and PEF formats."
+license = { text = "MPL-2.0" }
+authors = [{ name = "Kalman Szalai - KAMI", email = "kami911@gmail.com" }]
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["gis", "lidar", "las", "eov", "vitel", "vitel2009", "vitel2014"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+dependencies = [
+    "numpy>=1.23.4",
+    "pandas>=1.5.0",
+    "pyproj>=3.3.1",
+    "laspy>=2.0.0",
+    "lazrs-python>=0.5.0",
+]
+
+[project.optional-dependencies]
+gui = ["wxPython>=4.0"]
+
+[project.urls]
+Homepage = "https://github.com/KAMI911/lactransformer"
+
+[project.scripts]
+lactransformer = "lactransformer.lactransformer:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["lactransformer*"]
+
+[tool.setuptools.package-data]
+"lactransformer" = ["grid/*.gsb", "grid/*.gtx"]
