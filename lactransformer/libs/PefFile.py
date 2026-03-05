@@ -46,9 +46,9 @@ class PefFile:
 
     def TestItem(self, PefContent):
         errors = 0
-        if not (PefContent[0][0] == 'TYPE' and PefContent[0][1] == 'PlaneObj'):
+        if not PefContent or not (PefContent[0][0] == 'TYPE' and PefContent[0][1] == 'PlaneObj'):
             errors += 1
-        if PefContent[3][1] != '8':
+        if len(PefContent) > 3 and PefContent[3][1] != '8':
             errors += 1
         return errors
 

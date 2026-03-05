@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 try:
@@ -7,7 +7,7 @@ try:
     import os
     from libs import FileConverterCommandLine
 except ImportError as err:
-    print('Error {0} import module: {1}'.format(__name__, err))
+    print(f'Error {__name__} import module: {err}')
     traceback.print_exc()
     exit(128)
 
@@ -28,32 +28,31 @@ if output_file is None:
     output_file = input_file + '.gtx'
 
 if not os.path.isfile(input_file):
-    raise Exception('Cannot found input file: {0}'.format(input_file))
-else:
-    try:
-        with open(output_file, 'wb') as fw:
-            with open(input_file, 'r') as fr:
-                row = fr.readline()
-                row = row.strip().split(' ')
-                header = struct.pack(HEADER_STRUCT, float(row[0]), float(row[1]), float(row[2]), float(row[3]),
-                                     int(row[4]), int(row[5]))
-                fw.write(header)
-                while 1:
-                    try:
-                        height = fr.readline()
-                        height = height.strip()
-                        # Insert special null value, when the input uses the base level (no geoid offset for this point)
-                        if height == '150':
-                            height = '-88.8888'
-                        data = struct.pack(DATA_STRUCT, float(height.strip()))
-                        print(height)
-                        fw.write(data)
-                        index += 1
-                    except ValueError as err:
-                        print(err)
-                        print('Number of lines: {0} position {2} value: W{1}W'.format(index, height, fr.tell()))
-                        break
+    raise FileNotFoundError(f'Cannot find input file: {input_file}')
 
-    except IOError as err:
-        print('Error opening: {0}, error: {1}'.format(output_file, err))
-        exit(1)
+try:
+    with open(output_file, 'wb') as fw, open(input_file, 'r') as fr:
+        row = fr.readline().strip().split(' ')
+        header = struct.pack(HEADER_STRUCT, float(row[0]), float(row[1]), float(row[2]), float(row[3]),
+                             int(row[4]), int(row[5]))
+        fw.write(header)
+        while True:
+            height = fr.readline()
+            if not height:
+                break
+            height = height.strip()
+            # Insert special null value when input uses base level (no geoid offset for this point)
+            if height == '150':
+                height = '-88.8888'
+            try:
+                data = struct.pack(DATA_STRUCT, float(height))
+            except ValueError as err:
+                print(err)
+                print(f'Number of lines: {index} position {fr.tell()} value: W{height}W')
+                break
+            print(height)
+            fw.write(data)
+            index += 1
+except IOError as err:
+    print(f'Error opening: {output_file}, error: {err}')
+    exit(1)

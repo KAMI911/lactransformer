@@ -1,5 +1,6 @@
 try:
     import traceback
+    from typing import Optional
 except ImportError as err:
     print(f'Error {__name__} import module: {err}')
     traceback.print_exc()
@@ -18,5 +19,5 @@ friendly_names = {
 }
 
 
-def FriendlyName(input_format: str) -> str:
+def FriendlyName(input_format: str) -> Optional[str]:
     return friendly_names.get(input_format)

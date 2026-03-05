@@ -30,7 +30,6 @@ def main():
     # File/Directory handler
     cores = lasconverterworkflow.cores
 
-    results = []
     filelist = FileListWithProjection.FileListWithProjection()
     filelist.create_list(lasconverterworkflow.input,
                          lasconverterworkflow.output,
@@ -55,9 +54,10 @@ def main():
     else:
         logging.info(f'Using threads on {cores} cores.')
         pool = multiprocessing.Pool(processes=cores)
-        results.append(pool.map_async(TransformerWorkflow.Transformer, file_queue))
+        result = pool.map_async(TransformerWorkflow.Transformer, file_queue)
         pool.close()
         pool.join()
+        result.get()
     del file_queue
     logging.info('Finished, exiting and go home ...')
 

@@ -40,11 +40,11 @@ def Transformer(parameters):
                 f'Cannot open files: {source_file} and {destination_file}, error: {err}.'
                 ' Probably this type of errors (ValueError) caused by corrupt LAS PointCloud file.')
             traceback.print_exc()
-            exit(10)
+            raise
         except Exception as err:
             logging.error(f'Cannot open files: {source_file} and {destination_file}, error: {err}.')
             traceback.print_exc()
-            exit(10)
+            raise
         try:
             logging.info(f'[{proc_name}] Scaling {input_format_name}.')
             lasFiles.GetSourceScale()
@@ -65,7 +65,7 @@ def Transformer(parameters):
             logging.error(
                 f'Cannot transform files from {source_file} to {destination_file}, error: {err}.')
             traceback.print_exc()
-            exit(11)
+            raise
         else:
             logging.info(
                 f'[{proc_name}] Successfully transformed {input_format_name} data for file: {destination_file}.')
@@ -82,7 +82,7 @@ def Transformer(parameters):
         except Exception as err:
             logging.error(
                 f'Cannot close files: {source_file} and {destination_file}, error: {err}.')
-            exit(12)
+            raise
         else:
             logging.info(
                 f'[{proc_name}] Transformed {destination_file} {input_format_name} file has been created.')
@@ -99,13 +99,13 @@ def Transformer(parameters):
             txtFiles.Open()
         except Exception as err:
             logging.error(f'Cannot open file: {err}.')
-            exit(10)
+            raise
         try:
             txtFiles.Transform()
         except Exception as err:
             logging.error(
                 f'Cannot transform files from {source_file} to {destination_file}, error: {err}.')
-            exit(11)
+            raise
         else:
             logging.info(
                 f'[{proc_name}] Successfully transformed {input_format_name} for file: {destination_file}.')
@@ -116,7 +116,7 @@ def Transformer(parameters):
         except Exception as err:
             logging.error(
                 f'Cannot close files: {source_file} and {destination_file}, error: {err}.')
-            exit(12)
+            raise
         else:
             logging.info(
                 f'[{proc_name}] Transformed {destination_file} {input_format_name} file has been created.')

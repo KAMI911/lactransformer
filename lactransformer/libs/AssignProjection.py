@@ -2,6 +2,7 @@ try:
     import traceback
     import logging
     from pathlib import Path
+    from typing import Optional
 
     from . import supported_projections
 except ImportError as err:
@@ -14,7 +15,7 @@ def grid_path(filename: str) -> Path:
     return Path(__file__).parent.parent / 'grid' / filename
 
 
-def AssignProjectionString(projection: str, proc_name: str = 'Unknown') -> str:
+def AssignProjectionString(projection: str, proc_name: str = 'Unknown') -> Optional[str]:
     nadgrids_EOV2009 = grid_path('etrs2eov_notowgs.gsb')
     geoidgrids_EOV2009 = grid_path('geoid_eht.gtx')
     nadgrids_EOV2014 = grid_path('etrs2eov_notowgs.gsb')
@@ -77,10 +78,10 @@ def AssignProjectionString(projection: str, proc_name: str = 'Unknown') -> str:
         else:
             raise FileNotFoundError(f'Cannot find required grid file: {geoidgrids_SVY21c}')
 
-    return projections.get(projection, False)
+    return projections.get(projection)
 
 
-def AssignFallbackProjectionString(projection: str) -> str:
+def AssignFallbackProjectionString(projection: str) -> Optional[str]:
     fallback_projections = {
         'WGS84':      '',
         'WGS84geo':   '',
@@ -99,10 +100,10 @@ def AssignFallbackProjectionString(projection: str) -> str:
         'ETRS89':     '',
         'ETRS89geo':  '',
     }
-    return fallback_projections.get(projection, False)
+    return fallback_projections.get(projection)
 
 
-def AssignProjectionName(projection: str) -> str:
+def AssignProjectionName(projection: str) -> Optional[str]:
     if projection in supported_projections.projectionnames:
         return supported_projections.projectionnames[projection]
-    return False
+    return None
