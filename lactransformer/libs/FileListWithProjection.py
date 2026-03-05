@@ -2,6 +2,7 @@ try:
     import traceback
     import fnmatch
     import logging
+    import os
     from pathlib import Path
 except ImportError as err:
     print(f'Error {__name__} import module: {err}')
@@ -22,7 +23,7 @@ class FileListWithProjection:
         if input_path.is_dir():
             self.__input_isdir = True
             output_path.mkdir(parents=True, exist_ok=True)
-            for root, _, filenames in input_path.walk() if hasattr(input_path, 'walk') else self._walk(input_path):
+            for root, _, filenames in os.walk(input_path):
                 root_path = Path(root)
                 for filename in fnmatch.filter(filenames, '*' + file_format):
                     in_file = root_path / filename
@@ -42,12 +43,6 @@ class FileListWithProjection:
                  file_format, full_header_update, txt_separator])
         else:
             raise FileNotFoundError(f'Cannot find input file or directory: {input_file_or_dir}')
-
-    @staticmethod
-    def _walk(path):
-        """Fallback os.walk wrapper for Python < 3.12."""
-        import os
-        yield from os.walk(path)
 
     @property
     def filelist(self):

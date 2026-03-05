@@ -54,40 +54,39 @@ class TxtPanPyConverter:
                 self.__HeaderList[self.__Fields[i]] = new_header_part[i]
 
     def Open(self):
-        try:
-            if self.__Type != 'pef':
-                if self.__SourceFileName != 'stdin':
-                    df = pandas.read_csv(self.__SourceFileName, sep=self.__Separator, header=self.__HeaderRow)
-                else:
-                    df = pandas.read_csv(sys.stdin, sep=self.__Separator, header=self.__HeaderRow)
-                self.__SourceData = df.values
-                self.__Columns = df.columns
-                self.__Header = ''
-                if self.__HeaderRow is not None:
-                    self.__HeaderList = list(df.columns.values)
-                    self.__projection_replace_header()
-                    self.__Header = ','.join(self.__HeaderList)
-                if self.__Type not in ['strtxt', 'listtxt']:
-                    self.__Format = ['%1.12f'] * len(self.__Columns)
-                else:
-                    self.__Format = ['%s'] * len(self.__Columns)
-                if self.__Type in ['txt', 'csv']:
-                    self.__Format[0] = '%1.6f'
-                if self.__Type == 'listtxt':
-                    self.__Format[0] = '%06d'
-                if self.__DestinationProjection in ['WGS84'] and self.__Type != 'pef':
-                    for f in self.__Fields:
-                        self.__Format[f] = '%1.15f'
-                elif self.__DestinationProjection not in ['WGS84'] and self.__Type != 'pef':
-                    for f in self.__Fields:
-                        self.__Format[f] = '%1.4f'
-            elif self.__Type == 'pef':
-                self.__SourceOpenedFile = PefFile.PefFile(self.__SourceFileName) if self.__SourceFileName != 'stdin' else PefFile.PefFile(sys.stdin)
-                self.__SourceOpenedFile.OpenRO()
-                self.__DestinationOpenedFile = PefFile.PefFile(self.__DestinationFileName)
-                self.__DestinationOpenedFile.OpenOW()
-        except Exception:
-            raise
+        if self.__Type != 'pef':
+            if self.__SourceFileName != 'stdin':
+                df = pandas.read_csv(self.__SourceFileName, sep=self.__Separator, header=self.__HeaderRow)
+            else:
+                df = pandas.read_csv(sys.stdin, sep=self.__Separator, header=self.__HeaderRow)
+            self.__SourceData = df.values
+            self.__Columns = df.columns
+            self.__Header = ''
+            if self.__HeaderRow is not None:
+                self.__HeaderList = list(df.columns.values)
+                self.__projection_replace_header()
+                self.__Header = ','.join(self.__HeaderList)
+            if self.__Type not in ['strtxt', 'listtxt']:
+                self.__Format = ['%1.12f'] * len(self.__Columns)
+            else:
+                self.__Format = ['%s'] * len(self.__Columns)
+            if self.__Type in ['txt', 'csv']:
+                self.__Format[0] = '%1.6f'
+            if self.__Type == 'listtxt':
+                self.__Format[0] = '%06d'
+            if self.__DestinationProjection in ['WGS84']:
+                for f in self.__Fields:
+                    self.__Format[f] = '%1.15f'
+            else:
+                for f in self.__Fields:
+                    self.__Format[f] = '%1.4f'
+        else:
+            self.__SourceOpenedFile = (PefFile.PefFile(self.__SourceFileName)
+                                       if self.__SourceFileName != 'stdin'
+                                       else PefFile.PefFile(sys.stdin))
+            self.__SourceOpenedFile.OpenRO()
+            self.__DestinationOpenedFile = PefFile.PefFile(self.__DestinationFileName)
+            self.__DestinationOpenedFile.OpenOW()
 
     def Transform(self):
         self.TransformTxt() if self.__Type != 'pef' else self.TransformPEF()
