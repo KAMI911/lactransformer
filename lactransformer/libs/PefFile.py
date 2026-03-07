@@ -34,7 +34,10 @@ class PefFile:
         if FileSeek is None:
             FileSeek = self.__FileIndex
         PefContent = []
-        for line in self.__PefFileHandler:
+        while True:
+            line = self.__PefFileHandler.readline()
+            if not line:
+                break
             stripped = line.rstrip('\n\r')
             if stripped == '':
                 if PefContent:

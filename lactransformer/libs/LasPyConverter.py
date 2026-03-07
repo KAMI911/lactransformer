@@ -83,7 +83,15 @@ class LasPyConverter:
         return self.__SourceOffset, self.__DestinationOffset
 
     def TransformPointCloud(self):
-        self.__DestinationOpenedFile.points = self.__SourceOpenedFile.points.copy()
+        src_points = self.__SourceOpenedFile.points
+        dst_header = self.__DestinationOpenedFile.header
+        new_points = laspy.ScaleAwarePointRecord(
+            src_points.array.copy(),
+            dst_header.point_format,
+            scales=dst_header.scales,
+            offsets=dst_header.offsets,
+        )
+        self.__DestinationOpenedFile.points = new_points
         x, y, z = self.__Transformer.transform(
             self.__SourceOpenedFile.x, self.__SourceOpenedFile.y, self.__SourceOpenedFile.z)
         self.__DestinationOpenedFile.x = x
@@ -157,7 +165,7 @@ class LasPyCompare:
         return diff_min, diff_max, diff_avg, diff_std
 
     def is_equal(self):
-        return np.array_equal(self.__SourceOpenedFile.points, self.__DestinationOpenedFile.points)
+        return np.array_equal(self.__SourceOpenedFile.points.array, self.__DestinationOpenedFile.points.array)
 
     def Close(self):
         del self.__SourceOpenedFile
