@@ -62,3 +62,10 @@ target/
 # LAS/LAZ files
 *.las
 *.laz
+
+# Virtual environment
+.venv/
+venv/
+
+# Test temporary output
+test/tmp/
