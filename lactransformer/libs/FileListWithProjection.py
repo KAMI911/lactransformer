@@ -36,7 +36,12 @@ class FileListWithProjection:
                          file_format, full_header_update, txt_separator])
         elif input_path.is_file():
             self.__input_isdir = False
-            out_file = str(output_path) if output_path.name else str(output_path / input_path.name)
+            # Path() drops a trailing separator, so check the original string to treat "out/" as a directory
+            if output_path.is_dir() or not output_path.name or str(output_file_or_dir).endswith(('/', os.sep)):
+                output_path.mkdir(parents=True, exist_ok=True)
+                out_file = str(output_path / input_path.name)
+            else:
+                out_file = str(output_path)
             logging.info(f'Adding {input_path} to the queue.')
             self.__file_and_projection.append(
                 [str(input_path), out_file, input_projection, output_projection,

@@ -7,7 +7,7 @@ try:
     import logging
     import datetime
     import multiprocessing
-    from libs import LasPyConverter
+    from .libs import LasPyConverter
 except ImportError as err:
     print(f'Error {__name__} import module: {err}')
     traceback.print_exc()
