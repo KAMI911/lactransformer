@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 try:
     import traceback
@@ -7,6 +6,7 @@ try:
     import logging
     import datetime
     import multiprocessing
+    from . import __version__
     from .libs import Logging, TransformerCommandLine, TransformerWorkflow, FileListWithProjection
 except ImportError as err:
     print(f'Error {__name__} import module: {err}')
@@ -15,13 +15,11 @@ except ImportError as err:
 
 script_path = __file__
 
-script_header = textwrap.dedent('''LAS & Co Transformer''')
-
-__version__ = '0.1.0.1'
+script_header = textwrap.dedent(f'''LAS & Co Transformer {__version__}''')
 
 
 def main():
-    logfilename = 'lactransformer_{0}.log'.format(datetime.datetime.today().strftime('%Y%m%d_%H%M%S'))
+    logfilename = f'lactransformer_{datetime.datetime.today().strftime("%Y%m%d_%H%M%S")}.log'
     Logging.SetLogging(logfilename)
     logging.info(script_header)
 

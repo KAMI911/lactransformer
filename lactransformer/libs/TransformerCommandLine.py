@@ -2,6 +2,7 @@ try:
     import traceback
     import argparse
     import textwrap
+    from .. import __version__
 except ImportError as err:
     print(f'Error {__name__} import module: {err}')
     traceback.print_exc()
@@ -48,7 +49,8 @@ class TransformerCommandLine:
                                       '  EOVc         (EPSG:23700) EOV with 2014 grid correction\n'
                                       '  EOV2009      (EPSG:23700) EOV with 2009 grid correction\n'
                                       '  EOV2014      (EPSG:23700) EOV with 2014 grid correction (2x2 km)\n'
-                                      '  EOV2014fine  (EPSG:23700) EOV with 2014 grid correction (1x1 km, experimental)\n'
+                                      '  EOV2014fine  (EPSG:23700) EOV with 2014 grid correction'
+                                      ' (1x1 km, experimental)\n'
                                       '  SVY21        (EPSG:3414)  Singapore\n'
                                       '  SVY21c       (EPSG:3414)  SVY21 with correction\n'
                                       '  ETRS89       (EPSG:4258)  geographic\n'
@@ -73,7 +75,7 @@ class TransformerCommandLine:
         self.parser.add_argument('-v', dest='verbose', required=False,
                                  help='optional:  verbose output',
                                  action='store_true')
-        self.parser.add_argument('-version', action='version', version=self.parser.prog)
+        self.parser.add_argument('-version', action='version', version=f'%(prog)s {__version__}')
 
     def parse(self):
         self.args = self.parser.parse_args()

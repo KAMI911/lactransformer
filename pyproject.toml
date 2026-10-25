@@ -1,10 +1,10 @@
 [build-system]
 requires = ["setuptools>=61", "wheel"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "lactransformer"
-version = "1.0.0"
+dynamic = ["version"]
 description = "LAS & Co Transformer — convert WGS84, ETRS89, Hungarian EOV and SVY21 projections from/to LiDAR LAS, trajectory CSV, TerraPhoto Image List, Riegl Camera CSV and PEF formats."
 license = { text = "MPL-2.0" }
 authors = [{ name = "Kalman Szalai - KAMI", email = "kami911@gmail.com" }]
@@ -23,24 +23,32 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: GIS",
 ]
 dependencies = [
     "numpy>=1.23.4",
     "pandas>=1.5.0",
     "pyproj>=3.3.1",
-    "laspy>=2.0.0",
-    "lazrs-python>=0.5.0",
+    "laspy[lazrs]>=2.5.0",
 ]
 
 [project.optional-dependencies]
 gui = ["wxPython>=4.0"]
+dev = ["ruff", "bandit", "pip-audit", "coverage"]
 
 [project.urls]
 Homepage = "https://github.com/KAMI911/lactransformer"
 
 [project.scripts]
 lactransformer = "lactransformer.lactransformer:main"
+lasdiff = "lactransformer.lasdiff:main"
+gtx_ascii2bin = "lactransformer.gtx_ascii2bin:main"
+gtx_bin2ascii = "lactransformer.gtx_bin2ascii:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "lactransformer.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["."]
@@ -48,3 +56,14 @@ include = ["lactransformer*"]
 
 [tool.setuptools.package-data]
 "lactransformer" = ["grid/*.gsb", "grid/*.gtx"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py38"
+extend-exclude = ["lactransformer/grid"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "S", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"test_lactransformer.py" = ["S101"]
