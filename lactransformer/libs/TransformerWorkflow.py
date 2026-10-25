@@ -94,8 +94,9 @@ def Transformer(parameters):
             f' ({destination_projection}) file ...')
         # Opening source Text pointcloud files for read and write
         try:
-            txtFiles = TxtPanPyConverter.TxtPanPyConverter(source_file, source_projection, destination_file,
-                                                           destination_projection, input_format, txt_separator, proc_name)
+            txtFiles = TxtPanPyConverter.TxtPanPyConverter(
+                source_file, source_projection, destination_file, destination_projection,
+                input_format, txt_separator, proc_name)
             txtFiles.Open()
         except Exception as err:
             logging.error(f'Cannot open file: {err}.')

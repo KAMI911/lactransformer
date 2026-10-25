@@ -102,9 +102,11 @@ class PageSettings(wx.Panel):
 
         button_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self, 'Projection')
         button_sizer.Add(wx.StaticText(self, -1, 'Input projection'), 0, wx.ALL | wx.CENTER | wx.ALIGN_LEFT, 5)
-        button_sizer.Add(wx.Choice(self, choices=projection_choices, name='Input projection'), 0, wx.ALL | wx.ALIGN_LEFT, 5)
+        button_sizer.Add(wx.Choice(self, choices=projection_choices, name='Input projection'),
+                         0, wx.ALL | wx.ALIGN_LEFT, 5)
         button_sizer.Add(wx.StaticText(self, -1, 'Output projection'), 0, wx.ALL | wx.CENTER | wx.ALIGN_LEFT, 5)
-        button_sizer.Add(wx.Choice(self, choices=projection_choices, name='Output projection'), 0, wx.ALL | wx.ALIGN_LEFT, 5)
+        button_sizer.Add(wx.Choice(self, choices=projection_choices, name='Output projection'),
+                         0, wx.ALL | wx.ALIGN_LEFT, 5)
 
         process_sizer = wx.StaticBoxSizer(wx.HORIZONTAL, self, 'Process')
         process_sizer.Add(wx.StaticText(self, -1, 'Cores'), 0, wx.ALL | wx.CENTER, 5)

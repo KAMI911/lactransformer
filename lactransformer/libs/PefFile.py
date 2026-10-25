@@ -17,9 +17,9 @@ class PefFile:
 
     def OpenRO(self):
         try:
-            self.__PefFileHandler = open(self.__FileName, 'r')
-        except IOError as err:
-            raise IOError(f'Cannot open {self.__FileName} for reading: {err}') from err
+            self.__PefFileHandler = open(self.__FileName)
+        except OSError as err:
+            raise OSError(f'Cannot open {self.__FileName} for reading: {err}') from err
 
     def Open(self):
         self.__PefFileHandler = open(self.__FileName, 'a')

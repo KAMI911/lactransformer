@@ -4,7 +4,6 @@ try:
     import pandas
     import re
     import sys
-    import os
     from pyproj import Transformer
     from . import PefFile, AssignProjection
 except ImportError as err:
@@ -21,7 +20,8 @@ class TxtPanPyConverter:
         self.__SourceProjection = source_projection
         self.__SourceProjectionString = AssignProjection.AssignProjectionString(source_projection, proc_name)
         self.__DestinationProjection = destination_projection
-        self.__DestinationProjectionString = AssignProjection.AssignProjectionString(self.__DestinationProjection, proc_name)
+        self.__DestinationProjectionString = AssignProjection.AssignProjectionString(
+            self.__DestinationProjection, proc_name)
         self.__Transformer = Transformer.from_crs(
             self.__SourceProjectionString, self.__DestinationProjectionString, always_xy=True)
         self.__Separator = separator
@@ -113,7 +113,7 @@ class TxtPanPyConverter:
                     coordinates = row[1].split(' ')
                     x, y, z = self.__Transformer.transform(
                         float(coordinates[0]), float(coordinates[1]), float(coordinates[2]))
-                    Content[i][1] = '%.10f %.10f %.10f' % (x, y, z)
+                    Content[i][1] = f'{x:.10f} {y:.10f} {z:.10f}'
             self.__DestinationOpenedFile.WriteNextItem(Content)
 
     def Close(self, type='txt'):
