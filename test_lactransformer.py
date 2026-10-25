@@ -1,20 +1,22 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 try:
     import traceback
-    import filecmp
     import logging
     import os
+    import re
     import sys
     import tempfile
     import unittest
     from pathlib import Path
     from unittest import mock
     import laspy
+    import lactransformer
+    from lactransformer import gtx_ascii2bin, gtx_bin2ascii, lasdiff
     from lactransformer import lactransformer as lactransformer_main
     from lactransformer.libs import (FriendlyName, AssignProjection, TxtPanPyConverter, LasPyConverter, PefFile,
-                                     FileListWithProjection, TransformerCommandLine, TransformerWorkflow)
+                                     FileListWithProjection, TransformerCommandLine, TransformerWorkflow,
+                                     FileConverterCommandLine)
 except ImportError as err:
     print(f'Error {__name__} import module: {err}')
     traceback.print_exc()
@@ -39,6 +41,28 @@ def temp_file_path(filename):
     tmp = _BASE / 'test' / 'tmp'
     tmp.mkdir(parents=True, exist_ok=True)
     return str(tmp / filename)
+
+
+def text_files_close(path_a, path_b, tolerance=1e-7):
+    """Compare text files line by line; numbers may differ by `tolerance` (PROJ versions differ in the last digits)."""
+    lines_a = Path(path_a).read_text().splitlines()
+    lines_b = Path(path_b).read_text().splitlines()
+    if len(lines_a) != len(lines_b):
+        return False
+    for line_a, line_b in zip(lines_a, lines_b):
+        tokens_a = [t for t in re.split(r'[,;=\s]+', line_a) if t]
+        tokens_b = [t for t in re.split(r'[,;=\s]+', line_b) if t]
+        if len(tokens_a) != len(tokens_b):
+            return False
+        for token_a, token_b in zip(tokens_a, tokens_b):
+            if token_a == token_b:
+                continue
+            try:
+                if abs(float(token_a) - float(token_b)) > tolerance:
+                    return False
+            except ValueError:
+                return False
+    return True
 
 
 class TestFriendlyName(unittest.TestCase):
@@ -155,7 +179,7 @@ class _TxtBase(unittest.TestCase):
         converter.Open()
         converter.Transform()
         converter.Close()
-        self.assertTrue(filecmp.cmp(self.temp_file, compare_file_path(output_filename)))
+        self.assertTrue(text_files_close(self.temp_file, compare_file_path(output_filename)))
 
 
 class TestTxtTransformation_from_WGS84geo(_TxtBase):
@@ -528,13 +552,13 @@ class TestTransformerWorkflow(_TmpDirBase):
         result = TransformerWorkflow.Transformer(
             self._parameters(input_file_path('txt_wgs84geo_bp.txt'), output, 'WGS84geo', 'EOV2014', 'txt'))
         self.assertEqual(result, str(output))
-        self.assertTrue(filecmp.cmp(str(output), compare_file_path('txt_eov2014_bp.txt'), shallow=False))
+        self.assertTrue(text_files_close(output, compare_file_path('txt_eov2014_bp.txt')))
 
     def test_pef_workflow_matches_reference(self):
         output = self.tmp / 'pef_eov2014_bp.txt'
         TransformerWorkflow.Transformer(
             self._parameters(input_file_path('pef_wgs84geo_bp.txt'), output, 'WGS84geo', 'EOV2014', 'pef'))
-        self.assertTrue(filecmp.cmp(str(output), compare_file_path('pef_eov2014_bp.txt'), shallow=False))
+        self.assertTrue(text_files_close(output, compare_file_path('pef_eov2014_bp.txt')))
 
     def test_unknown_format_returns_none_and_writes_nothing(self):
         output = self.tmp / 'out.xyz'
@@ -591,12 +615,107 @@ class TestMainEndToEnd(_TmpDirBase):
         self._main('-i', str(source), '-o', str(self.tmp / 'out'), '-input_format', 'txt',
                    '-input_projection', 'WGS84geo', '-output_projection', 'EOV2014', '-cores', '2')
         for name in ['a.txt', 'sub/b.txt']:
-            self.assertTrue(filecmp.cmp(str(self.tmp / 'out' / name), compare_file_path('txt_eov2014_bp.txt'),
-                                        shallow=False), name)
+            self.assertTrue(text_files_close(self.tmp / 'out' / name, compare_file_path('txt_eov2014_bp.txt')), name)
 
     def test_missing_input_raises(self):
         with self.assertRaises(FileNotFoundError):
             self._main('-i', str(self.tmp / 'missing.las'), '-o', str(self.tmp / 'out.las'))
+
+
+class TestGtxConversion(_TmpDirBase):
+    HEADER = '47.0 16.0 0.5 0.5 2 2'
+
+    def _write_ascii(self, *heights, header=HEADER):
+        path = self.tmp / 'grid.txt'
+        path.write_text('\n'.join([header, *heights]) + '\n')
+        return path
+
+    def test_ascii_to_binary_and_back(self):
+        source = self._write_ascii('1.5', '150', '2.25', '3.0')
+        binary = self.tmp / 'grid.gtx'
+        self.assertEqual(gtx_ascii2bin.main(['-i', str(source), '-o', str(binary)]), 0)
+        self.assertEqual(binary.stat().st_size, 40 + 4 * 4)
+        text = self.tmp / 'back.txt'
+        self.assertEqual(gtx_bin2ascii.main(['-i', str(binary), '-o', str(text)]), 0)
+        self.assertEqual(text.read_text().split('\n'),
+                         ['47.0 16.0 0.5 0.5 2 2', '1.5000', '-88.8888', '2.2500', '3.0000', ''])
+
+    def test_default_output_names(self):
+        source = self._write_ascii('1.0')
+        self.assertEqual(gtx_ascii2bin.convert(str(source)), str(source) + '.gtx')
+        self.assertEqual(gtx_bin2ascii.convert(str(source) + '.gtx'), str(source) + '.gtx.txt')
+
+    def test_invalid_input_is_reported(self):
+        header_only_short = self._write_ascii('1.0', header='47.0 16.0')
+        with self.assertRaises(ValueError):
+            gtx_ascii2bin.convert(str(header_only_short), str(self.tmp / 'a.gtx'))
+        bad_height = self._write_ascii('1.0', 'abc')
+        with self.assertRaises(ValueError):
+            gtx_ascii2bin.convert(str(bad_height), str(self.tmp / 'b.gtx'))
+        with self.assertRaises(FileNotFoundError):
+            gtx_ascii2bin.convert(str(self.tmp / 'missing.txt'))
+        truncated = self.tmp / 'short.gtx'
+        truncated.write_bytes(b'\x00' * 10)
+        with self.assertRaises(ValueError):
+            gtx_bin2ascii.convert(str(truncated), str(self.tmp / 'c.txt'))
+        with self.assertRaises(FileNotFoundError):
+            gtx_bin2ascii.convert(str(self.tmp / 'missing.gtx'))
+
+    def test_main_returns_error_code(self):
+        with mock.patch('builtins.print'):
+            self.assertEqual(gtx_ascii2bin.main(['-i', str(self.tmp / 'missing.txt')]), 1)
+            self.assertEqual(gtx_bin2ascii.main(['-i', str(self.tmp / 'missing.gtx')]), 1)
+
+    def test_command_line_requires_input(self):
+        command_line = FileConverterCommandLine.FileConverterCommandLine()
+        with mock.patch('sys.stderr'), self.assertRaises(SystemExit):
+            command_line.parse([])
+        command_line.parse(['-i', 'in', '-o', 'out'])
+        self.assertEqual((command_line.input, command_line.output), ('in', 'out'))
+
+
+class TestLasDiff(_TmpDirBase):
+    def setUp(self):
+        super().setUp()
+        self._cwd = os.getcwd()
+        os.chdir(self.tmp)  # main() writes its log file to the current directory
+        self.addCleanup(os.chdir, self._cwd)
+        root = logging.getLogger()
+        handlers = list(root.handlers)
+        self.addCleanup(lambda: [root.removeHandler(h) for h in list(root.handlers) if h not in handlers])
+
+    def test_diff_of_identical_files(self):
+        reference = compare_file_path('las_eov2014.las')
+        with mock.patch('builtins.print'):
+            self.assertEqual(lasdiff.DiffLas([reference, reference]), 0)
+
+    def test_diff_of_different_files_prints_statistics(self):
+        with mock.patch('builtins.print') as printed:
+            lasdiff.DiffLas([compare_file_path('las_eov2014.las'), compare_file_path('las_eov2009.las')])
+        self.assertIn('Xmin/max/avg/std', ''.join(str(call) for call in printed.call_args_list))
+
+    def test_main_compares_directories(self):
+        directory = self.tmp / 'a'
+        directory.mkdir()
+        (directory / 'x.las').write_bytes(Path(compare_file_path('las_eov2014.las')).read_bytes())
+        with mock.patch.object(sys, 'argv', ['lasdiff', '-i', str(directory), '-o', str(directory), '-cores', '2']), \
+                mock.patch('builtins.print'):
+            lasdiff.main()
+
+    def test_main_missing_input_exits(self):
+        with mock.patch.object(sys, 'argv', ['lasdiff', '-i', str(self.tmp / 'missing.las'), '-o', 'out.las']):
+            with self.assertRaises(SystemExit):
+                lasdiff.main()
+
+
+class TestVersion(unittest.TestCase):
+    def test_version_is_exposed_and_printed(self):
+        self.assertRegex(lactransformer.__version__, r'^\d+\.\d+\.\d+')
+        with mock.patch.object(sys, 'argv', ['lactransformer', '-version']), \
+                mock.patch('sys.stdout') as stdout, self.assertRaises(SystemExit) as raised:
+            TransformerCommandLine.TransformerCommandLine().parse()
+        self.assertEqual(raised.exception.code, 0)
+        self.assertIn(lactransformer.__version__, ''.join(str(call) for call in stdout.write.call_args_list))
 
 
 def testing_lactransformer():
@@ -619,6 +738,9 @@ def testing_lactransformer():
         'test_lactransformer.TestLasPropertiesPreserved',
         'test_lactransformer.TestTransformerWorkflow',
         'test_lactransformer.TestMainEndToEnd',
+        'test_lactransformer.TestGtxConversion',
+        'test_lactransformer.TestLasDiff',
+        'test_lactransformer.TestVersion',
     ])
     return unittest.TextTestRunner(verbosity=2).run(suite)
 
