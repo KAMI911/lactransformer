@@ -2,29 +2,54 @@ name: Test Python Module
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, python3 ]
+  pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   test-python-module:
-    name: Test Python module
+    name: Test Python ${{ matrix.python-version }}
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
-      - name: Configure Python version ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Configure Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: Install python modules for test
+          cache: pip
+      - name: Install package
         run: |
-          python3 --version
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
-          python3 -m pip install codeclimate-test-reporter
-      - name: Run test
-        run: python test_lactransformer.py
+          python -m pip install --upgrade pip
+          python -m pip install .
+      - name: Run tests
+        run: python -m unittest -v test_lactransformer
+
+  lint-and-security:
+    name: Lint and security
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Configure Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install tools
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ruff bandit pip-audit
+      - name: Lint
+        run: ruff check .
+      - name: Static security analysis
+        run: bandit -q -r lactransformer
+      - name: Dependency audit
+        run: pip-audit -r requirements.txt

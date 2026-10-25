@@ -1,6 +1,6 @@
 # lactransformer - LAS & Co Transformer
 
-[![Build Status](https://travis-ci.org/KAMI911/lactransformer.svg?branch=master)](https://travis-ci.org/KAMI911/lactransformer)[![Coverity Scan Build Status](https://scan.coverity.com/projects/10121/badge.svg)](https://scan.coverity.com/projects/kami911-lactransformer)[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a93bdab4fc7f4a42a426d9dc3735239d)](https://www.codacy.com/project/KAMI911/lactransformer/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KAMI911/lactransformer&amp;utm_campaign=Badge_Grade_Dashboard)[![Maintainability](https://api.codeclimate.com/v1/badges/92b91190008930d6513e/maintainability)](https://codeclimate.com/github/KAMI911/lactransformer/maintainability) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KAMI911/lactransformer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/KAMI911/lactransformer/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/KAMI911/lactransformer/badges/build.png?b=master)](https://scrutinizer-ci.com/g/KAMI911/lactransformer/build-status/master)
+[![Test Python Module](https://github.com/KAMI911/lactransformer/actions/workflows/test_python_module.yml/badge.svg)](https://github.com/KAMI911/lactransformer/actions/workflows/test_python_module.yml)
 
 ## Table of Contents
 
@@ -27,16 +27,167 @@ LAS & Co Transformer is an utility to convert
 
 in following formats:
 
-* LiDAR LAS files
+* LiDAR LAS and LAZ (compressed) files
 * Trajectory CSV file
+* PointText file
 * TerraPhoto Image List file
 * Riegl Camera CSV file
 * PEF file
 * RTK CSV format (strtxt)
 
-Since version 0.3.0.0 LAS & Co Transformer uses at least Python version 3.5.
+The `python3` branch requires Python 3.8 or newer and is tested with Python 3.8 - 3.14.
+It uses laspy 2.x and pyproj 3.x.
 
 ### Supported projections
+
+**WGS84**     (EPSG:4326) projection : http://epsg.io/4326/
+
+**WGS84geo**  (EPSG:4978) projection : http://epsg.io/4978/
+
+**WGS84PM**  (EPSG:3857) projection : http://epsg.io/3857/
+
+**EOV**       (EPSG:23700) projection: http://epsg.io/23700/
+
+* EOV - without correction
+* EOVc, EOV2014 - EOV2014 (EPSG:23700) projection with grid correction 2014 (2x2 km grid points)
+http://www.agt.bme.hu/~bence/proj_poszter_3d.pdf
+
+* EOV2014fine - EOV2014 (EPSG:23700) projection with grid correction 2014 (1x1 km geoid grid points)
+* EOV2009 - EOV2009 (EPSG:23700) projection with grid correction 2009 (2x2 km grid points)
+http://www.agt.bme.hu/gis/workshop3/eloadasok/transzformacio.pdf
+http://www.agt.bme.hu/~bence/proj_poszter_3d.pdf
+
+**ETRS89**    (EPSG:4258) projection: http://epsg.io/4258/
+
+**ETRS89geo** (EPSG:4936) projection: http://epsg.io/4936/
+
+**SVY21**     (EPSG:3414) projection: http://epsg.io/3414
+
+* SVY21c - SVY21 with geoid correction
+
+### EOV correction grid
+
+Original download: http://www.agt.bme.hu/on_line/etrs2eov/etrs2eov_doc.html
+
+Created by: Zoltán Siki <siki@agt.bme.hu> and Bence Takács <bence@agt.bme.hu>
+
+Github page: https://github.com/OSGeoLabBp/eov2etrs
+
+The grid files are shipped inside the package (`lactransformer/grid`).
+
+### Modules
+
+pyproj - https://pypi.python.org/pypi/pyproj/
+
+laspy - https://pypi.python.org/pypi/laspy/
+
+numpy - https://pypi.python.org/pypi/numpy/
+
+pandas - https://pypi.python.org/pypi/pandas/
+
+## Licensing
+
+The lactransformer application and documentation are licensed under the terms of
+the Mozilla Public License 2.0, you will find a copy of this license in the
+[LICENSE](LICENSE) file included in the source package.
+
+## Installation
+
+Install a supported Python version (3.8 or newer) from your package manager or from
+https://www.python.org/downloads/ (on Windows prefer the 64 bit version), then
+install the application in a virtual environment. The dependencies
+(numpy, pandas, pyproj, laspy with LAZ support) are installed automatically.
+
+### Linux / macOS
+
+```
+git clone https://github.com/KAMI911/lactransformer.git
+cd lactransformer
+git checkout python3
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install .
+```
+
+### Windows
+
+```
+git clone https://github.com/KAMI911/lactransformer.git
+cd lactransformer
+git checkout python3
+py -m venv .venv
+.venv\Scripts\activate
+python -m pip install .
+```
+
+Only the dependencies can be installed with `python -m pip install -r requirements.txt`.
+Use `python -m pip install ".[gui]"` for the optional wxPython based GUI.
+
+The installation provides these commands: `lactransformer`, `lasdiff`, `gtx_ascii2bin`, `gtx_bin2ascii`.
+
+## Documentation
+
+Show all options:
+
+```
+lactransformer -h
+```
+
+The default input projection is `WGS84geo`, the default output projection is `EOVc`.
+Use `-input_projection` and `-output_projection` to change them.
+
+### One LAS file
+
+Convert LAS file from WGS84 geocentric to EOV:
+
+```
+lactransformer -i wgs84.las -o eov.las
+```
+
+### A directory of LAS files
+
+Convert all LAS files in a directory from WGS84 geocentric to EOV using 2 cores:
+
+```
+lactransformer -i wgs84dir/ -o eovdir/ -cores 2
+```
+
+### LAZ files
+
+Compressed LAZ files are supported too:
+
+```
+lactransformer -i wgs84.laz -o eov.laz -input_format laz
+```
+
+### One Trajectory (CSV) text file
+
+Convert Trajectory (CSV) text file from WGS84 geocentric to EOV:
+
+```
+lactransformer -i wgs84_trj.txt -o eov_trj.txt -input_format txt
+```
+
+### A directory of Trajectory (CSV) text files
+
+Convert all Trajectory (CSV) text files in a directory from WGS84 geocentric to EOV using 2 cores:
+
+```
+lactransformer -i wgs84dir_trj/ -o eovdir_trj/ -cores 2 -input_format txt
+```
+
+### Other formats and options
+
+Supported `-input_format` values: `las`, `laz`, `txt`, `lastxt`, `csv`, `iml`, `pef`, `strtxt`, `listtxt`.
+Use `-separator` (`,` `;` space or tab) for the text formats and `-full_header_update` for a full LAS header update.
+
+### Tools
+
+* `lasdiff -i a.las -o b.las` prints the coordinate differences of two LAS files
+* `gtx_ascii2bin -i grid.txt [-o grid.gtx]` converts an ASCII geoid grid to GTX binary
+* `gtx_bin2ascii -i grid.gtx [-o grid.txt]` converts a GTX binary geoid grid to ASCII
+
+## Supported projections
 
 **WGS84**     (EPSG:4326) projection : http://epsg.io/4326/
 
@@ -253,7 +404,15 @@ There are many ways to contribute to lactransformer -- whether it be sending pat
 testing, reporting bugs, or reviewing and updating the documentation. Every
 contribution is appreciated!
 
-Please continue reading in the [contributing chapter](CONTRIBUTING.md).
+Run the tests and the checks before sending a patch:
+
+```
+python -m pip install -e ".[dev]"
+python -m unittest test_lactransformer
+ruff check .
+bandit -q -r lactransformer
+pip-audit -r requirements.txt
+```
 
 ### Fork me on Github
 
