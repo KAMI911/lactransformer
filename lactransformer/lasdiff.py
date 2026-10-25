@@ -148,6 +148,7 @@ def main():
         results = pool.map_async(DiffLas, doing)
         pool.close()
         pool.join()
+        results.get()
     else:
         for d in doing:
             DiffLas(d)
