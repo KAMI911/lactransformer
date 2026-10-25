@@ -1,58 +1,58 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
 try:
-    import traceback
+    import logging
     import os
     import struct
-    from libs import FileConverterCommandLine
+    import traceback
+    from .libs import FileConverterCommandLine
 except ImportError as err:
-    print('Error {0} import module: {1}'.format(__name__, err))
+    print(f'Error {__name__} import module: {err}')
     traceback.print_exc()
     exit(128)
 
 # It is big endian
 # Documentation: http://vdatum.noaa.gov/docs/gtx_info.html
 HEADER_STRUCT = '>4d2i'
+HEADER_SIZE = struct.calcsize(HEADER_STRUCT)
 DATA_STRUCT = '>f'
+DATA_SIZE = struct.calcsize(DATA_STRUCT)
 
-fileconverterworkflow = FileConverterCommandLine.FileConverterCommandLine()
-fileconverterworkflow.parse()
 
-index = 0
+def convert(input_file, output_file=None):
+    """Convert a GTX binary grid to ASCII (header line + one height per line)."""
+    if output_file is None:
+        output_file = input_file + '.txt'
+    if not os.path.isfile(input_file):
+        raise FileNotFoundError(f'Cannot find input file: {input_file}')
 
-input_file = fileconverterworkflow.input
-output_file = fileconverterworkflow.output
+    count = 0
+    with open(input_file, 'rb') as fr, open(output_file, 'w') as fw:
+        row = fr.read(HEADER_SIZE)
+        if len(row) != HEADER_SIZE:
+            raise ValueError(f'Invalid GTX header in {input_file}: file is too short')
+        header = struct.unpack(HEADER_STRUCT, row)
+        fw.write(' '.join(map(str, header)) + '\n')
+        while True:
+            height = fr.read(DATA_SIZE)
+            if len(height) < DATA_SIZE:
+                break
+            fw.write(f'{struct.unpack(DATA_STRUCT, height)[0]:.4f}\n')
+            count += 1
+    logging.info(f'Wrote {count} values to {output_file}')
+    return output_file
 
-if output_file is None:
-    output_file = input_file + '.txt'
 
-if not os.path.isfile(input_file):
-    raise Exception('Cannot found input file: {0}'.format(input_file))
-else:
+def main(argv=None):
+    command_line = FileConverterCommandLine.FileConverterCommandLine(prog='gtx_bin2ascii')
+    command_line.parse(argv)
     try:
-        with open(output_file, 'w') as fw:
-            with open(input_file, 'rb') as fr:
-                row = fr.read(40)
-                # I cannot really understand but it seems it is big endian
-                # Documentation: http://vdatum.noaa.gov/docs/gtx_info.html
-                header = struct.unpack(HEADER_STRUCT, row)
-                line = ' '.join(map(str, header)) + '\n'
-                fw.write(line)
-                print(line, end='')
-                while 1:
-                    try:
-                        height = fr.read(4)
-                        if len(height) == 4:
-                            data = struct.unpack(DATA_STRUCT, height)
-                            line = '{0:.4f}\n'.format(data[0])
-                            fw.write(line)
-                            index += 1
-                        else:
-                            break
-                    except ValueError as err:
-                        print('Number of lines: {0} position {2} value: W{1}W'.format(index, height, fr.tell()))
-                        break
-    except IOError as err:
-        print('Error opening: {0}, error: {1}'.format(output_file, err))
-        exit(1)
+        convert(command_line.input, command_line.output)
+    except (OSError, ValueError) as err:
+        print(f'Error: {err}')
+        return 1
+    return 0
+
+
+if __name__ == '__main__':
+    exit(main())
